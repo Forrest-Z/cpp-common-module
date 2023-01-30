@@ -17,20 +17,6 @@ endforeach(file ${ALL_TEST})
 
 # 配置单元测试
 ################################
-# GFalgs
-################################
-# find_package(GFlags REQUIRED)
-# message("GFLAGS_INCLUDE_DIRS=${GFLAGS_INCLUDE_DIRS}")
-# message("GFLAGS_LIBRARIES=${GFLAGS_LIBRARIES}")
-
-################################
-# GLog
-################################
-# find_package(GLog REQUIRED)
-# message("GLOG_INCLUDE_DIRS=${GLOG_INCLUDE_DIRS}")
-# message("=${GLOG_LIBRARIES}")
-
-################################
 # GTest
 ################################
 enable_testing()
@@ -55,7 +41,8 @@ target_link_libraries(${LIB_TEST_NAME}
 
 gtest_discover_tests(${LIB_TEST_NAME}
   WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-  -lglog
+  # -lglog
   -lpthread
-  -lgcov -lz
+  # -lgcov 
+  # -lz
 )

@@ -13,6 +13,10 @@ if [ $# != 0 ]; then
     if [ "$arg" = "no_install" ]; then
       run_install="no"
     fi
+
+    if [ "$arg" = "clear" ]; then
+      rm -rf ${build_dir}
+    fi
   done
 fi
 

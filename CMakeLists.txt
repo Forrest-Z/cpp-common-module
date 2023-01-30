@@ -42,15 +42,18 @@ endforeach(file ${PACKAGE_SRC})
 #####################################
 # link and compile
 #####################################
-set(CMAKE_CXX_FLAGS "-std=c++11 -g -O2 -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "-std=c++11 -g -O0")
+set(CMAKE_CXX_FLAGS "-fprofile-arcs -ftest-coverage")
 
-link_libraries("-lpthread -lm -lz -lgtest")
+# link_libraries("-lpthread -lm -lz -lgtest")
 add_library(${PROJECT_NAME} SHARED ${PACKAGE_SRC})
 
 target_link_libraries(${PROJECT_NAME} 
 -lboost_system
 -lboost_thread
--lgcov -lz -pthread)
+-lgcov
+# -lz
+-pthread)
 
 #####################################
 # install
@@ -85,7 +88,7 @@ file(GLOB LINT_SRC
 )
 
 foreach(v ${LINT_SRC})
-  execute_process(COMMAND cpplint --quiet ${v} )
+  execute_process(COMMAND cpplint --filter=-legal/copyright --quiet ${v} )
 endforeach(v)
 
 

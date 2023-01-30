@@ -1,6 +1,11 @@
 #!/bin/bash
 
-PROJECT_NAME=common
+test_file=./Build/test/common/bin/project_test
+
+### use valgrind
+# test_file="valgrind --leak-check=full ./Build/test/common/bin/project_test"
+
+${test_file}
 
 
-#  ./__build/bin/device_lib_test --gtest_filter=DeviceTest.Motor_BK_Test
+# ${test_file}  --gtest_filter=sample_test.add_test
