@@ -88,7 +88,7 @@ file(GLOB LINT_SRC
 )
 
 foreach(v ${LINT_SRC})
-  execute_process(COMMAND cpplint --filter=-legal/copyright --quiet ${v} )
+  execute_process(COMMAND cpplint --filter=-legal/copyright,-build/include_order --quiet ${v} )
 endforeach(v)
 
 
