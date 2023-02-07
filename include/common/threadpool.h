@@ -2,10 +2,10 @@
 #pragma once
 
 #include <boost/thread/concurrent_queues/sync_queue.hpp>
+#include <boost/thread/thread.hpp>
 #include <map>
 #include <memory>
 #include <string>
-#include <thread>  //NOLINT
 
 namespace common {
 
@@ -17,7 +17,7 @@ typedef std::shared_ptr<basic_work> work_ptr;
 typedef struct WorkSetType {
   std::mutex work_queue_mtx;
   // int max_queue_size = -1;
-  std::thread worker;
+  boost::thread worker;
   boost::concurrent::sync_queue<work_ptr> work_queue;
 } WorkSetType;
 
@@ -38,6 +38,9 @@ class ThreadPool {
 
   static void WorkProcess(ThreadPool* tpool,
                           std::shared_ptr<WorkSetType> work_set);
+
+  void close();
+  void interrupt_and_join();
 };
 
 }  // namespace common

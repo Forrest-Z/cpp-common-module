@@ -7,9 +7,8 @@ ThreadPool::ThreadPool(/* args */) {}
 ThreadPool::~ThreadPool() {
   this->is_alive = false;
 
-  for (auto& item : this->work_set_map) {
-    item.second->worker.join();
-  }
+  this->close();
+  this->interrupt_and_join();
 }
 
 bool ThreadPool::AddNewWork(work_ptr item, std::string identifier) {
@@ -21,7 +20,7 @@ bool ThreadPool::AddNewWork(work_ptr item, std::string identifier) {
 
   if (ret == this->work_set_map.end()) {
     auto work_set = std::make_shared<WorkSetType>();
-    std::thread t = std::thread(WorkProcess, this, work_set);
+    boost::thread t = boost::thread(WorkProcess, this, work_set);
     work_set->worker = std::move(t);
     this->work_set_map.insert(
         std::pair<std::string, std::shared_ptr<WorkSetType>>(identifier,
@@ -58,6 +57,18 @@ void ThreadPool::WorkProcess(ThreadPool* tpool,
       return;
     }
     /* code */
+  }
+}
+
+void ThreadPool::close() {
+  for (auto& item : this->work_set_map) {
+    item.second->work_queue.close();
+  }
+}
+void ThreadPool::interrupt_and_join() {
+  for (auto& item : this->work_set_map) {
+    item.second->worker.interrupt();
+    item.second->worker.join();
   }
 }
 
