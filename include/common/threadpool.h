@@ -14,10 +14,14 @@ class basic_work {
   virtual void run() = 0;
 };
 typedef std::shared_ptr<basic_work> work_ptr;
+
+typedef enum { EMPTY, START_RUNNING, STOP_RUNNING, EXIT } WorkSetState;
+
 typedef struct WorkSetType {
   std::mutex work_queue_mtx;
   // int max_queue_size = -1;
   boost::thread worker;
+  WorkSetState state = WorkSetState::EMPTY;
   boost::concurrent::sync_queue<work_ptr> work_queue;
 } WorkSetType;
 
@@ -27,6 +31,7 @@ class ThreadPool {
   ~ThreadPool();
 
   bool AddNewWork(work_ptr item, std::string identifier);
+  bool AllWorkFinished();
   // void SetWorkSetMaxSize(std::string identifier, int max_size);
 
  public:

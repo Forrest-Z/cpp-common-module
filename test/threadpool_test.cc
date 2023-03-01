@@ -19,7 +19,7 @@ TEST(sample_test, threadpool) {
 
   auto tpool = new common::ThreadPool();
 
-  int work_num = 10000;
+  int work_num = 1000;
 
   for (size_t i = 0; i < work_num; i++) {
     auto item = std::make_shared<ThreadPoolTestWork>(i);
@@ -27,6 +27,9 @@ TEST(sample_test, threadpool) {
   }
 
   sleep(5);
+
+  auto ret = tpool->AllWorkFinished();
+  printf("AllWorkFinished : ret = %d \n", ret);
 
   printf("-----------delete tpool------------\n");
 

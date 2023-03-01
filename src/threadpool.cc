@@ -42,14 +42,18 @@ void ThreadPool::WorkProcess(ThreadPool* tpool,
                              std::shared_ptr<WorkSetType> work_set) {
   while (tpool->is_alive) {
     try {
-      work_ptr task;
       try {
+        work_ptr task;
         auto st = work_set->work_queue.wait_pull(task);
         if (st == boost::concurrent::queue_op_status::closed) {
+          work_set->state = WorkSetState::EXIT;
           return;
         }
+        work_set->state = WorkSetState::START_RUNNING;
         task->run();
+        work_set->state = WorkSetState::STOP_RUNNING;
       } catch (boost::thread_interrupted&) {
+        work_set->state = WorkSetState::EXIT;
         return;
       }
     } catch (...) {
@@ -58,6 +62,21 @@ void ThreadPool::WorkProcess(ThreadPool* tpool,
     }
     /* code */
   }
+}
+
+bool ThreadPool::AllWorkFinished() {
+  std::lock_guard<std::mutex> lck(this->mtx);
+
+  for (auto& i : this->work_set_map) {
+    if (!i.second->work_queue.empty()) {  // queue 不为空
+      return false;
+    }
+    if (i.second->state == WorkSetState::START_RUNNING) {  // 正在执行任务
+      return false;
+    }
+  }
+
+  return true;
 }
 
 void ThreadPool::close() {
