@@ -44,6 +44,7 @@ endforeach(file ${PACKAGE_SRC})
 #####################################
 set(CMAKE_CXX_FLAGS "-std=c++11 -g -O0")
 set(CMAKE_CXX_FLAGS "-fprofile-arcs -ftest-coverage")
+add_compile_options(-rdynamic)
 
 # link_libraries("-lpthread -lm -lz -lgtest")
 add_library(${PROJECT_NAME} SHARED ${PACKAGE_SRC})
@@ -52,7 +53,6 @@ target_link_libraries(${PROJECT_NAME}
 -lboost_system
 -lboost_thread
 -lgcov
-# -lz
 -pthread)
 
 #####################################
