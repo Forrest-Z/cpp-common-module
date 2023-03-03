@@ -7,7 +7,9 @@
  */
 
 #include <gtest/gtest.h>
+
 #include "include/common/backtrace.h"
+#include "include/common/common_logger.h"
 
 GTEST_API_ int main(int argc, char **argv) {
   // int ret = system("mkdir -p out");
@@ -15,6 +17,7 @@ GTEST_API_ int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
 
   common::ErrorBacktraceRegister();
+  common::InitCommonLogger(common::LOG_LEVEL::DEBUG, "common", true, true);
 
   auto ret = RUN_ALL_TESTS();
   return ret;

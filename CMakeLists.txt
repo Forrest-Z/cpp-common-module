@@ -68,7 +68,6 @@ target_link_libraries(${PROJECT_NAME}
 ${3rdparty_log4cpp_lib}/liblog4cpp.a
 -lboost_system
 -lboost_thread
--lgcov
 -pthread)
 
 #####################################
