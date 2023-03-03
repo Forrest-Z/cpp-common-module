@@ -1,11 +1,13 @@
 
 #include "include/common/log.h"
+
 #include <gtest/gtest.h>
+
 #include <iostream>
 
 static void debug_logger_test() {
-  auto logger = new common::Logger(common::LOG_LEVEL::DEBUG,
-                                           "debug", true, true);
+  auto logger = std::make_shared<common::Logger>(common::LOG_LEVEL::DEBUG,
+                                                 "debug", true, true);
   std::string s = "string_data";
   DEBUG_LOG(logger, "number : %d ,string =  %s .\n", 3, s.c_str());
   INFO_LOG(logger, "info msg .\n");
@@ -14,8 +16,7 @@ static void debug_logger_test() {
 }
 
 static void info_logger_test() {
-  auto logger =
-      new common::Logger(common::LOG_LEVEL::INFO, "info", true);
+  auto logger = new common::Logger(common::LOG_LEVEL::INFO, "info", true);
   std::string s = "string_data";
   DEBUG_LOG(logger, "number : %d ,string =  %s .\n", 3, s.c_str());
   INFO_LOG(logger, "info msg .\n");
@@ -24,8 +25,7 @@ static void info_logger_test() {
 }
 
 static void warning_logger_test() {
-  auto logger = new common::Logger(common::LOG_LEVEL::WARNING,
-                                           "warning", true);
+  auto logger = new common::Logger(common::LOG_LEVEL::WARNING, "warning", true);
   std::string s = "string_data";
   DEBUG_LOG(logger, "number : %d ,string =  %s .\n", 3, s.c_str());
   INFO_LOG(logger, "info msg .\n");
@@ -34,8 +34,7 @@ static void warning_logger_test() {
 }
 
 static void error_logger_test() {
-  auto logger = new common::Logger(common::LOG_LEVEL::ERROR,
-                                           "error", true);
+  auto logger = new common::Logger(common::LOG_LEVEL::ERROR, "error", true);
   std::string s = "string_data";
   DEBUG_LOG(logger, "number : %d ,string =  %s .\n", 3, s.c_str());
   INFO_LOG(logger, "info msg .\n");

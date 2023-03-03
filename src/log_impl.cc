@@ -16,7 +16,6 @@
 #include <log4cpp/PatternLayout.hh>
 #include <log4cpp/Priority.hh>
 #include <log4cpp/RollingFileAppender.hh>
-
 #include <vector>
 
 namespace common {
@@ -34,20 +33,26 @@ LoggerImpl::LoggerImpl(LOG_LEVEL level, std::string log_file_name,
         std::string("log/") + getMsDateTime() + std::string("/"));
   }
 
-  log4cpp::PatternLayout* pLayout = new log4cpp::PatternLayout();
-  pLayout->setConversionPattern("%d: %p %c %x: %m");
-
   auto re = system((std::string("mkdir -p ") + *INIT_LOG_PATH).c_str());
 
   auto appender_name = log_file_name;
 
   if (root.getAppender(appender_name) == nullptr) {
-    log4cpp::Appender* fileAppender = new log4cpp::FileAppender(
-        appender_name, *INIT_LOG_PATH + log_file_name + ".log");
-    fileAppender->setLayout(pLayout);
-    root.addAppender(fileAppender);
+    // pLayout , fileAppender 由log4cpp 析构时自动释放
+    {
+      log4cpp::PatternLayout* pLayout = new log4cpp::PatternLayout();
+      pLayout->setConversionPattern("%d: %p %c %x: %m");
+
+      log4cpp::Appender* fileAppender = new log4cpp::FileAppender(
+          appender_name, *INIT_LOG_PATH + log_file_name + ".log");
+      fileAppender->setLayout(pLayout);
+      root.addAppender(fileAppender);
+    }
 
     {
+      log4cpp::PatternLayout* pLayout = new log4cpp::PatternLayout();
+      pLayout->setConversionPattern("%d: %p %c %x: %m");
+
       log4cpp::Appender* f_appender = new log4cpp::FileAppender(
           appender_name, *INIT_LOG_PATH + "gomros.log");
       f_appender->setLayout(pLayout);

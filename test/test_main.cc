@@ -7,11 +7,14 @@
  */
 
 #include <gtest/gtest.h>
+#include "include/common/backtrace.h"
 
 GTEST_API_ int main(int argc, char **argv) {
   // int ret = system("mkdir -p out");
 
   testing::InitGoogleTest(&argc, argv);
+
+  common::ErrorBacktraceRegister();
 
   auto ret = RUN_ALL_TESTS();
   return ret;
