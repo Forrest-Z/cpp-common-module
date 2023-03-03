@@ -11,4 +11,5 @@ test_file=./Build/test/common/bin/project_test
 
 
 ### 
-${test_file}  --gtest_filter=backtrace_test.segv
+#${test_file}  --gtest_filter=backtrace_test.segv
+${test_file}  --gtest_filter=log_test.printf

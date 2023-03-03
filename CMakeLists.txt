@@ -10,10 +10,23 @@ message("#####################################")
 project(${PROJECT_NAME})
 
 #####################################
+# set log4cpp path
+#####################################
+if(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_CROSSCOMPILING)
+    message("this is aarch64 cpu")
+    set(3rdparty_log4cpp_lib ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/log4cpp_lib/aarch64)
+elseif(CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "x86_64")
+	message("this is x86_64 cpu")
+  set(3rdparty_log4cpp_lib ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/log4cpp_lib/x86_64)
+endif()
+
+
+#####################################
 # include
 #####################################
 include_directories(/usr/include)
 include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${3rdparty_log4cpp_lib}/include)
 
 #####################################
 # package_inc
@@ -39,6 +52,7 @@ foreach(file ${PACKAGE_SRC})
   message(STATUS "${file}")
 endforeach(file ${PACKAGE_SRC})
 
+
 #####################################
 # link and compile
 #####################################
@@ -46,10 +60,12 @@ set(CMAKE_CXX_FLAGS "-std=c++11 -g -O0")
 set(CMAKE_CXX_FLAGS "-fprofile-arcs -ftest-coverage")
 add_compile_options(-rdynamic)
 
-# link_libraries("-lpthread -lm -lz -lgtest")
+link_libraries("${3rdparty_log4cpp_lib}/liblog4cpp.a")
+
 add_library(${PROJECT_NAME} SHARED ${PACKAGE_SRC})
 
 target_link_libraries(${PROJECT_NAME} 
+${3rdparty_log4cpp_lib}/liblog4cpp.a
 -lboost_system
 -lboost_thread
 -lgcov

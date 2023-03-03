@@ -19,7 +19,6 @@
 
 #include <vector>
 
-namespace gomros {
 namespace common {
 std::shared_ptr<std::string> INIT_LOG_PATH = nullptr;
 
@@ -116,4 +115,3 @@ void LoggerImpl::WriteLog(LOG_LEVEL writelevel, const char* fileName, int line,
   }
 }
 }  // namespace common
-}  // namespace gomros

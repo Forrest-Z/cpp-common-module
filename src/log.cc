@@ -1,5 +1,6 @@
 
 #include "include/common/log.h"
+
 #include "include/log_impl.h"
 
 namespace common {
