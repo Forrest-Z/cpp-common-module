@@ -1,9 +1,9 @@
 #!/bin/bash
 
-test_file=./Build/test/common/bin/project_test
+# test_file=./Build/test/common/bin/project_test
 
 ### use valgrind
-# test_file="valgrind -v --leak-check=full --show-leak-kinds=all ./Build/test/common/bin/project_test"
+test_file="valgrind -v --leak-check=full --show-leak-kinds=all ./Build/test/common/bin/project_test"
 
 # ${test_file}
 
@@ -11,5 +11,7 @@ test_file=./Build/test/common/bin/project_test
 
 
 ### 
-#${test_file}  --gtest_filter=backtrace_test.segv
-${test_file}  --gtest_filter=log_test.printf
+# ${test_file}  --gtest_filter=backtrace_test.segv
+# ${test_file}  --gtest_filter=log_test.printf
+
+${test_file}  --gtest_filter=common.MsgQueueTest
