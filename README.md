@@ -38,9 +38,13 @@ sudo apt install clang-format
 sudo apt install valgrind
 
 ### 检查main文件内存泄漏情况
-valgrind --leak-check=full main
+valgrind --leak-check=full ./main
+
+### 检查main文件内存泄漏情况(indirect,definite,possible)
+valgrind -v --leak-check=full --show-leak-kinds=indirect,definite,possible ./main
 
 ```
+> 注意：valgrind 在arm64工控机上可能会检测不出内存泄漏的位置，在x86_64上可以；
 
 # lcov 代码测试覆盖率检查
 
