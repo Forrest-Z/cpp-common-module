@@ -7,7 +7,7 @@ namespace common {
 
 MsgQueue::MsgQueue(void) {
   this->tpool = std::make_shared<ThreadPool>();
-  // info_log("msgqueue , new thread pool creat. \n");
+  info_log("msgqueue , new thread pool creat. \n");
 }
 
 MsgQueue::~MsgQueue() {}
@@ -121,21 +121,7 @@ void MsgQueue::send(std::string topic, char* buf, int size) {
   }
 
   this->mtx.unlock();
-
-  // MonitorLoggerRefreshInfo(std::string("MsgQueue::send ") + topic, " end
-  // send");
 }
-
-// void MsgQueue::message_queue_handle_message(void* param) {
-//   struct message_param* par = (struct message_param*)param;
-//   MsgQueueListener* p_listener = par->p;
-//   auto mem = par->m;
-//   std::string topic = par->topic;
-//   delete param;
-//   param = nullptr;
-
-//   p_listener->recieve_message(topic, mem->data(), mem->size());
-// }
 
 void MsgQueue::print_debug_string() {
   std::lock_guard<std::mutex> lck(this->mtx);

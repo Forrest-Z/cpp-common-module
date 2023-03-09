@@ -1,8 +1,10 @@
 
 #include "include/common/threadpool.h"
+
+#include "include/common_logger_impl.h"
 namespace common {
 
-ThreadPool::ThreadPool(/* args */) {}
+ThreadPool::ThreadPool(/* args */) { info_log("ThreadPool construct . \n"); }
 
 ThreadPool::~ThreadPool() {
   this->is_alive = false;
@@ -28,12 +30,16 @@ bool ThreadPool::AddNewWork(work_ptr item, std::string identifier) {
 
     ret = this->work_set_map.find(identifier);
     if (ret == this->work_set_map.end()) {
+      warning_log("add new item failed \n");
       return false;
     }
   }
 
   // add item
-  { ret->second->work_queue.push(item); }
+  {
+    ret->second->work_queue.push(item);
+    debug_log("add new item success , id = %s \n", identifier.c_str());
+  }
 
   return true;
 }
