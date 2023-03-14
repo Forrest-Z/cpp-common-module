@@ -14,4 +14,7 @@ test_file="valgrind -v --leak-check=full --show-leak-kinds=definite,indirect ./B
 # ${test_file}  --gtest_filter=backtrace_test.segv
 # ${test_file}  --gtest_filter=log_test.printf
 
-${test_file}  --gtest_filter=common.MsgQueueTest
+# ${test_file}  --gtest_filter=common.MsgQueueTest
+
+# ${test_file}  --gtest_filter=HexConverter_test.hex_to_chararray
+${test_file}  --gtest_filter=HexConverter_test.chararray_to_hex

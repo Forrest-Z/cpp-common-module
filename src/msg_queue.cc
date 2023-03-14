@@ -109,12 +109,6 @@ void MsgQueue::send(std::string topic, char* buf, int size) {
     for (auto iter = search1->second.begin(); iter != search1->second.end();
          iter++) {
       MsgQueueListener* p = *iter;
-      // struct message_param* param = new struct message_param();
-      // param->p = p;
-      // param->m = m;
-      // param->topic = topic;
-
-      // this->tpool->AddNewWork(void, topic);
       auto work = std::make_shared<MsgQueueWork>(p, m, topic);
       this->tpool->AddNewWork(work, topic);
     }
