@@ -37,5 +37,5 @@ make -j
 
 if [ "$run_install" = "yes" ]; then
   mkdir -p ${output_dir}
-  make install/strip
+  make install
 fi

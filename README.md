@@ -64,6 +64,21 @@ pip install cpplint
 
 ```
 
+# 使用vscode Extention C++ TestMate
+
+>用Extention:Markplace 安装
+
+>在settings.json 里加入如下字段，参数为可执行文件路径
+
+```json
+"testMate.cpp.test.advancedExecutables": [
+    {
+      "pattern": "${workspaceFolder}/Build/test/common/bin/*"
+    }
+  ]
+```
+
+>点击左侧栏小药水图标(Testing)
 
 
 ####
