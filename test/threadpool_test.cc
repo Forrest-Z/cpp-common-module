@@ -14,7 +14,7 @@ class ThreadPoolTestWork : public common::basic_work {
   int id;
 };
 
-TEST(sample_test, threadpool) {
+TEST(common, threadpool) {
   printf("-----------test start------------\n");
 
   auto tpool = new common::ThreadPool();

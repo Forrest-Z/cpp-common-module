@@ -36,8 +36,8 @@ bool HexToCharArray(const std::string &hex, std::vector<char> *out) {
 }
 
 bool CharArrayToHex(const std::vector<char> &array, std::string *out_hex) {
-  if ((array.size() * 2 < out_hex->max_size()) || (array.size() <= 0)) {
-    debug_log("size error ! \n");
+  if ((array.size() * 2 > out_hex->max_size()) || (array.size() <= 0)) {
+    error_log("size error ! \n");
     return false;
   }
 

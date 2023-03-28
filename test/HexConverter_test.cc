@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(HexConverter_test, hex_to_chararray) {
+TEST(common, hex_to_chararray) {
   printf("-----------test start------------\n");
 
   std::string hex = "0123456789ABCDEF";
@@ -19,7 +19,7 @@ TEST(HexConverter_test, hex_to_chararray) {
   }
 }
 
-TEST(HexConverter_test, chararray_to_hex) {
+TEST(common, chararray_to_hex) {
   printf("-----------test start------------\n");
 
   std::string compare = "0123456789ABCDEF";
@@ -28,6 +28,7 @@ TEST(HexConverter_test, chararray_to_hex) {
   std::string out;
 
   common::CharArrayToHex(chararray, &out);
+  printf("%ld \n", out.size());
 
   ASSERT_EQ(compare.size(), out.size());
 

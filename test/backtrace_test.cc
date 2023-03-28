@@ -24,7 +24,12 @@ TEST(backtrace_test, segv) {
   printf("-----------test start------------\n");
   common::ErrorBacktraceRegister();
 
-  test_sig_segv();
+  // test_sig_segv();
   // test_sig_abort();
   // test_sig_abort_free();
+
+  // 使用 EXPECT_DEATH 不会触发注册的backtarce函数
+  EXPECT_DEATH(test_sig_segv(), "");
+  EXPECT_DEATH(test_sig_abort(), "");
+  EXPECT_DEATH(test_sig_abort_free(), "");
 }
