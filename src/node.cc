@@ -15,7 +15,6 @@ class Master {
   }
 
  private:
- private:
   Master() {}
   ~Master() {}
   // 禁止外部复制构造

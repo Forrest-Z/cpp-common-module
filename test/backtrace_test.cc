@@ -2,6 +2,7 @@
 #include "include/common/backtrace.h"
 
 #include <gtest/gtest.h>
+#include <queue>
 
 void test_sig_segv() {
   int* p = nullptr;
@@ -29,7 +30,12 @@ TEST(backtrace_test, segv) {
   // test_sig_abort_free();
 
   // 使用 EXPECT_DEATH 不会触发注册的backtarce函数
+  printf("test_sig_segv \n");
   EXPECT_DEATH(test_sig_segv(), "");
+
+  printf("test_sig_abort \n");
   EXPECT_DEATH(test_sig_abort(), "");
+
+  printf("test_sig_abort_free \n");
   EXPECT_DEATH(test_sig_abort_free(), "");
 }
