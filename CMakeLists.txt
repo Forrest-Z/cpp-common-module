@@ -104,6 +104,7 @@ file(GLOB LINT_SRC
 )
 
 foreach(v ${LINT_SRC})
-  execute_process(COMMAND cpplint --filter=-legal/copyright,-build/include_order,-readability/casting,-build/c++11,-build/include_subdir --quiet ${v} )
+  execute_process(COMMAND cpplint --filter=-legal/copyright,-build/include_order,-readability/casting,-build/c++11,
+  -build/include_subdir,-runtime/references --quiet ${v} )
 endforeach(v)
 

@@ -67,7 +67,8 @@
     "*.ipp": "cpp",
     "core": "cpp",
     "geometry": "cpp",
-    "*.txx": "cpp"
+    "*.txx": "cpp",
+    "any": "cpp"
   },
   "testMate.cpp.test.advancedExecutables": [
     {

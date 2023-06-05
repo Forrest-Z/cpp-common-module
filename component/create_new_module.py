@@ -20,7 +20,7 @@ namespace common {}  // namespace common\n\
 def creat_cc():
   f = open("./"+module_name+'.cc','w+',1024,'utf-8')
   f.write('\n\
-#include \"/'+module_name+'.h\" \n'
+#include \"'+module_name+'.h\" \n'
 + 'namespace common {}  // namespace common')
   f.close()
   return
