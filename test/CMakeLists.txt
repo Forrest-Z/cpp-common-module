@@ -8,6 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_NAME}/bin)
 #####################################
 file(GLOB_RECURSE ALL_TEST
   "*.cc"
+ "./../component/*_test.cc"
 )
 message(STATUS "ALL_TEST")
 foreach(file ${ALL_TEST})
@@ -25,8 +26,7 @@ find_package(GTest REQUIRED)
 message("GTEST_INCLUDE_DIR=${GTEST_INCLUDE_DIR}")
 message("GTEST_LIBRARIES=${GTEST_LIBRARIES}")
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -g -O0")
-set(CMAKE_CXX_FLAGS "-fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -fprofile-arcs -ftest-coverage")
 add_compile_options(-rdynamic -ggdb)
 
 add_executable(${LIB_TEST_NAME}

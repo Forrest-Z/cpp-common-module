@@ -137,7 +137,7 @@ void Node::Debug() {
   ret += std::string(s, num);
 
   for (auto elem : this->subscribe_list) {
-    num = snprintf(s, sizeof(s), "\t[%s , %x]\n", elem.first.c_str(),
+    num = snprintf(s, sizeof(s), "\t[%s , %p]\n", elem.first.c_str(),
                    elem.second);
     ret += std::string(s, num);
   }

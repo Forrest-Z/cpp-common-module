@@ -33,6 +33,7 @@ include_directories(${3rdparty_log4cpp_lib}/include)
 #####################################
 file(GLOB_RECURSE PACKAGE_INC
   "include/*"	
+  "component/*.h"
 )
 
 message(STATUS "PACKAGE_INC")
@@ -45,6 +46,7 @@ endforeach(file ${PACKAGE_INC})
 #####################################
 file(GLOB_RECURSE PACKAGE_SRC
   "src/*.cc"
+  "component/*.cc"
 )
 
 message(STATUS "PACKAGE_SRC")
@@ -56,8 +58,7 @@ endforeach(file ${PACKAGE_SRC})
 #####################################
 # link and compile
 #####################################
-set(CMAKE_CXX_FLAGS "-std=c++11 -g -O0")
-set(CMAKE_CXX_FLAGS "-fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -fprofile-arcs -ftest-coverage")
 add_compile_options(-rdynamic)
 
 link_libraries("${3rdparty_log4cpp_lib}/liblog4cpp.a")
@@ -103,6 +104,6 @@ file(GLOB LINT_SRC
 )
 
 foreach(v ${LINT_SRC})
-  execute_process(COMMAND cpplint --filter=-legal/copyright,-build/include_order,-readability/casting --quiet ${v} )
+  execute_process(COMMAND cpplint --filter=-legal/copyright,-build/include_order,-readability/casting,-build/c++11,-build/include_subdir --quiet ${v} )
 endforeach(v)
 
