@@ -32,7 +32,7 @@ bool string_utils::DecodeParams(const std::string& input, ParamsType& ret,
 
   ret.clear();
 
-  // 遍历strs,每个字符串通过":"分割成key、val放入字典，格式错误返回失败
+  // 遍历strs,每个字符串通过key_val_delimiter分割成key、val放入字典，格式错误返回失败
   for (auto& str : strs) {
     std::vector<std::string> param_strs;
     SplitString(str, key_val_delimiter, param_strs, true, true);

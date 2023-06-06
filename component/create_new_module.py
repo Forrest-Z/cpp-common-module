@@ -27,7 +27,7 @@ def creat_cc():
 
 ### test
 def creat_test():
-  f = open("./"+module_name+'_test.cc','w+',1024,'utf-8')
+  f = open("./"+module_name+'_test.cpp','w+',1024,'utf-8')
   f.write('\n\
 #include \"'+module_name+'.h\" \n'
 +'#include <gtest/gtest.h> \n')
