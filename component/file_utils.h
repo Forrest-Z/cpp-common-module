@@ -8,7 +8,7 @@ namespace common {
 class file_utils {
  public:
   /**
-   * @brief 读小文件内容，读到buf里面
+   * @brief 读小文件内容，读到buf里面,读取大小限制为uint32
    *
    * @param filename 文件名
    * @param buf 缓存

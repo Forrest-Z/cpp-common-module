@@ -35,7 +35,7 @@ bool file_utils::ReadSmallFile(std::string filename, std::string& buf) {
 bool file_utils::WriteSmallFile(std::string filename, std::string& buf) {
   auto f = std::ofstream(filename.c_str(), std::ios_base::out);
   if (!f) {
-    printf("file not exist . \n");
+    printf("file open fail . \n");
     return false;
   }
 
@@ -50,7 +50,7 @@ bool file_utils::AppendFile(std::string filename, std::string& buf) {
       std::ofstream(filename.c_str(), std::ios_base::out | std::ios_base::app);
 
   if (!f) {
-    printf("file not exist . \n");
+    printf("file open fail . \n");
     return false;
   }
   f.write(buf.data(), buf.size());
