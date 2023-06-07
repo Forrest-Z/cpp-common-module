@@ -7,7 +7,7 @@
 
 TEST(common, component_sema) {
   auto sema = std::make_shared<common::semaphore>(0);
-  const int num = 20;
+  const int num = 10;
 
   auto func = [](int id, std::shared_ptr<common::semaphore> sema) {
     std::this_thread::sleep_for(std::chrono::seconds(id));
@@ -38,14 +38,14 @@ TEST(common, component_sema) {
     }
 
     // 等待所有线程退出
-    auto deadline = 10 * 1000 + common::time_utils::GetTimestamp_us() / 1000;
+    auto deadline = 5 * 1000 + common::time_utils::GetTimestamp_us() / 1000;
 
     std::cout << "deadline : " << deadline << std::endl;
 
     for (size_t i = 0; i < num; i++) {
       auto delta = deadline - common::time_utils::GetTimestamp_us() / 1000;
           std::cout << "delta : " << delta << std::endl;
-      if (!sema->time_wait(std::chrono::microseconds(delta))) break;
+      if (!sema->time_wait(std::chrono::milliseconds(delta))) break;
     }
     for (auto &t : thread_pool) t.detach();
     std::cout << "some thread exit ." << std::endl;

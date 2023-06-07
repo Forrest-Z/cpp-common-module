@@ -23,13 +23,14 @@ class basethread {
   std::string name;
   ThreadPriority priority;
   std::thread thr;
-  std::shared_ptr<semaphore> sema;  // 用于结束时通知外面主线程
+  std::shared_ptr<semaphore> exit_sema;  // 用于结束时通知外面主线程
 
   void setpriority();
   void run();
 
  public:
-  basethread(const std::string& name, const ThreadPriority& priority);
+  basethread(const std::string& name, const ThreadPriority& priority,
+             std::shared_ptr<semaphore> exit_sema);
   virtual ~basethread();
   std::mutex mtx;
   std::string getname() { return name; }

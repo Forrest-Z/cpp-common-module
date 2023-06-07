@@ -1,5 +1,8 @@
 
 #include "string_utils.h"
+
+#include "log_define.h"
+
 namespace common {
 
 void string_utils::SplitString(const std::string& input, char delimiter,
@@ -37,7 +40,7 @@ bool string_utils::DecodeParams(const std::string& input, ParamsType& ret,
     std::vector<std::string> param_strs;
     SplitString(str, key_val_delimiter, param_strs, true, true);
     if (param_strs.size() != 2) {
-      printf("input format wrong . \n");
+      error_log("input format wrong . \n");
       return false;
     }
 

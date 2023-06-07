@@ -1,5 +1,6 @@
 
 #include "file_utils.h"
+#include "log_define.h"
 
 #include <fstream>
 #include <iostream>
@@ -9,7 +10,7 @@ bool file_utils::ReadSmallFile(std::string filename, std::string& buf) {
   auto f = std::ifstream(filename.c_str(), std::ios_base::in);
 
   if (!f) {
-    printf("file not exist . \n");
+    error_log("file not exist . \n");
     return false;
   }
 
@@ -26,7 +27,7 @@ bool file_utils::ReadSmallFile(std::string filename, std::string& buf) {
     return true;
 
   } catch (const std::exception& e) {
-    printf("%s\n", e.what());
+    error_log("%s\n", e.what());
     f.close();
     return false;
   }
@@ -35,7 +36,7 @@ bool file_utils::ReadSmallFile(std::string filename, std::string& buf) {
 bool file_utils::WriteSmallFile(std::string filename, std::string& buf) {
   auto f = std::ofstream(filename.c_str(), std::ios_base::out);
   if (!f) {
-    printf("file open fail . \n");
+    error_log("file open fail . \n");
     return false;
   }
 
@@ -50,7 +51,7 @@ bool file_utils::AppendFile(std::string filename, std::string& buf) {
       std::ofstream(filename.c_str(), std::ios_base::out | std::ios_base::app);
 
   if (!f) {
-    printf("file open fail . \n");
+    error_log("file open fail . \n");
     return false;
   }
   f.write(buf.data(), buf.size());
