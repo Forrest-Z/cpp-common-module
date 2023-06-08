@@ -32,7 +32,9 @@ void BaseThread::SetPriority() {
   if (priority.scheduling_type == SCHED_OTHER) {
     ret = setpriority(PRIO_PROCESS, this_pid, priority.priority);
   } else {
+    // 先修改调度算法
     ret = pthread_setschedparam(this_pid, priority.scheduling_type, &params);
+    ret &= setpriority(PRIO_PROCESS, this_pid, priority.priority);
   }
 
   if (ret == -1) {
