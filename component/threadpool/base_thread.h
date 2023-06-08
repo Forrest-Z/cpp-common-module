@@ -13,12 +13,21 @@ namespace common {
 
 typedef std::function<void()> VoidFunc;
 
-enum class ThreadPriority : uint32_t {
-  Low = 0,
-  Normal = 1,
-  High = 2,
-  VeryHigh = 3,
-  Critical = 4,
+class ThreadPriority {
+ public:
+  int max;
+  int min;
+  int priority;
+  int scheduling_type;
+
+ public:
+  ThreadPriority(int priority, int max = -20, int min = 0,
+                 int scheduling_type = SCHED_OTHER)
+      : priority(priority),
+        max(max),
+        min(min),
+        scheduling_type(scheduling_type) {}
+  ~ThreadPriority() {}
 };
 
 class BaseThread {
@@ -36,7 +45,7 @@ class BaseThread {
   BaseThread(const std::string& name, const ThreadPriority& priority,
              std::shared_ptr<Semaphore> exit_sema);
   virtual ~BaseThread();
-  std::mutex mtx;
+
   std::string GetName() { return name; }
   ThreadPriority GetPriority() { return priority; }
 

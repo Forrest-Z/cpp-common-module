@@ -24,12 +24,12 @@ TEST(common, component_normal_thread) {
   };
 
   auto t = std::make_shared<common::NormalThread>(
-      "test_thread", common::ThreadPriority::Normal, exit_sema, loop_func,
+      "test_thread", common::ThreadPriority(-5), exit_sema, loop_func,
       break_func);
 
   t->Start();
 
-  sleep(5);
+  sleep(120);
 
   t->NotifyStop();
 
