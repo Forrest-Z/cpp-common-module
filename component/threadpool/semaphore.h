@@ -7,18 +7,18 @@
 
 namespace common {
 
-class semaphore {
+class Semaphore {
  private:
   std::mutex mtx;
   std::condition_variable cond;
   int value;
 
  public:
-  semaphore(int value);
-  ~semaphore();
+  Semaphore(int value);
+  ~Semaphore();
 
-  void wait();
-  void signal();
+  void Wait();
+  void Signal();
 
   /**
    * @brief 等待信号，并加上超时限制,单位ms
@@ -27,7 +27,7 @@ class semaphore {
    * @return true 正常等待退出
    * @return false 超时退出
    */
-  bool time_wait(std::chrono::milliseconds timeout);
+  bool TimeWait(std::chrono::milliseconds timeout);
 };
 
 }  // namespace common

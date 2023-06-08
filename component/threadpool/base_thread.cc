@@ -1,5 +1,5 @@
 
-#include "basethread.h"
+#include "base_thread.h"
 
 #include <math.h>
 #include <pthread.h>
@@ -10,11 +10,11 @@
 
 namespace common {
 
-basethread::basethread(const std::string& name, const ThreadPriority& priority,
-                       std::shared_ptr<semaphore> exit_sema)
+BaseThread::BaseThread(const std::string& name, const ThreadPriority& priority,
+                       std::shared_ptr<Semaphore> exit_sema)
     : name(name), priority(priority), exit_sema(exit_sema) {}
 
-void basethread::setpriority() {
+void BaseThread::SetPriority() {
   pthread_t this_thread = this->thr.native_handle();
 
   int scheduling_type = SCHED_OTHER;
@@ -34,21 +34,27 @@ void basethread::setpriority() {
 
   pthread_setschedparam(this_thread, scheduling_type, &params);
 
+  int old_sched_priority = params.sched_priority;
   pthread_getschedparam(this_thread, &scheduling_type, &params);
-  warning_log("thread prio = %d \n", params.sched_priority);
+
+  if (old_sched_priority == params.sched_priority) {
+    // 设置失败，或优先级不变
+    warning_log("%s thread prio = %d \n", this->name.c_str(),
+                params.sched_priority);
+  }
 }
 
-void basethread::start() {
-  this->thr = std::thread(std::bind(&basethread::run, this));
-  this->setpriority();
+void BaseThread::Start() {
+  this->thr = std::thread(std::bind(&BaseThread::Run, this));
+  this->SetPriority();
 }
 
-void basethread::run() {
-  this->exec();
-  warning_log("exec end . \n");
-  this->exit_sema->signal();
-  warning_log("exit semaphore signal . \n");
+void BaseThread::Run() {
+  this->Exec();
+  warning_log("%s exec end . \n", this->name.c_str());
+  this->exit_sema->Signal();
+  warning_log("%s exit_sema signal . \n", this->name.c_str());
 }
 
-basethread::~basethread() { this->thr.detach(); }
+BaseThread::~BaseThread() { this->thr.detach(); }
 }  // namespace common

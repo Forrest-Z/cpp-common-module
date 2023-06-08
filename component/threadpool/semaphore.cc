@@ -3,23 +3,23 @@
 #include "../log_define.h"
 namespace common {
 
-semaphore::semaphore(int value) : value(value) {}
-semaphore::~semaphore() {}
+Semaphore::Semaphore(int value) : value(value) {}
+Semaphore::~Semaphore() {}
 
-void semaphore::wait() {
+void Semaphore::Wait() {
   std::unique_lock<std::mutex> lck(this->mtx);
   this->value--;
   if (this->value < 0) this->cond.wait(lck);
 }
 
-void semaphore::signal() {
+void Semaphore::Signal() {
   std::unique_lock<std::mutex> lck(this->mtx);
   this->value++;
 
   if (this->value <= 0) this->cond.notify_one();
 }
 
-bool semaphore::time_wait(std::chrono::milliseconds timeout) {
+bool Semaphore::TimeWait(std::chrono::milliseconds timeout) {
   std::unique_lock<std::mutex> lck(this->mtx);
   this->value--;
   if (this->value < 0) {
