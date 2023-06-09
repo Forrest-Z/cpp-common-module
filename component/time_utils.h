@@ -5,8 +5,16 @@
 
 namespace common {
 
+/**
+ * @brief 时间戳类型定义
+ *
+ */
 typedef uint64_t TimestampType;
 
+/**
+ * @brief 时间处理类
+ *
+ */
 class time_utils {
  public:
   /**

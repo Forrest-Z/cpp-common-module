@@ -5,6 +5,10 @@
 
 namespace common {
 
+/**
+ * @brief 文件处理类
+ *
+ */
 class file_utils {
  public:
   /**

@@ -21,8 +21,7 @@ std::string time_utils::GetFormatDateTime(bool keep_ms) {
   char buf[64];
 
   auto now = std::chrono::system_clock::now();
-  auto duration_since_epoch =
-      std::chrono::system_clock::now().time_since_epoch();
+  auto duration_since_epoch = now.time_since_epoch();
   int64_t microseconds_since_epoch =
       std::chrono::duration_cast<std::chrono::microseconds>(
           duration_since_epoch)

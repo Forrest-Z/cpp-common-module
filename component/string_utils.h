@@ -6,6 +6,10 @@
 #include <vector>
 
 namespace common {
+/**
+ * @brief 字符串处理类
+ *
+ */
 class string_utils {
  public:
   /**
