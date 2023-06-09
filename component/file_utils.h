@@ -15,7 +15,7 @@ class file_utils {
    * @return true 读成功
    * @return false 读失败
    */
-  static bool ReadSmallFile(std::string filename, std::string& buf);
+  static bool ReadSmallFile(const std::string& filename, std::string& buf);
 
   /**
    * @brief 写小文件内容，将buf里面内容写到文件里,如果文件存在，会清空原先内容
@@ -25,7 +25,7 @@ class file_utils {
    * @return true 写成功
    * @return false 写失败
    */
-  static bool WriteSmallFile(std::string filename, std::string& buf);
+  static bool WriteSmallFile(const std::string& filename, std::string& buf);
 
   /**
  * @brief 在文件中追加内容，不会清空原先内容
@@ -35,7 +35,7 @@ class file_utils {
  * @return true 写成功
  * @return false 写失败
  */
-  static bool AppendFile(std::string filename, std::string& buf);
+  static bool AppendFile(const std::string& filename, std::string& buf);
 };
 
 }  // namespace common

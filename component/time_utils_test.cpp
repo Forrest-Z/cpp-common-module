@@ -7,6 +7,8 @@ TEST(common, component_timeutils) {
 
   std::cout << "format time :" << common::time_utils::GetFormatDateTime()
             << std::endl;
+  std::cout << "format time ms :" << common::time_utils::GetFormatDateTime(true)
+            << std::endl;
 
   std::cout << "timestamp :" << common::time_utils::GetTimestamp_us()
             << std::endl;

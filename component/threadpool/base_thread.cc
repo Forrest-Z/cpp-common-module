@@ -1,8 +1,8 @@
 
 #include "base_thread.h"
+#include "log_define.h"
 
 #include <math.h>
-#include <pthread.h>
 #include <algorithm>
 #include <condition_variable>
 
@@ -10,8 +10,6 @@
 #include <sys/resource.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include "../log_define.h"
 
 namespace common {
 

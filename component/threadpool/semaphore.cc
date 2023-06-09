@@ -1,6 +1,6 @@
 
 #include "semaphore.h"
-#include "../log_define.h"
+#include "log_define.h"
 namespace common {
 
 Semaphore::Semaphore(int value) : value(value) {}

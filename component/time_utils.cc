@@ -1,29 +1,48 @@
 
 #include "time_utils.h"
 
+#include <chrono>
 #include <ctime>
-
-#include <stdlib.h>
-#include <sys/time.h>
-#include <unistd.h>
 
 namespace common {
 
 TimestampType time_utils::GetTimestamp_us() {
-  struct timeval stamp;
-  gettimeofday(&stamp, NULL);
-  TimestampType ret = stamp.tv_sec * 1000000 + stamp.tv_usec;
-  return ret;
+  auto now = std::chrono::steady_clock::now();
+  auto duration_since_epoch = now.time_since_epoch();
+
+  int64_t microseconds_since_epoch =
+      std::chrono::duration_cast<std::chrono::microseconds>(
+          duration_since_epoch)
+          .count();
+  return microseconds_since_epoch;
 }
 
-std::string time_utils::GetFormatDateTime() {
+std::string time_utils::GetFormatDateTime(bool keep_ms) {
   char buf[64];
 
-  auto t = std::time(nullptr);
-  auto date = std::localtime(&t);
-  snprintf(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d",
-           date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, date->tm_hour,
-           date->tm_min, date->tm_sec);
-  return buf;
+  auto now = std::chrono::system_clock::now();
+  auto duration_since_epoch =
+      std::chrono::system_clock::now().time_since_epoch();
+  int64_t microseconds_since_epoch =
+      std::chrono::duration_cast<std::chrono::microseconds>(
+          duration_since_epoch)
+          .count();
+
+  time_t time_tm = std::chrono::system_clock::to_time_t(now);
+  tm* date = std::localtime(&time_tm);
+
+  int len = 0;
+  if (keep_ms) {
+    len = snprintf(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d,%03ld",
+                   date->tm_year + 1900, date->tm_mon + 1, date->tm_mday,
+                   date->tm_hour, date->tm_min, date->tm_sec,
+                   microseconds_since_epoch % 1000);
+  } else {
+    len = snprintf(buf, sizeof(buf), "%04d-%02d-%02d %02d:%02d:%02d",
+                   date->tm_year + 1900, date->tm_mon + 1, date->tm_mday,
+                   date->tm_hour, date->tm_min, date->tm_sec);
+  }
+
+  return std::string(buf, len);
 }
 }  // namespace common

@@ -1,9 +1,7 @@
 
 #pragma once
 
-#include <iostream>
 #include <map>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -21,8 +19,8 @@ class string_utils {
    * @param keep_end_empty_str
    * 是否保留结尾出现的空字符串，input结尾为分割符的情况
    */
-  static void SplitString(const std::string& input, char delimiter,
-                          std::vector<std::string>& ret,
+  static void SplitString(const std::string& input,
+                          std::vector<std::string>& ret, char delimiter = ':',
                           bool keep_middle_empty_str = false,
                           bool keep_end_empty_str = false);
 
@@ -45,7 +43,7 @@ class string_utils {
   static bool DecodeParams(const std::string& input, ParamsType& ret,
                            char key_val_delimiter = ':',
                            char field_delimiter = ';');
-                           
+
   /**
  * @brief 编码，格式如： key1:val1;key2:val2;
  *

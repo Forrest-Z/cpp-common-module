@@ -1,6 +1,6 @@
 
 #include "normal_thread.h"
-#include "../log_define.h"
+#include "log_define.h"
 
 namespace common {
 

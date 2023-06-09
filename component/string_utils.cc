@@ -1,18 +1,23 @@
 
 #include "string_utils.h"
 
-#include "log_define.h"
+#include <sstream>
 
 namespace common {
 
-void string_utils::SplitString(const std::string& input, char delimiter,
-                               std::vector<std::string>& ret,
+void string_utils::SplitString(const std::string& input,
+                               std::vector<std::string>& ret, char delimiter,
                                bool keep_middle_empty_str,
                                bool keep_end_empty_str) {
   std::stringstream ss(input);
   std::string item;
 
   ret.clear();
+  if (input.size() == 0) {
+    // 字符串为空直接返回
+    return;
+  }
+
   while (std::getline(ss, item, delimiter)) {
     // 不保留空字符串
     if ((!keep_middle_empty_str) && item.empty()) {
@@ -31,16 +36,15 @@ void string_utils::SplitString(const std::string& input, char delimiter,
 bool string_utils::DecodeParams(const std::string& input, ParamsType& ret,
                                 char key_val_delimiter, char field_delimiter) {
   std::vector<std::string> strs;
-  SplitString(input, field_delimiter, strs);
+  SplitString(input, strs, field_delimiter);
 
   ret.clear();
 
   // 遍历strs,每个字符串通过key_val_delimiter分割成key、val放入字典，格式错误返回失败
   for (auto& str : strs) {
     std::vector<std::string> param_strs;
-    SplitString(str, key_val_delimiter, param_strs, true, true);
+    SplitString(str, param_strs, key_val_delimiter, true, true);
     if (param_strs.size() != 2) {
-      error_log("input format wrong . \n");
       return false;
     }
 

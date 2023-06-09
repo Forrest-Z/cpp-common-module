@@ -1,16 +1,17 @@
 
 #include "file_utils.h"
-#include "log_define.h"
 
 #include <fstream>
 #include <iostream>
+
 namespace common {
 
-bool file_utils::ReadSmallFile(std::string filename, std::string& buf) {
+bool file_utils::ReadSmallFile(const std::string& filename, std::string& buf) {
   auto f = std::ifstream(filename.c_str(), std::ios_base::in);
+  buf.clear();
 
+  // 文件打开失败
   if (!f) {
-    error_log("file not exist . \n");
     return false;
   }
 
@@ -20,23 +21,27 @@ bool file_utils::ReadSmallFile(std::string filename, std::string& buf) {
     uint32_t length = f.tellg();
     f.seekg(0, f.beg);
 
+    char context[length];
+    f.read(context, length);
+
     buf.resize(length);
-    f.read((char*)buf.data(), length);
+    buf.append(context, length);
 
     f.close();
     return true;
 
   } catch (const std::exception& e) {
-    error_log("%s\n", e.what());
     f.close();
     return false;
   }
 }
 
-bool file_utils::WriteSmallFile(std::string filename, std::string& buf) {
+bool file_utils::WriteSmallFile(const std::string& filename, std::string& buf) {
   auto f = std::ofstream(filename.c_str(), std::ios_base::out);
+  buf.clear();
+
+  // 文件打开失败
   if (!f) {
-    error_log("file open fail . \n");
     return false;
   }
 
@@ -46,12 +51,13 @@ bool file_utils::WriteSmallFile(std::string filename, std::string& buf) {
   return true;
 }
 
-bool file_utils::AppendFile(std::string filename, std::string& buf) {
+bool file_utils::AppendFile(const std::string& filename, std::string& buf) {
   auto f =
       std::ofstream(filename.c_str(), std::ios_base::out | std::ios_base::app);
+  buf.clear();
 
+  // 文件打开失败
   if (!f) {
-    error_log("file open fail . \n");
     return false;
   }
   f.write(buf.data(), buf.size());
