@@ -17,9 +17,8 @@ void BaseThread::Run() {
   this->priority.SetPriority();
 
   this->Exec();
-  warning_log("%s exec end . \n", this->name.c_str());
-
-  warning_log("%s exit_sema signal . \n", this->name.c_str());
+  warning_log("%s exec end , and exit_sema signal . \n", this->name.c_str());
+  
   this->exit_sema->Signal();
 }
 
