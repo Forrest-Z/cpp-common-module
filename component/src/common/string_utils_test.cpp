@@ -1,5 +1,5 @@
 
-#include "string_utils.h"
+#include "common/string_utils.h"
 #include <gtest/gtest.h>
 
 TEST(common, component_string) {

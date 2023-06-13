@@ -1,9 +1,9 @@
 
-#include "semaphore.h"
+#include "common/semaphore.h"
 #include <gtest/gtest.h>
 #include <thread>
 
-#include "./../time_utils.h"
+#include "common/time_utils.h"
 
 TEST(common, component_sema) {
   auto sema = std::make_shared<gomros::common::Semaphore>(0);
@@ -38,12 +38,14 @@ TEST(common, component_sema) {
     }
 
     // 等待所有线程退出
-    auto deadline = 5 * 1000 + gomros::common::TimeUtils::GetTimestamp_us() / 1000;
+    auto deadline =
+        5 * 1000 + gomros::common::TimeUtils::GetTimestamp_us() / 1000;
 
     std::cout << "deadline : " << deadline << std::endl;
 
     for (size_t i = 0; i < num; i++) {
-      auto delta = deadline - gomros::common::TimeUtils::GetTimestamp_us() / 1000;
+      auto delta =
+          deadline - gomros::common::TimeUtils::GetTimestamp_us() / 1000;
       std::cout << "delta : " << delta << std::endl;
       if (!sema->TimeWait(std::chrono::milliseconds(delta))) break;
     }

@@ -1,5 +1,5 @@
 
-#include "file_utils.h"
+#include "common/file_utils.h"
 #include <gtest/gtest.h>
 
 TEST(common, component_file) {

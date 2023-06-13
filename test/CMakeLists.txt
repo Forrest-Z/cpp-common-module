@@ -8,7 +8,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_NAME}/bin)
 #####################################
 file(GLOB_RECURSE ALL_TEST
   "*.cc"
- "./../component/*_test.cpp"
 )
 message(STATUS "ALL_TEST")
 foreach(file ${ALL_TEST})

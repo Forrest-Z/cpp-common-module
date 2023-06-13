@@ -1,5 +1,5 @@
 
-#include "normal_thread.h"
+#include "thread_pool/normal_thread.h"
 #include "log_define.h"
 
 namespace gomros {

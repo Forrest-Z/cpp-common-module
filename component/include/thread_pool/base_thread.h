@@ -7,7 +7,7 @@
 #include <string>
 #include <thread>
 
-#include "semaphore.h"
+#include "common/semaphore.h"
 
 namespace gomros {
 namespace common {

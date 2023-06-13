@@ -73,7 +73,7 @@
   },
   "testMate.cpp.test.advancedExecutables": [
     {
-      "pattern": "${workspaceFolder}/Build/test/common/bin/*"
+      "pattern": "${workspaceFolder}/**"
     }
   ]
 }

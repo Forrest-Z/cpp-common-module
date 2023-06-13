@@ -1,5 +1,5 @@
 
-#include "normal_thread.h"
+#include "thread_pool/normal_thread.h"
 #include <gtest/gtest.h>
 
 static bool running_flag = true;

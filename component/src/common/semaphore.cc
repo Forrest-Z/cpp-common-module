@@ -1,6 +1,5 @@
 
-#include "semaphore.h"
-#include "log_define.h"
+#include "common/semaphore.h"
 namespace gomros {
 namespace common {
 
@@ -25,11 +24,9 @@ bool Semaphore::TimeWait(std::chrono::milliseconds timeout) {
   this->value--;
   if (this->value < 0) {
     std::cv_status ret = this->cond.wait_for(lck, timeout);
-    // 超时
-    warning_log("ret = %d ms = %d \n", (int)ret, (int)timeout.count());
+
     if (ret == std::cv_status::timeout) {
       this->value++;
-      error_log(" timeout exit . \n ");
       return false;
     }
   }

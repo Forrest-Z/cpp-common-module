@@ -33,7 +33,6 @@ include_directories(${3rdparty_log4cpp_lib}/include)
 #####################################
 file(GLOB_RECURSE PACKAGE_INC
   "include/*"	
-  "component/*.h"
 )
 
 message(STATUS "PACKAGE_INC")
@@ -46,7 +45,6 @@ endforeach(file ${PACKAGE_INC})
 #####################################
 file(GLOB_RECURSE PACKAGE_SRC
   "src/*.cc"
-  "component/*.cc"
 )
 
 message(STATUS "PACKAGE_SRC")
@@ -108,3 +106,4 @@ foreach(v ${LINT_SRC})
   -build/include_subdir,-runtime/references --quiet ${v} )
 endforeach(v)
 
+add_subdirectory(component)
