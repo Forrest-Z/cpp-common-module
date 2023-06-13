@@ -8,10 +8,10 @@ TEST(common, component_file) {
   std::string filename = "file_test.txt";
   std::string data = "123456abcde&#";
 
-  common::file_utils::WriteSmallFile(filename, data);
+  gomros::common::FileUtils::WriteSmallFile(filename, data);
 
   std::string read_buf;
-  common::file_utils::ReadSmallFile(filename, read_buf);
+  gomros::common::FileUtils::ReadSmallFile(filename, read_buf);
 
   std::cout << data << std::endl;
   std::cout << read_buf << std::endl;
@@ -25,8 +25,8 @@ TEST(common, component_file) {
   // app
   std::cout << "append file : " << std::endl;
 
-  common::file_utils::AppendFile(filename, data);
-  common::file_utils::ReadSmallFile(filename, read_buf);
+  gomros::common::FileUtils::AppendFile(filename, data);
+  gomros::common::FileUtils::ReadSmallFile(filename, read_buf);
 
   std::cout << data << std::endl;
   std::cout << read_buf << std::endl;

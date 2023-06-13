@@ -3,9 +3,10 @@
 
 #include <sstream>
 
+namespace gomros {
 namespace common {
 
-void string_utils::SplitString(const std::string& input,
+void StringUtils::SplitString(const std::string& input,
                                std::vector<std::string>& ret, char delimiter,
                                bool keep_middle_empty_str,
                                bool keep_end_empty_str) {
@@ -33,7 +34,7 @@ void string_utils::SplitString(const std::string& input,
   }
 }
 
-bool string_utils::DecodeParams(const std::string& input, ParamsType& ret,
+bool StringUtils::DecodeParams(const std::string& input, ParamsType& ret,
                                 char key_val_delimiter, char field_delimiter) {
   std::vector<std::string> strs;
   SplitString(input, strs, field_delimiter);
@@ -53,7 +54,7 @@ bool string_utils::DecodeParams(const std::string& input, ParamsType& ret,
 
   return true;
 }
-bool string_utils::EncodeParams(const ParamsType& params, std::string& ret,
+bool StringUtils::EncodeParams(const ParamsType& params, std::string& ret,
                                 char key_val_delimiter, char field_delimiter) {
   ret.clear();
 
@@ -66,3 +67,4 @@ bool string_utils::EncodeParams(const ParamsType& params, std::string& ret,
 }
 
 }  // namespace common
+}  // namespace gomros

@@ -4,9 +4,10 @@
 #include <fstream>
 #include <iostream>
 
+namespace gomros {
 namespace common {
 
-bool file_utils::ReadSmallFile(const std::string& filename, std::string& buf) {
+bool FileUtils::ReadSmallFile(const std::string& filename, std::string& buf) {
   auto f = std::ifstream(filename.c_str(), std::ios_base::in);
   buf.clear();
 
@@ -36,7 +37,7 @@ bool file_utils::ReadSmallFile(const std::string& filename, std::string& buf) {
   }
 }
 
-bool file_utils::WriteSmallFile(const std::string& filename, std::string& buf) {
+bool FileUtils::WriteSmallFile(const std::string& filename, std::string& buf) {
   auto f = std::ofstream(filename.c_str(), std::ios_base::out);
   buf.clear();
 
@@ -51,7 +52,7 @@ bool file_utils::WriteSmallFile(const std::string& filename, std::string& buf) {
   return true;
 }
 
-bool file_utils::AppendFile(const std::string& filename, std::string& buf) {
+bool FileUtils::AppendFile(const std::string& filename, std::string& buf) {
   auto f =
       std::ofstream(filename.c_str(), std::ios_base::out | std::ios_base::app);
   buf.clear();
@@ -67,3 +68,5 @@ bool file_utils::AppendFile(const std::string& filename, std::string& buf) {
 }
 
 }  // namespace common
+}  // namespace gomros
+

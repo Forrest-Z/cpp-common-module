@@ -5,9 +5,9 @@
 static bool running_flag = true;
 
 TEST(common, component_normal_thread) {
-  auto exit_sema = std::make_shared<common::Semaphore>(0);
+  auto exit_sema = std::make_shared<gomros::common::Semaphore>(0);
 
-  common::VoidFunc loop_func = []() {
+  gomros::common::VoidFunc loop_func = []() {
     while (running_flag) {
       sleep(1);
       printf("loop_func running . \n");
@@ -17,14 +17,14 @@ TEST(common, component_normal_thread) {
 
   };
 
-  common::VoidFunc break_func = []() {
+  gomros::common::VoidFunc break_func = []() {
     running_flag = false;
     printf("break_func exit . \n");
 
   };
 
-  auto t = std::make_shared<common::NormalThread>(
-      "test_thread", common::ThreadPriority(-5), exit_sema, loop_func,
+  auto t = std::make_shared<gomros::common::NormalThread>(
+      "test_thread", gomros::common::ThreadPriority(-5), exit_sema, loop_func,
       break_func);
 
   t->Start();

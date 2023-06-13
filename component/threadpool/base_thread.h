@@ -9,6 +9,7 @@
 
 #include "semaphore.h"
 
+namespace gomros {
 namespace common {
 
 typedef std::function<void()> VoidFunc;
@@ -54,3 +55,5 @@ class BaseThread {
 };
 
 }  // namespace common
+}  // namespace gomros
+

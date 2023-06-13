@@ -2,6 +2,7 @@
 #include "base_thread.h"
 
 #pragma once
+namespace gomros {
 namespace common {
 
 class NormalThread : public BaseThread {
@@ -21,3 +22,5 @@ class NormalThread : public BaseThread {
 };
 
 }  // namespace common
+}  // namespace gomros
+

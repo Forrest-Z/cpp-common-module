@@ -10,7 +10,7 @@ TEST(common, component_string) {
   std::vector<std::string> strs;
 
   {
-    common::string_utils::SplitString(in, strs, ',');
+    gomros::common::StringUtils::SplitString(in, strs, ',');
 
     for (int i = 0; i < strs.size(); i++) {
       std::cout << i << " [" << strs[i] << "]"
@@ -21,7 +21,7 @@ TEST(common, component_string) {
 
   {
     std::cout << "keep middle empty str" << std::endl;
-    common::string_utils::SplitString(in, strs, ',', true);
+    gomros::common::StringUtils::SplitString(in, strs, ',', true);
 
     for (int i = 0; i < strs.size(); i++) {
       std::cout << i << " [" << strs[i] << "]"
@@ -32,7 +32,7 @@ TEST(common, component_string) {
 
   {
     std::cout << "keep mid & end empty str" << std::endl;
-    common::string_utils::SplitString(in, strs, ',', true, true);
+    gomros::common::StringUtils::SplitString(in, strs, ',', true, true);
 
     for (int i = 0; i < strs.size(); i++) {
       std::cout << i << " [" << strs[i] << "]"
@@ -43,18 +43,18 @@ TEST(common, component_string) {
 }
 
 TEST(common, component_string_params) {
-  common::string_utils::ParamsType params;
+  gomros::common::StringUtils::ParamsType params;
 
   params["name"] = "abc";
   params["age"] = "18";
   params["height"] = "180.123";
 
   std::string ret;
-  common::string_utils::EncodeParams(params, ret, '#');
+  gomros::common::StringUtils::EncodeParams(params, ret, '#');
   std::cout << "encode data : " << ret << std::endl;
 
   params.clear();
-  EXPECT_TRUE(common::string_utils::DecodeParams(ret, params, '#'));
+  EXPECT_TRUE(gomros::common::StringUtils::DecodeParams(ret, params, '#'));
 
   ASSERT_EQ(params["name"], "abc");
   ASSERT_EQ(params["age"], "18");

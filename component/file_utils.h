@@ -1,15 +1,25 @@
-
+/**
+ * @file FileUtils.h
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2023-06-13
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #pragma once
 
 #include <string>
 
+namespace gomros {
 namespace common {
 
 /**
  * @brief 文件处理类
  *
  */
-class file_utils {
+class FileUtils {
  public:
   /**
    * @brief 读小文件内容，读到buf里面,读取大小限制为uint32
@@ -43,3 +53,5 @@ class file_utils {
 };
 
 }  // namespace common
+}  // namespace gomros
+

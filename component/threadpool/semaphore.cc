@@ -1,6 +1,7 @@
 
 #include "semaphore.h"
 #include "log_define.h"
+namespace gomros {
 namespace common {
 
 Semaphore::Semaphore(int value) : value(value) {}
@@ -37,3 +38,4 @@ bool Semaphore::TimeWait(std::chrono::milliseconds timeout) {
 }
 
 }  // namespace common
+}  // namespace gomros

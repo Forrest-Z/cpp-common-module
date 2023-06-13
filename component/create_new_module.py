@@ -11,7 +11,12 @@ def creat_head():
   f = open("./"+module_name+'.h','w+',1024,'utf-8')
   f.write(' \n\
 #pragma once \n\
-namespace common {}  // namespace common\n\
+          \n\
+namespace gomros { \n\
+namespace common { \n\
+  \n\
+}  // namespace common\n\
+}  // namespace gomros\n\
 ')
   f.close()
   return
@@ -21,7 +26,13 @@ def creat_cc():
   f = open("./"+module_name+'.cc','w+',1024,'utf-8')
   f.write('\n\
 #include \"'+module_name+'.h\" \n'
-+ 'namespace common {}  // namespace common')
++ '\n\
+namespace gomros { \n\
+namespace common { \n\
+  \n\
+}  // namespace common\n\
+}  // namespace gomros\n\
+')
   f.close()
   return
 

@@ -3,6 +3,7 @@
 
 #include <string>
 
+namespace gomros {
 namespace common {
 
 /**
@@ -15,7 +16,7 @@ typedef uint64_t TimestampType;
  * @brief 时间处理类
  *
  */
-class time_utils {
+class TimeUtils {
  public:
   /**
    * @brief 获取当前系统启动时间戳，即开机运行到现在的经过的微妙
@@ -36,3 +37,4 @@ class time_utils {
 };
 
 }  // namespace common
+}  // namespace gomros

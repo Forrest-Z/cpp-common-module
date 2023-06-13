@@ -2,6 +2,7 @@
 #include "normal_thread.h"
 #include "log_define.h"
 
+namespace gomros {
 namespace common {
 
 NormalThread::NormalThread(const std::string& name,
@@ -23,3 +24,4 @@ void NormalThread::Exec() {
   loop_func();
 }
 }  // namespace common
+}  // namespace gomros

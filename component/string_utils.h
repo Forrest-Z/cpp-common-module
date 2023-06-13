@@ -5,12 +5,13 @@
 #include <string>
 #include <vector>
 
+namespace gomros {
 namespace common {
 /**
  * @brief 字符串处理类
  *
  */
-class string_utils {
+class StringUtils {
  public:
   /**
    * @brief 根据分割符分割字符串，返回一个string的vector
@@ -64,3 +65,4 @@ class string_utils {
 };
 
 }  // namespace common
+}  // namespace gomros

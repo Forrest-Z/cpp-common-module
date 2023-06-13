@@ -5,11 +5,11 @@
 TEST(common, component_timeutils) {
   printf("-----------test start------------\n");
 
-  std::cout << "format time :" << common::time_utils::GetFormatDateTime()
+  std::cout << "format time :" << gomros::common::TimeUtils::GetFormatDateTime()
             << std::endl;
-  std::cout << "format time ms :" << common::time_utils::GetFormatDateTime(true)
+  std::cout << "format time ms :" << gomros::common::TimeUtils::GetFormatDateTime(true)
             << std::endl;
 
-  std::cout << "timestamp :" << common::time_utils::GetTimestamp_us()
+  std::cout << "timestamp :" << gomros::common::TimeUtils::GetTimestamp_us()
             << std::endl;
 }

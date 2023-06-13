@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+namespace gomros {
 namespace common {
 
 BaseThread::BaseThread(const std::string& name, const ThreadPriority& priority,
@@ -49,9 +50,11 @@ void BaseThread::Run() {
 
   this->Exec();
   warning_log("%s exec end . \n", this->name.c_str());
-  this->exit_sema->Signal();
+
   warning_log("%s exit_sema signal . \n", this->name.c_str());
+  this->exit_sema->Signal();
 }
 
 BaseThread::~BaseThread() { this->thr.detach(); }
 }  // namespace common
+}  // namespace gomros

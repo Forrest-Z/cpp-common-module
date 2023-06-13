@@ -4,9 +4,10 @@
 #include <chrono>
 #include <ctime>
 
+namespace gomros {
 namespace common {
 
-TimestampType time_utils::GetTimestamp_us() {
+TimestampType TimeUtils::GetTimestamp_us() {
   auto now = std::chrono::steady_clock::now();
   auto duration_since_epoch = now.time_since_epoch();
 
@@ -17,7 +18,7 @@ TimestampType time_utils::GetTimestamp_us() {
   return microseconds_since_epoch;
 }
 
-std::string time_utils::GetFormatDateTime(bool keep_ms) {
+std::string TimeUtils::GetFormatDateTime(bool keep_ms) {
   char buf[64];
 
   auto now = std::chrono::system_clock::now();
@@ -45,3 +46,4 @@ std::string time_utils::GetFormatDateTime(bool keep_ms) {
   return std::string(buf, len);
 }
 }  // namespace common
+}  // namespace gomros
