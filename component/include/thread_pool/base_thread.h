@@ -8,28 +8,12 @@
 #include <thread>
 
 #include "common/semaphore.h"
+#include "thread_pool/thread_priority.h"
 
 namespace gomros {
 namespace common {
 
 typedef std::function<void()> VoidFunc;
-
-class ThreadPriority {
- public:
-  int max;
-  int min;
-  int priority;
-  int scheduling_type;
-
- public:
-  ThreadPriority(int priority, int max = -20, int min = 0,
-                 int scheduling_type = SCHED_OTHER)
-      : priority(priority),
-        max(max),
-        min(min),
-        scheduling_type(scheduling_type) {}
-  ~ThreadPriority() {}
-};
 
 class BaseThread {
  private:
@@ -38,7 +22,6 @@ class BaseThread {
   std::thread thr;
   std::shared_ptr<Semaphore> exit_sema;  // 用于结束时通知外面主线程
 
-  void SetPriority();
   void Run();
   virtual void Exec() = 0;
 
@@ -48,7 +31,6 @@ class BaseThread {
   virtual ~BaseThread();
 
   std::string GetName() { return name; }
-  ThreadPriority GetPriority() { return priority; }
 
   void Start();
   virtual void NotifyStop() = 0;
@@ -56,4 +38,3 @@ class BaseThread {
 
 }  // namespace common
 }  // namespace gomros
-

@@ -29,7 +29,7 @@ TEST(common, component_normal_thread) {
 
   t->Start();
 
-  sleep(120);
+  sleep(20);
 
   t->NotifyStop();
 

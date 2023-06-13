@@ -47,7 +47,7 @@ TEST(common, component_sema) {
       auto delta =
           deadline - gomros::common::TimeUtils::GetTimestamp_us() / 1000;
       std::cout << "delta : " << delta << std::endl;
-      if (!sema->TimeWait(std::chrono::milliseconds(delta))) break;
+      if (!sema->TimeWait(delta)) break;
     }
     for (auto &t : thread_pool) t.detach();
     std::cout << "some thread exit ." << std::endl;
