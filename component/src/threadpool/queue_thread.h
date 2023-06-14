@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "thread_pool/base_thread.h"
+#include "base_thread.h"
 
 namespace gomros {
 namespace common {

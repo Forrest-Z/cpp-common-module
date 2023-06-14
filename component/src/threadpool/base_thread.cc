@@ -1,6 +1,5 @@
 
-#include "thread_pool/base_thread.h"
-#include "log_define.h"
+#include "base_thread.h"
 
 namespace gomros {
 namespace common {
@@ -17,7 +16,7 @@ void BaseThread::Run() {
   this->priority.SetPriority();
 
   this->Exec();
-  warning_log("%s exec end , and exit_sema signal . \n", this->name.c_str());
+  LOG_WARNING("%s exec end , and exit_sema signal . \n", this->name.c_str());
   
   this->exit_sema->Signal();
 }

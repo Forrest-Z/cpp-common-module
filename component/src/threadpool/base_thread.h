@@ -8,7 +8,8 @@
 #include <thread>
 
 #include "common/semaphore.h"
-#include "thread_pool/thread_priority.h"
+#include "log/log.h"
+#include "thread_priority.h"
 
 namespace gomros {
 namespace common {

@@ -1,6 +1,6 @@
 
 
-#include "thread_pool/thread_priority.h"
+#include "thread_priority.h"
 
 #include <math.h>
 #include <algorithm>

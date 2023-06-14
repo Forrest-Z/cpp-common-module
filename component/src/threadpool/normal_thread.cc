@@ -1,6 +1,5 @@
 
-#include "thread_pool/normal_thread.h"
-#include "log_define.h"
+#include "normal_thread.h"
 
 namespace gomros {
 namespace common {
@@ -16,11 +15,11 @@ NormalThread::NormalThread(const std::string& name,
 NormalThread::~NormalThread() {}
 
 void NormalThread::NotifyStop() {
-  info_log("%s exect break_func . \n", this->GetName().c_str());
+  LOG_INFO("%s exect break_func . \n", this->GetName().c_str());
   break_func();
 }
 void NormalThread::Exec() {
-  info_log("%s exec loop_func . \n", this->GetName().c_str());
+  LOG_INFO("%s exec loop_func . \n", this->GetName().c_str());
   loop_func();
 }
 }  // namespace common

@@ -1,6 +1,5 @@
 
-#include "thread_pool/queue_thread.h"
-#include "log_define.h"
+#include "queue_thread.h"
 
 namespace gomros {
 namespace common {
