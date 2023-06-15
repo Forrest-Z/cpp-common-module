@@ -13,9 +13,9 @@ def creat_head():
 #pragma once \n\
           \n\
 namespace gomros { \n\
-namespace common { \n\
+namespace __gomros { \n\
   \n\
-}  // namespace common\n\
+}  // namespace __gomros\n\
 }  // namespace gomros\n\
 ')
   f.close()
@@ -28,9 +28,9 @@ def creat_cc():
 #include \"'+module_name+'.h\" \n'
 + '\n\
 namespace gomros { \n\
-namespace common { \n\
+namespace __gomros { \n\
   \n\
-}  // namespace common\n\
+}  // namespace __gomros\n\
 }  // namespace gomros\n\
 ')
   f.close()

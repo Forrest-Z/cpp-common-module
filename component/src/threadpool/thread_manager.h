@@ -4,16 +4,10 @@
 #include <functional>
 #include <string>
 
-#include "thread_manager_interface.h"
+#include "threadpool/thread_manager_interface.h"
 
 namespace gomros {
 namespace threadpool {
-
-/**
- * @brief 线程管理类具体实现
- *
- */
-class ThreadManagerImpl;
 
 /**
  * @brief 线程管理单例类
@@ -35,7 +29,6 @@ class ThreadManager : public ThreadManagerInterface {
   static void StopAll(int timeout_ms);
 
  private:
-  static ThreadManagerImpl* impl;
   static ThreadManager* instance;
 };
 
