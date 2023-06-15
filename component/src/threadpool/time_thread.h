@@ -28,7 +28,7 @@ class TimeThread : public BaseThread {
    *
    * @param name 任务名称
    * @param loopflag 是否为循环任务，true:循环 ，false:一次
-   * @param interval_ms 间隔时间
+   * @param interval_ms 间隔时间，单位ms
    * @param task_func 任务函数
    */
   void AddTask(const std::string& name, bool loopflag, int interval_ms,

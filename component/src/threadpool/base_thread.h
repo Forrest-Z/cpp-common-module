@@ -16,6 +16,16 @@ namespace common {
 
 typedef std::function<void()> VoidFunc;
 
+class ExitSemaTriger
+{
+private:
+  /* data */
+public:
+  ExitSemaTriger(/* args */);
+  ~ExitSemaTriger();
+};
+
+
 /**
  * @brief 线程基类
  *
