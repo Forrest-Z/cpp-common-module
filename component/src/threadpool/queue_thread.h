@@ -4,7 +4,7 @@
 #include "base_thread.h"
 
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 /**
  * @brief 队列任务处理线程
@@ -33,5 +33,5 @@ class QueueThread : public BaseThread {
   virtual void Exec();
 };
 
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

@@ -13,7 +13,7 @@
 #include <unistd.h>
 
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 ThreadPriority::ThreadPriority(int priority, int max, int min,
                                int scheduling_type)
@@ -44,5 +44,5 @@ bool ThreadPriority::SetPriority() {
   return true;
 }
 
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

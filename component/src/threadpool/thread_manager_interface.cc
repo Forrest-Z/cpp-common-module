@@ -1,12 +1,12 @@
 
-#include "thread_pool/thread_manager_interface.h"
-#include "thread_pool/thread_manager.h"
+#include "threadpool/thread_manager_interface.h"
+#include "threadpool/thread_manager.h"
 
 #include <functional>
 #include <string>
 
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 void ThreadManagerInterface::AddTask(const std::string& name, bool loop_flag,
                                      int interval_ms, VoidFunc func) {
@@ -24,5 +24,5 @@ void ThreadManagerInterface::AddTask(const std::string& name,
   ThreadManager::Instance()->AddTask(name, loop_func, break_func, priority);
 }
 
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

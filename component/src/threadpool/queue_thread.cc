@@ -2,7 +2,7 @@
 #include "queue_thread.h"
 
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 // QueueThread::QueueThread(const std::string& name,
 //                            const ThreadPriority& priority,
@@ -21,5 +21,5 @@ namespace common {
 // void QueueThread::Exec() {
  
 // }
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

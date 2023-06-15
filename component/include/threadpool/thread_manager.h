@@ -7,7 +7,7 @@
 #include "thread_manager_interface.h"
 
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 /**
  * @brief 线程管理类具体实现
@@ -39,5 +39,5 @@ class ThreadManager : public ThreadManagerInterface {
   static ThreadManager* instance;
 };
 
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

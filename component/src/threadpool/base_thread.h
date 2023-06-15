@@ -7,24 +7,28 @@
 #include <string>
 #include <thread>
 
-#include "common/semaphore.h"
 #include "log/log.h"
+#include "threadpool/semaphore.h"
 #include "thread_priority.h"
 
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 typedef std::function<void()> VoidFunc;
 
-class ExitSemaTriger
-{
-private:
-  /* data */
-public:
-  ExitSemaTriger(/* args */);
-  ~ExitSemaTriger();
-};
+/**
+ * @brief
+ * 线程退出信号，以共享形式给每个线程，最后一个线程退出时，会析构ExitSemaTriger并发出信号
+ *
+ */
+class ExitSemaTriger {
+ public:
+  ExitSemaTriger(std::shared_ptr<Semaphore> exit_sema) : exit_sema(exit_sema) {}
+  ~ExitSemaTriger() { exit_sema->Signal(); }
 
+ private:
+  std::shared_ptr<Semaphore> exit_sema;
+};
 
 /**
  * @brief 线程基类
@@ -74,5 +78,5 @@ class BaseThread {
   virtual void Exec() = 0;
 };
 
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

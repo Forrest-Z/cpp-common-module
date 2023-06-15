@@ -1,8 +1,8 @@
 
-#include "thread_pool/thread_manager.h"
+#include "threadpool/thread_manager.h"
 
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 class ThreadManagerImpl {
  public:
@@ -46,5 +46,5 @@ void ThreadManager::AddTask(const std::string& name, VoidFunc loop_func,
 void ThreadManager::StarAll() {}
 void ThreadManager::StopAll(int timeout_ms) {}
 
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

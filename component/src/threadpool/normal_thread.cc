@@ -2,7 +2,7 @@
 #include "normal_thread.h"
 
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 NormalThread::NormalThread(const std::string& name,
                            const ThreadPriority& priority,
@@ -22,5 +22,5 @@ void NormalThread::Exec() {
   LOG_INFO("%s exec loop_func . \n", this->GetName().c_str());
   loop_func();
 }
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

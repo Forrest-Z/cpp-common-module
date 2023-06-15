@@ -4,7 +4,7 @@
 #include <thread>
 
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 /**
  * @brief 线程优先级类
@@ -31,5 +31,5 @@ class ThreadPriority {
   int scheduling_type;
 };
 
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

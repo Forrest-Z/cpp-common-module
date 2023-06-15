@@ -3,7 +3,7 @@
 
 #pragma once
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 /**
  * @brief 常规线程，线程循环和退出逻辑均由相关模块提供，用于支持特殊模块
@@ -25,5 +25,5 @@ class NormalThread : public BaseThread {
   virtual void Exec();
 };
 
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

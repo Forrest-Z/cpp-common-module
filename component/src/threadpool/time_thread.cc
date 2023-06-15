@@ -2,7 +2,7 @@
 #include "time_thread.h" 
 
 namespace gomros { 
-namespace common { 
+namespace threadpool { 
   
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

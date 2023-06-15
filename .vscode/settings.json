@@ -69,7 +69,8 @@
     "geometry": "cpp",
     "*.txx": "cpp",
     "any": "cpp",
-    "*.inc": "cpp"
+    "*.inc": "cpp",
+    "future": "cpp"
   },
   "testMate.cpp.test.advancedExecutables": [
     {

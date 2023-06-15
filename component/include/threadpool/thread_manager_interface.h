@@ -5,7 +5,7 @@
 #include <string>
 
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 /**
  * @brief 无参函数，如需要传参用std::bind 绑定成无参函数
@@ -59,5 +59,5 @@ class ThreadManagerInterface {
                       VoidFunc break_func, int priority = 0);
 };
 
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

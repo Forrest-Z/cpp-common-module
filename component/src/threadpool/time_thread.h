@@ -4,7 +4,7 @@
 #include "base_thread.h"
 
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 /**
  * @brief
@@ -43,5 +43,5 @@ class TimeThread : public BaseThread {
   virtual void Exec();
 };
 
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

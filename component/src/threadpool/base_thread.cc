@@ -2,7 +2,7 @@
 #include "base_thread.h"
 
 namespace gomros {
-namespace common {
+namespace threadpool {
 
 BaseThread::BaseThread(const std::string& name, const ThreadPriority& priority,
                        std::shared_ptr<Semaphore> exit_sema)
@@ -22,5 +22,5 @@ void BaseThread::Run() {
 }
 
 BaseThread::~BaseThread() { this->thr.detach(); }
-}  // namespace common
+}  // namespace threadpool
 }  // namespace gomros

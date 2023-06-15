@@ -1,40 +1,40 @@
 
-#include "common/semaphore.h"
+#include "threadpool/semaphore.h"
 #include <gtest/gtest.h>
 #include <thread>
 
 #include "common/time_utils.h"
 
-TEST(common, component_sema) {
-  auto sema = std::make_shared<gomros::common::Semaphore>(0);
+TEST(threadpool, component_sema) {
+  auto sema = std::make_shared<gomros::threadpool::Semaphore>(0);
   const int num = 10;
 
-  auto func = [](int id, std::shared_ptr<gomros::common::Semaphore> sema) {
+  auto func = [](int id, std::shared_ptr<gomros::threadpool::Semaphore> sema) {
     std::this_thread::sleep_for(std::chrono::seconds(id));
     sema->Signal();
     std::cout << id << " is end ." << std::endl;
   };
 
   {
-    std::vector<std::thread> thread_pool;
+    std::vector<std::thread> threadpool;
 
     for (size_t i = 0; i < num; i++) {
-      thread_pool.push_back(std::move(std::thread(func, i, sema)));
+      threadpool.push_back(std::move(std::thread(func, i, sema)));
     }
 
     // 等待所有线程退出
     for (size_t i = 0; i < num; i++) {
       sema->Wait();
     }
-    for (auto &t : thread_pool) t.detach();
+    for (auto &t : threadpool) t.detach();
     std::cout << "all thread exit ." << std::endl;
   }
 
   {
-    std::vector<std::thread> thread_pool;
+    std::vector<std::thread> threadpool;
 
     for (size_t i = 0; i < num; i++) {
-      thread_pool.push_back(std::move(std::thread(func, i, sema)));
+      threadpool.push_back(std::move(std::thread(func, i, sema)));
     }
 
     // 等待所有线程退出
@@ -49,7 +49,7 @@ TEST(common, component_sema) {
       std::cout << "delta : " << delta << std::endl;
       if (!sema->TimeWait(delta)) break;
     }
-    for (auto &t : thread_pool) t.detach();
+    for (auto &t : threadpool) t.detach();
     std::cout << "some thread exit ." << std::endl;
   }
 }
