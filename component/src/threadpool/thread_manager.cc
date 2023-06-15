@@ -23,7 +23,7 @@ VoidFunc ThreadManager::AddTask(const std::string& name, VoidFunc func,
 void ThreadManager::AddTask(const std::string& name, VoidFunc loop_func,
                             VoidFunc break_func, int priority) {}
 
-void ThreadManager::StarAll() {}
+void ThreadManager::StartAll() {}
 void ThreadManager::StopAll(int timeout_ms) {}
 
 }  // namespace threadpool

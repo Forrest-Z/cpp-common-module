@@ -25,11 +25,20 @@ class ThreadManager : public ThreadManagerInterface {
   static void AddTask(const std::string& name, VoidFunc loop_func,
                       VoidFunc break_func, int priority);
 
-  static void StarAll();
+  static void StartAll();
   static void StopAll(int timeout_ms);
 
  private:
   static ThreadManager* instance;
+
+  typedef enum ThreadManagerStatus {
+    INIT = 0,
+    RUNNING,
+    STOPING,
+    STOPED
+  } ThreadManagerStatus;
+
+  ThreadManagerStatus status = ThreadManagerStatus::INIT;
 };
 
 }  // namespace threadpool

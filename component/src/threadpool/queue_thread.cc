@@ -6,9 +6,9 @@ namespace threadpool {
 
 // QueueThread::QueueThread(const std::string& name,
 //                            const ThreadPriority& priority,
-//                            std::shared_ptr<Semaphore> exit_sema,
+//                            std::shared_ptr<Semaphore> exit_sema_trigger,
 //                            VoidFunc loop_func, VoidFunc break_func)
-//     : BaseThread(name, priority, exit_sema),
+//     : BaseThread(name, priority, exit_sema_trigger),
 //       loop_func(loop_func),
 //       break_func(break_func) {}
 

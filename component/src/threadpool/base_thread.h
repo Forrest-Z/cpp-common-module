@@ -8,8 +8,8 @@
 #include <thread>
 
 #include "log/log.h"
-#include "threadpool/semaphore.h"
 #include "thread_priority.h"
+#include "threadpool/semaphore.h"
 
 namespace gomros {
 namespace threadpool {
@@ -18,16 +18,17 @@ typedef std::function<void()> VoidFunc;
 
 /**
  * @brief
- * 线程退出信号，以共享形式给每个线程，最后一个线程退出时，会析构ExitSemaTriger并发出信号
+ * 线程退出信号，以共享形式给每个线程，最后一个线程退出时，会析构ExitSemaTrigger并发出信号
  *
  */
-class ExitSemaTriger {
+class ExitSemaTrigger {
  public:
-  ExitSemaTriger(std::shared_ptr<Semaphore> exit_sema) : exit_sema(exit_sema) {}
-  ~ExitSemaTriger() { exit_sema->Signal(); }
+  ExitSemaTrigger(std::shared_ptr<Semaphore> exit_sema_trigger)
+      : exit_sema_trigger(exit_sema_trigger) {}
+  ~ExitSemaTrigger() { exit_sema_trigger->Signal(); }
 
  private:
-  std::shared_ptr<Semaphore> exit_sema;
+  std::shared_ptr<Semaphore> exit_sema_trigger;
 };
 
 /**
@@ -37,7 +38,7 @@ class ExitSemaTriger {
 class BaseThread {
  public:
   BaseThread(const std::string& name, const ThreadPriority& priority,
-             std::shared_ptr<Semaphore> exit_sema);
+             std::shared_ptr<ExitSemaTrigger> exit_sema_trigger);
   virtual ~BaseThread();
 
   /**
@@ -63,7 +64,8 @@ class BaseThread {
   std::string name;
   ThreadPriority priority;
   std::thread thr;
-  std::shared_ptr<Semaphore> exit_sema;  // 用于结束时通知外面主线程
+  std::shared_ptr<ExitSemaTrigger>
+      exit_sema_trigger;  // 用于结束时通知外面主线程
 
   /**
    * @brief 线程主体程序，在开始时会设置优先级

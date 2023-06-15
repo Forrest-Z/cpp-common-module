@@ -18,7 +18,7 @@ namespace threadpool {
 class TimeThread : public BaseThread {
  public:
   TimeThread(const std::string& name, const ThreadPriority& priority,
-             std::shared_ptr<Semaphore> exit_sema);
+             std::shared_ptr<ExitSemaTrigger> exit_sema_trigger);
   ~TimeThread();
 
   virtual void NotifyStop();

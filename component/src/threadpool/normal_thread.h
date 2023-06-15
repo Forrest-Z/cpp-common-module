@@ -12,7 +12,7 @@ namespace threadpool {
 class NormalThread : public BaseThread {
  public:
   NormalThread(const std::string& name, const ThreadPriority& priority,
-               std::shared_ptr<Semaphore> exit_sema, VoidFunc loop_func,
+               std::shared_ptr<ExitSemaTrigger> exit_sema_trigger, VoidFunc loop_func,
                VoidFunc break_func);
   ~NormalThread();
 

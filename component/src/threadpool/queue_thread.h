@@ -13,7 +13,7 @@ namespace threadpool {
 class QueueThread : public BaseThread {
  public:
   QueueThread(const std::string& name, const ThreadPriority& priority,
-              std::shared_ptr<Semaphore> exit_sema, VoidFunc task_func);
+              std::shared_ptr<ExitSemaTrigger> exit_sema_trigger, VoidFunc task_func);
   ~QueueThread();
 
   virtual void NotifyStop();
