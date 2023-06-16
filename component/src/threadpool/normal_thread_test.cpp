@@ -33,8 +33,8 @@ TEST(threadpool, component_normal_thread) {
 
   t->Start();
 
-  sleep(20);
+  sleep(10);
 
-  t->NotifyStop();
   printf("wait thread exit . \n");
+  t->NotifyStop();
 }

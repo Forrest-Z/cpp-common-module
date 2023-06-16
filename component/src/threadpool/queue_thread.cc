@@ -3,23 +3,36 @@
 
 namespace gomros {
 namespace threadpool {
+QueueThread::QueueThread(const std::string& name,
+                         const ThreadPriority& priority,
+                         std::shared_ptr<ExitSemaTrigger> exit_sema_trigger,
+                         VoidFunc task_func)
+    : BaseThread(name, priority, exit_sema_trigger), task_func(task_func) {}
+QueueThread::~QueueThread() {}
 
-// QueueThread::QueueThread(const std::string& name,
-//                            const ThreadPriority& priority,
-//                            std::shared_ptr<Semaphore> exit_sema_trigger,
-//                            VoidFunc loop_func, VoidFunc break_func)
-//     : BaseThread(name, priority, exit_sema_trigger),
-//       loop_func(loop_func),
-//       break_func(break_func) {}
+void QueueThread::NotifyStop() {
+  is_alive = false;
+  this->exec_sema.Signal();
+}
 
-// QueueThread::~QueueThread() {}
+void QueueThread::NotifyRun() {
+  if (this->is_alive) {
+    this->exec_sema.Signal(1);
+  }
+}
 
-// void QueueThread::NotifyStop() {
-//   info_log("%s exect break_func . \n", this->GetName().c_str());
-//   break_func();
-// }
-// void QueueThread::Exec() {
- 
-// }
+void QueueThread::Exec() {
+  while (this->is_alive) {
+    this->exec_sema.Wait();
+
+    if (!this->is_alive) { // 退出
+      break;
+    }
+
+    this->task_func();
+  }
+
+  LOG_INFO("exec end .\n");
+}
 }  // namespace threadpool
 }  // namespace gomros

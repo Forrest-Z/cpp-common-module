@@ -8,12 +8,13 @@ namespace threadpool {
 
 /**
  * @brief 队列任务处理线程
- * 
+ *
  */
 class QueueThread : public BaseThread {
  public:
   QueueThread(const std::string& name, const ThreadPriority& priority,
-              std::shared_ptr<ExitSemaTrigger> exit_sema_trigger, VoidFunc task_func);
+              std::shared_ptr<ExitSemaTrigger> exit_sema_trigger,
+              VoidFunc task_func);
   ~QueueThread();
 
   virtual void NotifyStop();
@@ -25,11 +26,12 @@ class QueueThread : public BaseThread {
    *
    * @param task_empty 当前任务状态
    */
-  void NotifyRun(bool task_empty);
+  void NotifyRun();
 
  private:
   VoidFunc task_func;
-
+  bool is_alive = true;
+  Semaphore exec_sema = Semaphore(0);
   virtual void Exec();
 };
 
