@@ -1,5 +1,9 @@
 
 #include "threadpool/semaphore.h"
+#include "common/time_utils.h"
+
+#include <chrono>
+#include <thread>
 
 #include <errno.h>
 #include <fcntl.h> /* For O_* constants */
@@ -34,7 +38,6 @@ class SemaphoreImpl {
     }
   }
 
-  // 用系统启动时间，每隔1ms while 检查
   bool TimeWait(int timeout_ms) {
     if (timeout_ms < 0) return false;
 
@@ -53,6 +56,24 @@ class SemaphoreImpl {
       return true;
     else
       return false;
+  }
+
+  bool TimeWait_UseRelativeTime(int timeout_ms) {
+    if (timeout_ms < 0) return false;
+
+    common::TimestampType end_time =
+        common::TimeUtils::GetTimestamp_us() + timeout_ms * 1000;
+
+    while (common::TimeUtils::GetTimestamp_us() < end_time) {
+      int ret = sem_trywait(&sema);
+      if (ret == 0) {  // trywait 成功退出
+        return true;
+      }
+      // sleep 1 ms
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+
+    return false;
   }
 
  private:
@@ -75,7 +96,9 @@ void Semaphore::Wait() { impl->Wait(); }
 
 void Semaphore::Signal(uint16_t limit) { impl->Signal(limit); }
 
-bool Semaphore::TimeWait(int timeout_ms) { return impl->TimeWait(timeout_ms); }
+bool Semaphore::TimeWait(int timeout_ms) {
+  return impl->TimeWait_UseRelativeTime(timeout_ms);
+}
 
 }  // namespace threadpool
 }  // namespace gomros

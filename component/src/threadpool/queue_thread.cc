@@ -13,19 +13,21 @@ QueueThread::~QueueThread() {}
 void QueueThread::NotifyStop() {
   is_alive = false;
   this->exec_sema.Signal();
+  LOG_INFO("notify stop signal . \n");
 }
 
 void QueueThread::NotifyRun() {
   if (this->is_alive) {
     this->exec_sema.Signal(1);
   }
+  LOG_INFO("notify run signal . \n");
 }
 
 void QueueThread::Exec() {
   while (this->is_alive) {
     this->exec_sema.Wait();
 
-    if (!this->is_alive) { // 退出
+    if (!this->is_alive) {  // 当is_alive为false时，退出
       break;
     }
 

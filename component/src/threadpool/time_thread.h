@@ -2,6 +2,12 @@
 #pragma once
 
 #include "base_thread.h"
+#include "common/time_utils.h"
+
+#include <condition_variable>
+#include <list>
+#include <map>
+#include <mutex>
 
 namespace gomros {
 namespace threadpool {
@@ -32,13 +38,30 @@ class TimeThread : public BaseThread {
    * @param task_func 任务函数
    */
   void AddTask(const std::string& name, bool loopflag, int interval_ms,
-               VoidFunc task_func) {
-    // 任务加入等待队列
-  }
+               VoidFunc task_func);
 
  private:
+  /**
+   * @brief 任务结构数据定义
+   *
+   */
   typedef struct TaskItemType {
+    common::TimestampType time_point;  // 任务执行时间点, 单位us
+    std::string name;
+    bool loopflag;
+    int interval_ms;
+    VoidFunc task_func;
   } TaskItemType;
+
+  std::list<TaskItemType> task_list;
+  std::mutex task_list_mtx;
+  std::condition_variable cond;
+
+  static bool Compare(TaskItemType& a, TaskItemType& b);
+
+  void AddToTaskListAndSort(const TaskItemType& item);
+
+  bool is_alive = true;
 
   virtual void Exec();
 };

@@ -16,7 +16,7 @@ void BaseThread::Run() {
   this->priority.SetPriority();
 
   this->Exec();
-  this->exit_sema_trigger = nullptr;
+  this->exit_sema_trigger = nullptr;  // 退出时，释放 exit_sema_trigger
   LOG_WARNING("%s exec end , and exit_sema_trigger signal . \n",
               this->name.c_str());
 }
