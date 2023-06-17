@@ -9,8 +9,7 @@ test_file="valgrind -v --leak-check=full --show-leak-kinds=definite,indirect ./B
 
 # ${test_file}  --gtest_filter=sample_test.add_test
 
-
-### 
+###
 # ${test_file}  --gtest_filter=backtrace_test.segv
 # ${test_file}  --gtest_filter=log_test.printf
 
@@ -19,4 +18,5 @@ test_file="valgrind -v --leak-check=full --show-leak-kinds=definite,indirect ./B
 # ${test_file}  --gtest_filter=common.hex_to_chararray
 # ${test_file}  --gtest_filter=common.chararray_to_hex
 
-${test_file}  --gtest_filter=common.component_normal_thread
+test_file_component=./Build/component/component/bin/component
+${test_file_component} --gtest_filter=threadpool.time_thread

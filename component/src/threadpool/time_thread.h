@@ -51,6 +51,8 @@ class TimeThread : public BaseThread {
     bool loopflag;
     int interval_ms;
     VoidFunc task_func;
+
+    bool operator<(TaskItemType b) { return this->time_point < b.time_point; }
   } TaskItemType;
 
   std::list<TaskItemType> task_list;
@@ -64,6 +66,8 @@ class TimeThread : public BaseThread {
   bool is_alive = true;
 
   virtual void Exec();
+
+  std::string DebugTaskList();
 };
 
 }  // namespace threadpool
