@@ -9,7 +9,7 @@ namespace threadpool {
 
 ThreadManager* ThreadManager::instance = nullptr;
 std::mutex ThreadManager::mtx;
-std::vector<BaseThread> ThreadManager::thread_pool;
+std::vector<BaseThread*> ThreadManager::thread_pool;
 ThreadManager::ThreadManagerStatus ThreadManager::status =
     ThreadManagerStatus::NOT_INIT;
 std::shared_ptr<Semaphore> ThreadManager::exit_sema = nullptr;
@@ -21,8 +21,8 @@ ThreadManager* ThreadManager::Instance() {
     instance = new ThreadManager();
     exit_sema = std::make_shared<Semaphore>(0);
     exit_sema_trigger = std::make_shared<ExitSemaTrigger>(exit_sema);
-    thread_pool.push_back(
-        TimeThread("time_thread", 0, exit_sema_trigger));  // creat time thread
+    thread_pool.push_back(new TimeThread(
+        "time_thread", 0, exit_sema_trigger));  // creat time thread
     status = ThreadManagerStatus::INIT;
     LOG_INFO("thread manager creat instance . \n");
   }
@@ -35,11 +35,11 @@ void ThreadManager::AddTask(const std::string& name, bool loop_flag,
   std::lock_guard<std::mutex> lck(mtx);
   switch (status) {
     case ThreadManagerStatus::INIT:
-      dynamic_cast<TimeThread*>(&thread_pool[0])
+      dynamic_cast<TimeThread*>(thread_pool[0])
           ->AddTask(name, loop_flag, interval_ms, func);
       break;
     case ThreadManagerStatus::RUNNING:
-      dynamic_cast<TimeThread*>(&thread_pool[0])
+      dynamic_cast<TimeThread*>(thread_pool[0])
           ->AddTask(name, loop_flag, interval_ms, func);
       break;
     default:
@@ -53,12 +53,12 @@ VoidFunc ThreadManager::AddTask(const std::string& name, VoidFunc func,
   std::lock_guard<std::mutex> lck(mtx);
   switch (status) {
     case ThreadManagerStatus::INIT:
-      thread_pool.push_back(
-          QueueThread(name, ThreadPriority(priority), exit_sema_trigger, func));
+      thread_pool.push_back(new QueueThread(name, ThreadPriority(priority),
+                                            exit_sema_trigger, func));
       break;
     case ThreadManagerStatus::RUNNING:
-      thread_pool.push_back(
-          QueueThread(name, ThreadPriority(priority), exit_sema_trigger, func));
+      thread_pool.push_back(new QueueThread(name, ThreadPriority(priority),
+                                            exit_sema_trigger, func));
       break;
     default:
       LOG_WARNING("wrong invoke , current status is %d \n", status);
@@ -71,14 +71,14 @@ void ThreadManager::AddTask(const std::string& name, VoidFunc loop_func,
   std::lock_guard<std::mutex> lck(mtx);
   switch (status) {
     case ThreadManagerStatus::INIT:
-      thread_pool.push_back(NormalThread(name, ThreadPriority(priority),
-                                         exit_sema_trigger, loop_func,
-                                         break_func));
+      thread_pool.push_back(new NormalThread(name, ThreadPriority(priority),
+                                             exit_sema_trigger, loop_func,
+                                             break_func));
       break;
     case ThreadManagerStatus::RUNNING:
-      thread_pool.push_back(NormalThread(name, ThreadPriority(priority),
-                                         exit_sema_trigger, loop_func,
-                                         break_func));
+      thread_pool.push_back(new NormalThread(name, ThreadPriority(priority),
+                                             exit_sema_trigger, loop_func,
+                                             break_func));
       break;
     default:
       LOG_WARNING("wrong invoke , current status is %d \n", status);
@@ -94,7 +94,7 @@ void ThreadManager::StartAll() {
   switch (s) {
     case ThreadManagerStatus::INIT:
       for (auto& t : thread_pool) {
-        t.Start();  // 启动线程
+        t->Start();  // 启动线程
       }
       status = ThreadManagerStatus::RUNNING;
       break;
@@ -117,13 +117,17 @@ void ThreadManager::StopAll(int timeout_ms) {
       exit_sema_trigger = nullptr;
 
       for (auto& t : thread_pool) {
-        t.NotifyStop();
+        t->NotifyStop();
       }
 
       // wait threads end
       int ret = exit_sema->TimeWait(timeout_ms);
       if (ret) {
         LOG_INFO("thread pool normal exit . \n");
+        for (auto& t : thread_pool) {
+          delete t;
+        }
+        thread_pool.clear();
       } else {
         LOG_INFO("thread pool timeout exit . \n");
       }

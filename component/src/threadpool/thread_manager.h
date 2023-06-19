@@ -34,7 +34,7 @@ class ThreadManager : public ThreadManagerInterface {
  private:
   static ThreadManager* instance;
   static std::mutex mtx;
-  static std::vector<BaseThread> thread_pool;  // 首位 放time_thead
+  static std::vector<BaseThread*> thread_pool;  // 首位 放time_thead
   static std::shared_ptr<Semaphore> exit_sema;
   static std::shared_ptr<ExitSemaTrigger> exit_sema_trigger;
 
