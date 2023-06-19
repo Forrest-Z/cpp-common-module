@@ -2,8 +2,11 @@
 #pragma once
 
 #include <functional>
+#include <mutex>
 #include <string>
+#include <vector>
 
+#include "base_thread.h"
 #include "threadpool/thread_manager_interface.h"
 
 namespace gomros {
@@ -30,15 +33,20 @@ class ThreadManager : public ThreadManagerInterface {
 
  private:
   static ThreadManager* instance;
+  static std::mutex mtx;
+  static std::vector<BaseThread> thread_pool;  // 首位 放time_thead
+  static std::shared_ptr<Semaphore> exit_sema;
+  static std::shared_ptr<ExitSemaTrigger> exit_sema_trigger;
 
   typedef enum ThreadManagerStatus {
+    NOT_INIT = -1,
     INIT = 0,
     RUNNING,
     STOPING,
     STOPED
   } ThreadManagerStatus;
 
-  ThreadManagerStatus status = ThreadManagerStatus::INIT;
+  static ThreadManagerStatus status;
 };
 
 }  // namespace threadpool
