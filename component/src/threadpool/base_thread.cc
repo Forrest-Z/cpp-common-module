@@ -10,6 +10,7 @@ BaseThread::BaseThread(const std::string& name, const ThreadPriority& priority,
 
 void BaseThread::Start() {
   this->thr = std::thread(std::bind(&BaseThread::Run, this));
+  LOG_INFO("%s started !!!!! \n", this->GetName().c_str());
 }
 
 void BaseThread::Run() {
@@ -17,8 +18,8 @@ void BaseThread::Run() {
 
   this->Exec();
   this->exit_sema_trigger = nullptr;  // 退出时，释放 exit_sema_trigger
-  LOG_WARNING("%s exec end , and exit_sema_trigger signal . \n",
-              this->name.c_str());
+  LOG_INFO("%s exec end , and exit_sema_trigger signal . \n",
+           this->name.c_str());
 }
 
 BaseThread::~BaseThread() { this->thr.detach(); }

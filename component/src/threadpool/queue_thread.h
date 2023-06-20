@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <atomic>
+
 #include "base_thread.h"
 
 namespace gomros {

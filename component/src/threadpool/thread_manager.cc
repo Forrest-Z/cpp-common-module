@@ -43,7 +43,7 @@ void ThreadManager::AddTask(const std::string& name, bool loop_flag,
           ->AddTask(name, loop_flag, interval_ms, func);
       break;
     default:
-      LOG_WARNING("wrong invoke , current status is %d \n", status);
+      LOG_INFO("wrong invoke , current status is %d \n", status);
       break;
   }
 }
@@ -51,37 +51,51 @@ void ThreadManager::AddTask(const std::string& name, bool loop_flag,
 VoidFunc ThreadManager::AddTask(const std::string& name, VoidFunc func,
                                 int priority) {
   std::lock_guard<std::mutex> lck(mtx);
+  auto notify_func = [](gomros::threadpool::QueueThread* q_thread) {
+    q_thread->NotifyRun();
+  };
+  VoidFunc ret = [] {};
+
   switch (status) {
-    case ThreadManagerStatus::INIT:
-      thread_pool.push_back(new QueueThread(name, ThreadPriority(priority),
-                                            exit_sema_trigger, func));
-      break;
-    case ThreadManagerStatus::RUNNING:
-      thread_pool.push_back(new QueueThread(name, ThreadPriority(priority),
-                                            exit_sema_trigger, func));
-      break;
+    case ThreadManagerStatus::INIT: {
+      auto queue_thread = new QueueThread(name, ThreadPriority(priority),
+                                          exit_sema_trigger, func);
+      thread_pool.push_back(queue_thread);
+      ret = std::bind(notify_func, queue_thread);
+    } break;
+    case ThreadManagerStatus::RUNNING: {
+      auto queue_thread = new QueueThread(name, ThreadPriority(priority),
+                                          exit_sema_trigger, func);
+      thread_pool.push_back(queue_thread);
+      ret = std::bind(notify_func, queue_thread);
+      queue_thread->Start();  // start thread
+    } break;
     default:
-      LOG_WARNING("wrong invoke , current status is %d \n", status);
+      LOG_INFO("wrong invoke , current status is %d \n", status);
       break;
   }
+  return ret;
 }
 
 void ThreadManager::AddTask(const std::string& name, VoidFunc loop_func,
                             VoidFunc break_func, int priority) {
   std::lock_guard<std::mutex> lck(mtx);
   switch (status) {
-    case ThreadManagerStatus::INIT:
-      thread_pool.push_back(new NormalThread(name, ThreadPriority(priority),
-                                             exit_sema_trigger, loop_func,
-                                             break_func));
-      break;
-    case ThreadManagerStatus::RUNNING:
-      thread_pool.push_back(new NormalThread(name, ThreadPriority(priority),
-                                             exit_sema_trigger, loop_func,
-                                             break_func));
-      break;
+    case ThreadManagerStatus::INIT: {
+      auto normal_thread =
+          new NormalThread(name, ThreadPriority(priority), exit_sema_trigger,
+                           loop_func, break_func);
+      thread_pool.push_back(normal_thread);
+    } break;
+    case ThreadManagerStatus::RUNNING: {
+      auto normal_thread =
+          new NormalThread(name, ThreadPriority(priority), exit_sema_trigger,
+                           loop_func, break_func);
+      thread_pool.push_back(normal_thread);
+      normal_thread->Start();
+    } break;
     default:
-      LOG_WARNING("wrong invoke , current status is %d \n", status);
+      LOG_INFO("wrong invoke , current status is %d \n", status);
       break;
   }
 }
@@ -100,7 +114,7 @@ void ThreadManager::StartAll() {
       break;
 
     default:
-      LOG_WARNING("wrong invoke , current status is %d \n", status);
+      LOG_INFO("wrong invoke , current status is %d \n", status);
       break;
   }
 }

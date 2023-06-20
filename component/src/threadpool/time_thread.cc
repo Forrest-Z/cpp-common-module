@@ -5,7 +5,7 @@
 namespace gomros {
 namespace threadpool {
 
-constexpr const int DEFAULT_WAIT_TIME_us = 10 * 1000;
+constexpr const int DEFAULT_WAIT_TIME_us = 20 * 1000;
 
 TimeThread::TimeThread(const std::string& name, const ThreadPriority& priority,
                        std::shared_ptr<ExitSemaTrigger> exit_sema_trigger)
@@ -63,11 +63,13 @@ void TimeThread::Exec() {
           wait_time_us = 0;
         }
       }
-      LOG_DEBUG("wait_time_us = %ld \n", wait_time_us);
+      // LOG_DEBUG("wait_time_us = %ld \n", wait_time_us);
       const std::cv_status ret =
           this->cond.wait_for(lck, std::chrono::microseconds(wait_time_us));
 
       if (!this->is_alive) return;  // notify stop exit
+
+      if (this->task_list.empty()) continue;  // 队列为空情况
 
       if (ret != std::cv_status::timeout) {
         continue;  // no timeout,

@@ -19,4 +19,4 @@ test_file="valgrind -v --leak-check=full --show-leak-kinds=definite,indirect ./B
 # ${test_file}  --gtest_filter=common.chararray_to_hex
 
 test_file_component=./Build/component/component/bin/component
-${test_file_component} --gtest_filter=threadpool.time_thread
+${test_file_component} --gtest_filter=threadpool.thread_manager
