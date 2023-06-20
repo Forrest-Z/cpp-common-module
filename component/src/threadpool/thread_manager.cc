@@ -48,12 +48,14 @@ void ThreadManager::AddTask(const std::string& name, bool loop_flag,
   }
 }
 
+static void NotifyQueueThreadFunc(gomros::threadpool::QueueThread* q_thread) {
+  q_thread->NotifyRun();
+}
+
 VoidFunc ThreadManager::AddTask(const std::string& name, VoidFunc func,
                                 int priority) {
   std::lock_guard<std::mutex> lck(mtx);
-  auto notify_func = [](gomros::threadpool::QueueThread* q_thread) {
-    q_thread->NotifyRun();
-  };
+
   VoidFunc ret = [] {};
 
   switch (status) {
@@ -61,13 +63,13 @@ VoidFunc ThreadManager::AddTask(const std::string& name, VoidFunc func,
       auto queue_thread = new QueueThread(name, ThreadPriority(priority),
                                           exit_sema_trigger, func);
       thread_pool.push_back(queue_thread);
-      ret = std::bind(notify_func, queue_thread);
+      ret = std::bind(NotifyQueueThreadFunc, queue_thread);
     } break;
     case ThreadManagerStatus::RUNNING: {
       auto queue_thread = new QueueThread(name, ThreadPriority(priority),
                                           exit_sema_trigger, func);
       thread_pool.push_back(queue_thread);
-      ret = std::bind(notify_func, queue_thread);
+      ret = std::bind(NotifyQueueThreadFunc, queue_thread);
       queue_thread->Start();  // start thread
     } break;
     default:
