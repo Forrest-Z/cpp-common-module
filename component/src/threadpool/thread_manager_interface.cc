@@ -15,7 +15,7 @@ void ThreadManagerInterface::AddTask(const std::string& name, bool loop_flag,
 
 VoidFunc ThreadManagerInterface::AddTask(const std::string& name, VoidFunc func,
                                          int priority) {
-  ThreadManager::Instance()->AddTask(name, func, priority);
+  return ThreadManager::Instance()->AddTask(name, func, priority);
 }
 
 void ThreadManagerInterface::AddTask(const std::string& name,

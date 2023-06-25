@@ -23,10 +23,6 @@ class QueueThread : public BaseThread {
 
   /**
    * @brief 通知线程执行处理任务；
-   * task_empty为true时，说明当前没有任务，线程停止运行；
-   * task_empty为false时，说明当前存在任务，线程运行，直到外部将task_empty设为true；
-   *
-   * @param task_empty 当前任务状态
    */
   void NotifyRun();
 

@@ -73,7 +73,7 @@ TEST(threadpool, thread_manager) {
   }
   AddQueueTask();
 
-  sleep(10);
+  sleep(30);
 
   gomros::threadpool::ThreadManager::Instance()->StopAll(3000);
   printf("wait thread manager exit . \n");
