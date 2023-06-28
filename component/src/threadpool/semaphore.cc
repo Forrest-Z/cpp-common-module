@@ -15,26 +15,30 @@ namespace threadpool {
 
 class SemaphoreImpl {
  public:
-  SemaphoreImpl(int value) : value(value) { sem_init(&sema, 0, value); }
+  SemaphoreImpl(int value) : value(value) {
+    sem_init(&sema, 0, value);
+    cur_sema = &sema;
+  }
 
   SemaphoreImpl(const std::string& name, int value) {
-    sem_open(name.c_str(), O_CREAT, O_CREAT | O_RDWR, value);
+    this->name = name;
+    cur_sema = sem_open(name.c_str(), O_CREAT, O_CREAT | O_RDWR, value);
     this->is_ipc = true;
   }
   ~SemaphoreImpl() {
-    if (is_ipc)
-      sem_close(&sema);
-    else
-      sem_destroy(&sema);
+    if (is_ipc) {
+      sem_close(cur_sema);
+    } else
+      sem_destroy(cur_sema);
   }
 
-  void Wait() { sem_wait(&sema); }
+  void Wait() { sem_wait(cur_sema); }
 
   void Signal(uint16_t limit) {
-    sem_getvalue(&sema, &value);
+    sem_getvalue(cur_sema, &value);
 
     if (value <= limit) {
-      sem_post(&sema);
+      sem_post(cur_sema);
     }
   }
 
@@ -48,7 +52,7 @@ class SemaphoreImpl {
     t.tv_sec += timeout_ms / 1000;
     t.tv_nsec += (timeout_ms % 1000) * 1000000;
     printf("t.sec = %ld \n", t.tv_sec);
-    int ret = sem_timedwait(&sema, &t);
+    int ret = sem_timedwait(cur_sema, &t);
 
     // int err = errno;
 
@@ -65,7 +69,7 @@ class SemaphoreImpl {
         common::TimeUtils::GetTimestamp_us() + timeout_ms * 1000;
 
     while (common::TimeUtils::GetTimestamp_us() < end_time) {
-      int ret = sem_trywait(&sema);
+      int ret = sem_trywait(cur_sema);
       if (ret == 0) {  // trywait 成功退出
         return true;
       }
@@ -78,7 +82,9 @@ class SemaphoreImpl {
 
  private:
   int value;
+  std::string name;
   sem_t sema;
+  sem_t* cur_sema;
   bool is_ipc = false;  // 是否是进程间信号量，true:是
 };
 

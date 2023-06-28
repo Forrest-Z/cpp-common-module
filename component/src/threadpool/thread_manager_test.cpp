@@ -23,7 +23,7 @@ static void AddNormalTask() {
 }
 
 static void AddQueueTask() {
-   gomros::threadpool::VoidFunc task_func = []() {
+  gomros::threadpool::VoidFunc task_func = []() {
     sleep(2);
     printf("queue task_func running . \n");
   };
@@ -63,12 +63,15 @@ TEST(threadpool, thread_manager) {
 
   gomros::threadpool::ThreadManager::Instance()->StartAll();
   sleep(2);
-  { // time task
+  {  // time task
     gomros::threadpool::VoidFunc task_func2 = []() {
       printf("task_func2 running . \n");
     };
-    gomros::threadpool::ThreadManager::Instance()->AddTask("task2", true,
-    2000,
+    gomros::threadpool::ThreadManager::Instance()->AddTask("task2", true, 2000,
+                                                           task_func2);
+    gomros::threadpool::ThreadManager::Instance()->AddTask("task3", true, 3000,
+                                                           task_func2);
+    gomros::threadpool::ThreadManager::Instance()->AddTask("task4", true, 3500,
                                                            task_func2);
   }
   AddQueueTask();

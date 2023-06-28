@@ -53,3 +53,27 @@ TEST(threadpool, component_sema) {
     std::cout << "some thread exit ." << std::endl;
   }
 }
+
+TEST(threadpool, sema_interval) {
+  auto sema = gomros::threadpool::Semaphore("test", 1);
+  printf("signal . \n");
+
+  auto func = []() {
+    auto sema = gomros::threadpool::Semaphore("test", 0);
+
+    for (size_t i = 0; i < 2; i++) {
+      sema.Wait();
+      printf("wait success . \n");
+    }
+
+  };
+
+  auto t = std::thread(func);
+
+  sleep(30);
+  sema.Signal();
+  sleep(5);
+  sema.Signal();
+
+  t.join();
+}
