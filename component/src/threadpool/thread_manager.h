@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "base_thread.h"
-#include "threadpool/thread_manager_interface.h"
 
 namespace gomros {
 namespace threadpool {
@@ -16,27 +15,29 @@ namespace threadpool {
  * @brief 线程管理单例类
  *
  */
-class ThreadManager : public ThreadManagerInterface {
+class ThreadManager {
  public:
   static ThreadManager* Instance();
 
-  static void AddTask(const std::string& name, bool loop_flag, int interval_ms,
-                      VoidFunc func);
+  void AddTask(const std::string& name, bool loop_flag, int interval_ms,
+               VoidFunc func);
 
-  static VoidFunc AddTask(const std::string& name, VoidFunc func, int priority);
+  VoidFunc AddTask(const std::string& name, VoidFunc func, int priority);
 
-  static void AddTask(const std::string& name, VoidFunc loop_func,
-                      VoidFunc break_func, int priority);
+  void AddTask(const std::string& name, VoidFunc loop_func, VoidFunc break_func,
+               int priority);
 
-  static void StartAll();
-  static void StopAll(int timeout_ms);
+  void StartAll();
+  void StopAll(int timeout_ms);
 
  private:
+  ThreadManager();
+
   static ThreadManager* instance;
   static std::mutex mtx;
-  static std::vector<BaseThread*> thread_pool;  // 首位 放time_thead
-  static std::shared_ptr<Semaphore> exit_sema;
-  static std::shared_ptr<ExitSemaTrigger> exit_sema_trigger;
+  std::vector<BaseThread*> thread_pool;  // 首位 放time_thead
+  std::shared_ptr<Semaphore> exit_sema;
+  std::shared_ptr<ExitSemaTrigger> exit_sema_trigger;
 
   typedef enum ThreadManagerStatus {
     NOT_INIT = -1,
@@ -46,7 +47,7 @@ class ThreadManager : public ThreadManagerInterface {
     STOPED
   } ThreadManagerStatus;
 
-  static ThreadManagerStatus status;
+  ThreadManagerStatus status = NOT_INIT;
 };
 
 }  // namespace threadpool

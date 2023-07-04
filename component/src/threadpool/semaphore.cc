@@ -102,9 +102,7 @@ void Semaphore::Wait() { impl->Wait(); }
 
 void Semaphore::Signal(uint16_t limit) { impl->Signal(limit); }
 
-bool Semaphore::TimeWait(int timeout_ms) {
-  return impl->TimeWait_UseRelativeTime(timeout_ms);
-}
+bool Semaphore::TimeWait(int timeout_ms) { return impl->TimeWait(timeout_ms); }
 
 }  // namespace threadpool
 }  // namespace gomros

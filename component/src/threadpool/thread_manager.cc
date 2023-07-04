@@ -9,21 +9,19 @@ namespace threadpool {
 
 ThreadManager* ThreadManager::instance = nullptr;
 std::mutex ThreadManager::mtx;
-std::vector<BaseThread*> ThreadManager::thread_pool;
-ThreadManager::ThreadManagerStatus ThreadManager::status =
-    ThreadManagerStatus::NOT_INIT;
-std::shared_ptr<Semaphore> ThreadManager::exit_sema = nullptr;
-std::shared_ptr<ExitSemaTrigger> ThreadManager::exit_sema_trigger = nullptr;
+
+ThreadManager::ThreadManager() {
+  exit_sema = std::make_shared<Semaphore>(0);
+  exit_sema_trigger = std::make_shared<ExitSemaTrigger>(exit_sema);
+  thread_pool.push_back(new TimeThread(
+      "time_thread", 0, exit_sema_trigger));  // creat time thread
+  status = ThreadManagerStatus::INIT;
+}
 
 ThreadManager* ThreadManager::Instance() {
   std::lock_guard<std::mutex> lck(mtx);
   if (nullptr == instance) {
     instance = new ThreadManager();
-    exit_sema = std::make_shared<Semaphore>(0);
-    exit_sema_trigger = std::make_shared<ExitSemaTrigger>(exit_sema);
-    thread_pool.push_back(new TimeThread(
-        "time_thread", 0, exit_sema_trigger));  // creat time thread
-    status = ThreadManagerStatus::INIT;
     LOG_INFO("thread manager creat instance . \n");
   }
 
@@ -140,13 +138,15 @@ void ThreadManager::StopAll(int timeout_ms) {
       int ret = exit_sema->TimeWait(timeout_ms);
       if (ret) {
         LOG_INFO("thread pool normal exit . \n");
-        for (auto& t : thread_pool) {
-          delete t;
-        }
-        thread_pool.clear();
       } else {
         LOG_INFO("thread pool timeout exit . \n");
       }
+      
+      // delete thread
+      for (auto& t : thread_pool) {
+        delete t;
+      }
+      thread_pool.clear();
 
       status = ThreadManagerStatus::STOPED;
 

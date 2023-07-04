@@ -5,17 +5,16 @@
 typedef struct ComponentFunc {
   void (*init)(char*, int);
   void (*destroy)();
-  void (*exit_action)();
 } ComponentFunc;
 
 int StartProcess() {
   // 初始化线程等基础组件
   InitGomros();
 
-  // 加载组件 并初始化 component.xml
+  // 加载组件so  component.xml
   // 可以检查组件间版本依赖关系是否正确
-  ComponentFunc componet = {ComponentInit, ComponentDestroy,
-                            ComponentExitAction};
+  ComponentFunc componet = {ComponentInit, ComponentDestroy};
+
   // 根据配置加载动态库，调用启动接口
   componet.init(nullptr, 0);
 
@@ -23,10 +22,8 @@ int StartProcess() {
   StartGomros();
 
   // 等待结束信号
-  
 
   // 完成一些必要动作,结束组件
-  componet.exit_action();
   componet.destroy();
 
   // 关闭线程等基础组件
@@ -39,8 +36,9 @@ int Entry(int argc, char** argv) {
 
   // 读配置文件 product.xml
 
-  // 启动进程
+  // 启动进程 , 根据配置文件可启动多个
   StartProcess();
 
   // 等待所有进程结束
+  // 在等待过程中可监控进程状态
 }

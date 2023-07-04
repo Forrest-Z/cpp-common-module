@@ -1,6 +1,6 @@
 
 #pragma once
 
-void InitGomros();
-void StartGomros();
-void DestroyGomros();
+void InitGomros(){}
+void StartGomros(){}
+void DestroyGomros(){}
