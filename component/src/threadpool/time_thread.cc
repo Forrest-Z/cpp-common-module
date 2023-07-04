@@ -37,6 +37,7 @@ void TimeThread::DeleteTask(const std::string& name) {
     if ((*i)->name == name) {
       i = task_list.erase(i);
       LOG_INFO("delete timer task %s \n", name.c_str());
+      this->cond.notify_one();  // notify_once if task_list changed
     }
   }
 }
@@ -75,7 +76,7 @@ bool TimeThread::AddTask(const std::string& name, bool loopflag,
 
 void TimeThread::Exec() {
   while (is_alive) {
-    TaskItemType* task;
+    TaskItemType* task = nullptr;
     std::cv_status cond_ret;
     // wait and get task
     {

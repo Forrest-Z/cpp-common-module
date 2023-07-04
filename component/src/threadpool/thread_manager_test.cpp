@@ -19,7 +19,7 @@ static void AddNormalTask() {
   };
 
   gomros::threadpool::ThreadManager::Instance()->AddTask("normal", loop_func,
-                                                         break_func, 0);
+                                                         break_func);
 }
 
 static void AddQueueTask() {
@@ -29,7 +29,7 @@ static void AddQueueTask() {
   };
 
   auto ret_func = gomros::threadpool::ThreadManager::Instance()->AddTask(
-      "queue_thread", task_func, 0);
+      "queue_thread", task_func);
 
   auto thread_func = [](gomros::threadpool::VoidFunc notify_func) {
     int count = 6;
@@ -51,9 +51,9 @@ static void AddTimeTask() {
     printf("task_func1 running . \n");
   };
 
-  gomros::threadpool::ThreadManager::Instance()->AddTask("task0", false, 500,
+  gomros::threadpool::ThreadManager::Instance()->AddTimerTask("task0", false, 500,
                                                          task_func0);
-  gomros::threadpool::ThreadManager::Instance()->AddTask("task1", true, 900,
+  gomros::threadpool::ThreadManager::Instance()->AddTimerTask("task1", true, 900,
                                                          task_func1);
 }
 
@@ -67,11 +67,11 @@ TEST(threadpool, thread_manager) {
     gomros::threadpool::VoidFunc task_func2 = []() {
       printf("task_func2 running . \n");
     };
-    gomros::threadpool::ThreadManager::Instance()->AddTask("task2", true, 2000,
+    gomros::threadpool::ThreadManager::Instance()->AddTimerTask("task2", true, 2000,
                                                            task_func2);
-    gomros::threadpool::ThreadManager::Instance()->AddTask("task3", true, 3000,
+    gomros::threadpool::ThreadManager::Instance()->AddTimerTask("task3", true, 3000,
                                                            task_func2);
-    gomros::threadpool::ThreadManager::Instance()->AddTask("task4", true, 3500,
+    gomros::threadpool::ThreadManager::Instance()->AddTimerTask("task4", true, 3500,
                                                            task_func2);
   }
   AddQueueTask();

@@ -2,6 +2,7 @@
 #pragma once
 
 #include <functional>
+#include <map>
 #include <mutex>
 #include <string>
 #include <vector>
