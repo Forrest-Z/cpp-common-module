@@ -52,6 +52,8 @@ class TimeThread : public BaseThread {
   bool AddTask(const std::string& name, bool loopflag, int interval_ms,
                VoidFunc task_func, bool execute_immediately = true);
 
+  void DeleteTask(const std::string& name);
+
  private:
   /**
    * @brief 任务结构数据定义

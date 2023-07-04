@@ -31,12 +31,33 @@ void TimeThread::AddToTaskListAndSort(TaskItemType* item) {
   this->task_list.sort();
 }
 
+void TimeThread::DeleteTask(const std::string& name) {
+  std::lock_guard<std::mutex> lck(this->task_list_mtx);
+  for (auto i = task_list.begin(); i != task_list.end(); i++) {
+    if ((*i)->name == name) {
+      i = task_list.erase(i);
+      LOG_INFO("delete timer task %s \n", name.c_str());
+    }
+  }
+}
+
 bool TimeThread::AddTask(const std::string& name, bool loopflag,
                          int interval_ms, VoidFunc task_func,
                          bool execute_immediately) {
   if (interval_ms < 0) {
     LOG_ERROR("interval_ms is wrong , interval_ms =%d \n", interval_ms);
     return false;
+  }
+
+  // check if have same task name
+  {
+    std::lock_guard<std::mutex> lck(this->task_list_mtx);
+    for (auto i = task_list.begin(); i != task_list.end(); i++) {
+      if ((*i)->name == name) {
+        LOG_ERROR("task name repeated . name = %s \n", name.c_str());
+        return false;
+      }
+    }
   }
 
   // 任务加入等待队列

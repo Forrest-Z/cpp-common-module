@@ -9,6 +9,40 @@ namespace threadpool {
 
 ThreadManager* ThreadManager::instance = nullptr;
 std::mutex ThreadManager::mtx;
+ThreadManagerConfig* ThreadManager::cfg = nullptr;
+
+void ThreadManager::InitConfig(const ThreadManagerConfig& config) {
+  std::lock_guard<std::mutex> lck(mtx);
+  if (cfg != nullptr) {
+    cfg = new ThreadManagerConfig(config);
+    LOG_INFO("config init success . \n");
+  }
+}
+
+void ThreadManager::Destroy() {
+  {
+    std::lock_guard<std::mutex> lck(mtx);
+    delete instance;
+    instance = nullptr;
+
+    delete cfg;
+    cfg = nullptr;
+    LOG_INFO("thread manager instance destroy . \n");
+  }
+}
+
+ThreadPriority ThreadManager::GetPriority(const std::string& thread_name) {
+  if (cfg = nullptr) {
+    return ThreadPriority(0);
+  }
+
+  auto ret = cfg->priority_map.find(thread_name);
+  if (ret != cfg->priority_map.end()) {
+    return ret->second;
+  } else {
+    return ThreadPriority(0);
+  }
+}
 
 ThreadManager::ThreadManager() {
   exit_sema = std::make_shared<Semaphore>(0);
@@ -28,8 +62,13 @@ ThreadManager* ThreadManager::Instance() {
   return instance;
 }
 
-void ThreadManager::AddTask(const std::string& name, bool loop_flag,
-                            int interval_ms, VoidFunc func) {
+void ThreadManager::DeleteTimerTask(const std::string& name) {
+  std::lock_guard<std::mutex> lck(mtx);
+  dynamic_cast<TimeThread*>(thread_pool[0])->DeleteTask(name);
+}
+
+bool ThreadManager::AddTimerTask(const std::string& name, bool loop_flag,
+                                 int interval_ms, VoidFunc func) {
   std::lock_guard<std::mutex> lck(mtx);
   switch (status) {
     case ThreadManagerStatus::INIT:
@@ -50,22 +89,21 @@ static void NotifyQueueThreadFunc(gomros::threadpool::QueueThread* q_thread) {
   q_thread->NotifyRun();
 }
 
-VoidFunc ThreadManager::AddTask(const std::string& name, VoidFunc func,
-                                int priority) {
+VoidFunc ThreadManager::AddTask(const std::string& name, VoidFunc func) {
   std::lock_guard<std::mutex> lck(mtx);
 
   VoidFunc ret = [] {};
 
   switch (status) {
     case ThreadManagerStatus::INIT: {
-      auto queue_thread = new QueueThread(name, ThreadPriority(priority),
-                                          exit_sema_trigger, func);
+      auto queue_thread =
+          new QueueThread(name, GetPriority(name), exit_sema_trigger, func);
       thread_pool.push_back(queue_thread);
       ret = std::bind(NotifyQueueThreadFunc, queue_thread);
     } break;
     case ThreadManagerStatus::RUNNING: {
-      auto queue_thread = new QueueThread(name, ThreadPriority(priority),
-                                          exit_sema_trigger, func);
+      auto queue_thread =
+          new QueueThread(name, GetPriority(name), exit_sema_trigger, func);
       thread_pool.push_back(queue_thread);
       ret = std::bind(NotifyQueueThreadFunc, queue_thread);
       queue_thread->Start();  // start thread
@@ -78,19 +116,17 @@ VoidFunc ThreadManager::AddTask(const std::string& name, VoidFunc func,
 }
 
 void ThreadManager::AddTask(const std::string& name, VoidFunc loop_func,
-                            VoidFunc break_func, int priority) {
+                            VoidFunc break_func) {
   std::lock_guard<std::mutex> lck(mtx);
   switch (status) {
     case ThreadManagerStatus::INIT: {
-      auto normal_thread =
-          new NormalThread(name, ThreadPriority(priority), exit_sema_trigger,
-                           loop_func, break_func);
+      auto normal_thread = new NormalThread(
+          name, GetPriority(name), exit_sema_trigger, loop_func, break_func);
       thread_pool.push_back(normal_thread);
     } break;
     case ThreadManagerStatus::RUNNING: {
-      auto normal_thread =
-          new NormalThread(name, ThreadPriority(priority), exit_sema_trigger,
-                           loop_func, break_func);
+      auto normal_thread = new NormalThread(
+          name, GetPriority(name), exit_sema_trigger, loop_func, break_func);
       thread_pool.push_back(normal_thread);
       normal_thread->Start();
     } break;
@@ -141,7 +177,7 @@ void ThreadManager::StopAll(int timeout_ms) {
       } else {
         LOG_INFO("thread pool timeout exit . \n");
       }
-      
+
       // delete thread
       for (auto& t : thread_pool) {
         delete t;
