@@ -51,10 +51,10 @@ static void AddTimeTask() {
     printf("task_func1 running . \n");
   };
 
-  gomros::threadpool::ThreadManager::Instance()->AddTimerTask("task0", false, 500,
-                                                         task_func0);
-  gomros::threadpool::ThreadManager::Instance()->AddTimerTask("task1", true, 900,
-                                                         task_func1);
+  gomros::threadpool::ThreadManager::Instance()->AddTimerTask(
+      "task0", false, 500, task_func0, false);
+  gomros::threadpool::ThreadManager::Instance()->AddTimerTask(
+      "task1", true, 900, task_func1, false);
 }
 
 TEST(threadpool, thread_manager) {
@@ -67,12 +67,12 @@ TEST(threadpool, thread_manager) {
     gomros::threadpool::VoidFunc task_func2 = []() {
       printf("task_func2 running . \n");
     };
-    gomros::threadpool::ThreadManager::Instance()->AddTimerTask("task2", true, 2000,
-                                                           task_func2);
-    gomros::threadpool::ThreadManager::Instance()->AddTimerTask("task3", true, 3000,
-                                                           task_func2);
-    gomros::threadpool::ThreadManager::Instance()->AddTimerTask("task4", true, 3500,
-                                                           task_func2);
+    gomros::threadpool::ThreadManager::Instance()->AddTimerTask(
+        "task2", true, 2000, task_func2, false);
+    gomros::threadpool::ThreadManager::Instance()->AddTimerTask(
+        "task3", true, 3000, task_func2, false);
+    gomros::threadpool::ThreadManager::Instance()->AddTimerTask(
+        "task4", true, 3500, task_func2, false);
   }
   AddQueueTask();
 

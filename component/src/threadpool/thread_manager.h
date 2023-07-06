@@ -60,7 +60,7 @@ class ThreadManager {
    * @return false
    */
   bool AddTimerTask(const std::string& name, bool loop_flag, int interval_ms,
-                    VoidFunc func);
+                    VoidFunc func,bool execute_immediately);
   /**
    * @brief 从定时器中删除名称为name的task
    *

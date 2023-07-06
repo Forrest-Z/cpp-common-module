@@ -32,7 +32,7 @@ void ThreadManager::Destroy() {
 }
 
 ThreadPriority ThreadManager::GetPriority(const std::string& thread_name) {
-  if (cfg = nullptr) {
+  if (cfg == nullptr) {
     return ThreadPriority(0);
   }
 
@@ -68,16 +68,16 @@ void ThreadManager::DeleteTimerTask(const std::string& name) {
 }
 
 bool ThreadManager::AddTimerTask(const std::string& name, bool loop_flag,
-                                 int interval_ms, VoidFunc func) {
+                                 int interval_ms, VoidFunc func,bool execute_immediately) {
   std::lock_guard<std::mutex> lck(mtx);
   switch (status) {
     case ThreadManagerStatus::INIT:
       dynamic_cast<TimeThread*>(thread_pool[0])
-          ->AddTask(name, loop_flag, interval_ms, func);
+          ->AddTask(name, loop_flag, interval_ms, func,execute_immediately);
       break;
     case ThreadManagerStatus::RUNNING:
       dynamic_cast<TimeThread*>(thread_pool[0])
-          ->AddTask(name, loop_flag, interval_ms, func);
+          ->AddTask(name, loop_flag, interval_ms, func,execute_immediately);
       break;
     default:
       LOG_INFO("wrong invoke , current status is %d \n", status);
