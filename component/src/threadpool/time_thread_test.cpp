@@ -24,15 +24,15 @@ TEST(threadpool, time_thread) {
         exit_sema_trigger);
   }
 
-  t->AddTask("task0", false, 500, task_func0);
-  t->AddTask("task1", true, 900, task_func1);
-  t->AddTask("task2", true, 2000, task_func2);
+  t->AddTask("task0", false, false, 500, task_func0);
+  t->AddTask("task1", true, false, 900, task_func1);
+  t->AddTask("task2", true, false, 2000, task_func2);
 
   t->Start();
 
   sleep(10);
   t->DeleteTask("task1");
-   sleep(5);
+  sleep(5);
 
   printf("wait thread exit . \n");
   t->NotifyStop();

@@ -30,18 +30,18 @@ class TimeThread : public BaseThread {
   virtual void NotifyStop();
 
   /**
-   * @brief 添加定时任务，第一次执行时间为 interval_ms 间隔后
+   * @brief 添加定时任务
    *
    * @param name 任务名称
-   * @param loopflag 是否为循环任务，true:循环 ，false:一次
-   * @param interval_ms 间隔时间，单位ms , 小于零会报错
-   * @param task_func 任务函数
-   * @param execute_immediately 是否立即执行（当在运行中），true:是
+   * @param loop_flag 是否是循环任务 ， true:是
+   * @param execute_immediately 是否立即执行 ，  true:是
+   * @param interval_ms 时间间隔，等过interval_ms才开始执行
+   * @param func 任务函数
    * @return true 添加成功
    * @return false 添加失败
    */
-  bool AddTask(const std::string& name, bool loopflag, int interval_ms,
-               VoidFunc task_func, bool execute_immediately = true);
+  bool AddTask(const std::string& name, bool loop_flag,
+                    bool execute_immediately, int interval_ms, VoidFunc func);
 
   void DeleteTask(const std::string& name);
 

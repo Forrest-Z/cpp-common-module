@@ -1,5 +1,6 @@
 
 #include "base_thread.h"
+#include "thread_manager.h"
 
 namespace gomros {
 namespace threadpool {
@@ -20,6 +21,9 @@ void BaseThread::Run() {
   this->exit_sema_trigger = nullptr;  // 退出时，释放 exit_sema_trigger
   LOG_INFO("%s exec end , and exit_sema_trigger signal . \n",
            this->name.c_str());
+
+//
+  ThreadManager::Instance()->Delete(name);
 }
 
 BaseThread::~BaseThread() { this->thr.detach(); }

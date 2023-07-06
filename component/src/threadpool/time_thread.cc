@@ -39,9 +39,9 @@ void TimeThread::DeleteTask(const std::string& name) {
   }
 }
 
-bool TimeThread::AddTask(const std::string& name, bool loopflag,
-                         int interval_ms, VoidFunc task_func,
-                         bool execute_immediately) {
+bool TimeThread::AddTask(const std::string& name, bool loop_flag,
+                         bool execute_immediately, int interval_ms,
+                         VoidFunc func) {
   if (interval_ms < 0) {
     LOG_ERROR("interval_ms is wrong , interval_ms =%d \n", interval_ms);
     return false;
@@ -62,8 +62,8 @@ bool TimeThread::AddTask(const std::string& name, bool loopflag,
   gomros::common::TimestampType init_interval_us =
       execute_immediately ? 0 : interval_ms * 1000;
   TaskItemType new_item = {
-      common::TimeUtils::GetTimestamp_us() + init_interval_us, name, loopflag,
-      interval_ms, task_func};
+      common::TimeUtils::GetTimestamp_us() + init_interval_us, name, loop_flag,
+      interval_ms, func};
   this->AddToTaskListAndSort(new_item);
   LOG_DEBUG("%s\n", this->DebugTaskList().c_str());
   this->cond.notify_one();  // notify_once if task_list changed by new task
@@ -104,18 +104,21 @@ void TimeThread::Exec() {
         task = this->task_list.front();
         this->task_list.pop_front();
       }
-    }  // ! wait and get task
+      // }  // ! wait and get task
 
-    // run task
-    task.task_func();
+      // run task
+      task.task_func();
 
-    // re-add task if loop
-    if (task.loopflag) {
-      task.time_point += task.interval_ms * 1000;
-      this->AddToTaskListAndSort(task);
-      LOG_DEBUG("%s\n", this->DebugTaskList().c_str());
-    }
-  }  // ! while
+      // re-add task if loop
+      if (task.loopflag) {
+        task.time_point += task.interval_ms * 1000;
+        this->task_list.push_back(task);
+        //  对 task_list 按时间点升序进行排序，时间点最近在前面
+        this->task_list.sort();
+        
+      }
+    }  // ! wait and get task 扩大锁作用域
+  }    // ! while
 }
 
 std::string TimeThread::DebugTaskList() {
@@ -123,7 +126,7 @@ std::string TimeThread::DebugTaskList() {
   std::string ret;
 
   {
-    std::unique_lock<std::mutex> lck(this->task_list_mtx);
+    // std::unique_lock<std::mutex> lck(this->task_list_mtx);
     for (auto& i : this->task_list) {
       int len = snprintf(
           buf, sizeof(buf),

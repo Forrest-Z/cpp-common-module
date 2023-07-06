@@ -28,8 +28,9 @@ static void AddQueueTask() {
     printf("queue task_func running . \n");
   };
 
-  auto ret_func = gomros::threadpool::ThreadManager::Instance()->AddTask(
-      "queue_thread", task_func);
+  gomros::threadpool::VoidFunc ret_func;
+  gomros::threadpool::ThreadManager::Instance()->AddTask("queue_thread",
+                                                         task_func, &ret_func);
 
   auto thread_func = [](gomros::threadpool::VoidFunc notify_func) {
     int count = 6;
@@ -52,12 +53,14 @@ static void AddTimeTask() {
   };
 
   gomros::threadpool::ThreadManager::Instance()->AddTimerTask(
-      "task0", false, 500, task_func0, false);
+      "task0", false, false, 500, task_func0);
   gomros::threadpool::ThreadManager::Instance()->AddTimerTask(
-      "task1", true, 900, task_func1, false);
+      "task1", true, false, 900, task_func1);
 }
 
 TEST(threadpool, thread_manager) {
+  gomros::threadpool::ThreadManagerConfig cfg;
+  gomros::threadpool::ThreadManager::Instance()->Init(cfg);
   AddNormalTask();
   AddTimeTask();
 
@@ -68,15 +71,14 @@ TEST(threadpool, thread_manager) {
       printf("task_func2 running . \n");
     };
     gomros::threadpool::ThreadManager::Instance()->AddTimerTask(
-        "task2", true, 2000, task_func2, false);
-    gomros::threadpool::ThreadManager::Instance()->AddTimerTask(
-        "task3", true, 3000, task_func2, false);
-    gomros::threadpool::ThreadManager::Instance()->AddTimerTask(
-        "task4", true, 3500, task_func2, false);
+        "task2", true, false, 2000, task_func2);
   }
   AddQueueTask();
 
-  sleep(30);
+  sleep(5);
+  gomros::threadpool::ThreadManager::Instance()->DeleteTimerTask("task2");
+
+  sleep(20);
 
   gomros::threadpool::ThreadManager::Instance()->StopAll(3000);
   printf("wait thread manager exit . \n");
