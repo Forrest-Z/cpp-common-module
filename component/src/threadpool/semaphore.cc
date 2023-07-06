@@ -51,7 +51,7 @@ class SemaphoreImpl {
 
     t.tv_sec += timeout_ms / 1000;
     t.tv_nsec += (timeout_ms % 1000) * 1000000;
-    printf("t.sec = %ld \n", t.tv_sec);
+    
     int ret = sem_timedwait(cur_sema, &t);
 
     // int err = errno;
