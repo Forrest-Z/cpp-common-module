@@ -31,6 +31,8 @@ TEST(threadpool, time_thread) {
   t->Start();
 
   sleep(10);
+  t->DeleteTask("task1");
+   sleep(5);
 
   printf("wait thread exit . \n");
   t->NotifyStop();

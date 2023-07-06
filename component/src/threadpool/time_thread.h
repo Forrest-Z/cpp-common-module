@@ -36,15 +36,6 @@ class TimeThread : public BaseThread {
    * @param loopflag 是否为循环任务，true:循环 ，false:一次
    * @param interval_ms 间隔时间，单位ms , 小于零会报错
    * @param task_func 任务函数
-   */
-
-  /**
-   * @brief 添加定时任务，第一次执行时间为 interval_ms 间隔后
-   *
-   * @param name 任务名称
-   * @param loopflag 是否为循环任务，true:循环 ，false:一次
-   * @param interval_ms 间隔时间，单位ms , 小于零会报错
-   * @param task_func 任务函数
    * @param execute_immediately 是否立即执行（当在运行中），true:是
    * @return true 添加成功
    * @return false 添加失败
@@ -69,11 +60,11 @@ class TimeThread : public BaseThread {
     bool operator<(TaskItemType b) { return this->time_point < b.time_point; }
   } TaskItemType;
 
-  std::list<TaskItemType*> task_list;
+  std::list<TaskItemType> task_list;
   std::mutex task_list_mtx;
   std::condition_variable cond;
 
-  void AddToTaskListAndSort(TaskItemType* item);
+  void AddToTaskListAndSort(const TaskItemType& item);
 
   bool is_alive = true;
 
