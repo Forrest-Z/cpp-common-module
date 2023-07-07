@@ -81,5 +81,6 @@ TEST(threadpool, thread_manager) {
   sleep(20);
 
   gomros::threadpool::ThreadManager::Instance()->StopAll(3000);
+  sleep(5);
   printf("wait thread manager exit . \n");
 }

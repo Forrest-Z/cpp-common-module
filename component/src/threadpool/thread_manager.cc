@@ -52,6 +52,7 @@ void ThreadManager::Delete(const std::string& thread_name) {
     if ((*i)->GetName() == thread_name) {
       auto p = *i;
       i = thread_pool.erase(i);
+      LOG_INFO("delete thread_name = %s \n", thread_name.c_str());
       delete p;  // 删除对象
       return;
     }
