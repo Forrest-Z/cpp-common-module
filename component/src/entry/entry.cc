@@ -1,6 +1,7 @@
 
-#include "entry.h"
+#include "entry/entry.h"
 #include "component_interface.h"
+#include "gomros_interface.h"
 
 typedef struct ComponentFunc {
   void (*init)(char*, int);
@@ -13,7 +14,8 @@ int StartProcess() {
 
   // 加载组件so  component.xml
   // 可以检查组件间版本依赖关系是否正确
-  ComponentFunc componet = {ComponentInit, ComponentDestroy};
+  // 加载动态库 dlopen dlsym
+  ComponentFunc componet = {ComponentInit, ComponentUninit};
 
   // 根据配置加载动态库，调用启动接口
   componet.init(nullptr, 0);
@@ -36,7 +38,7 @@ int Entry(int argc, char** argv) {
 
   // 读配置文件 product.xml
 
-  // 启动进程 , 根据配置文件可启动多个
+  // 启动进程 , 根据配置文件可启动多个 , fork 子进程
   StartProcess();
 
   // 等待所有进程结束
