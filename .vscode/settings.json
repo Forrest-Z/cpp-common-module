@@ -70,7 +70,14 @@
     "*.txx": "cpp",
     "any": "cpp",
     "*.inc": "cpp",
-    "future": "cpp"
+    "future": "cpp",
+    "forward_list": "cpp",
+    "unordered_set": "cpp",
+    "filesystem": "cpp",
+    "slist": "cpp",
+    "shared_mutex": "cpp",
+    "regex": "cpp",
+    "valarray": "cpp"
   },
   "testMate.cpp.test.advancedExecutables": [
     {

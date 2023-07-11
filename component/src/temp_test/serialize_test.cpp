@@ -6,12 +6,23 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 
-#include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-
+#include <boost/archive/text_oarchive.hpp>
 
 #include <fstream>
 #include <sstream>
+
+// 模板递归
+template <typename F>
+void DTEST(F f) {
+  std::cout << f << std::endl;
+};
+
+template <typename F, typename... FF>
+void DTEST(F f, FF... ff) {
+  std::cout << f;
+  DTEST(ff...);
+};
 
 class gps_position {
  private:
@@ -56,8 +67,9 @@ class bus_stop {
 };
 
 TEST(temp, serialize) {
+  DTEST(5, 6,"abcdef");
   // create and open a character archive for output
-  std::stringstream  ofs;
+  std::stringstream ofs;
 
   // create class instance
   const gps_position g(35, 59, 24.567f);
@@ -68,9 +80,9 @@ TEST(temp, serialize) {
     boost::archive::text_oarchive oa(ofs);
     // write class instance to archive
     oa << g;
-   std::cout << ofs.str().size() << std::endl;
+    // std::cout << ofs.str().size() << std::endl;
     std::cout << ofs.str() << std::endl;
-    
+
     // archive and stream closed when destructors are called
   }
 
@@ -78,7 +90,7 @@ TEST(temp, serialize) {
   gps_position newg;
   {
     // create and open an archive for input
-    std::stringstream  ifs(ofs.str());
+    std::stringstream ifs(ofs.str());
     boost::archive::text_iarchive ia(ifs);
     // read class state from archive
     ia >> newg;
