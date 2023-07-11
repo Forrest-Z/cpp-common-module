@@ -10,4 +10,4 @@ namespace entry {
 
 void InitGomros(){}
 void StartGomros(){}
-void DestroyGomros(){}
+void UninitGomros(){}

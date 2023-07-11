@@ -5,6 +5,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${LIB_TEST_NAME}/bin)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+find_package(Boost REQUIRED COMPONENTS serialization)
+
 #####################################
 # package_inc
 #####################################
@@ -54,7 +56,7 @@ message("GTEST_LIBRARIES=${GTEST_LIBRARIES}")
 set(CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -fprofile-arcs -ftest-coverage")
 add_compile_options(-rdynamic -ggdb)
 
-link_libraries(  ${GTEST_LIBRARIES})
+link_libraries(  ${GTEST_LIBRARIES}   ${Boost_LIBRARIES})
 
 add_executable(${LIB_TEST_NAME}
 ${PACKAGE_SRC_component}
@@ -63,4 +65,5 @@ ${PACKAGE_SRC_component}
 target_link_libraries(${LIB_TEST_NAME}
   ${GTEST_LIBRARIES}
   -lpthread
+  ${Boost_LIBRARIES}
 )

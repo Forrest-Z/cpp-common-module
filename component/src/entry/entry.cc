@@ -5,7 +5,7 @@
 
 typedef struct ComponentFunc {
   void (*init)(char*, int);
-  void (*destroy)();
+  void (*uninit)();
 } ComponentFunc;
 
 int StartProcess() {
@@ -26,10 +26,10 @@ int StartProcess() {
   // 等待结束信号
 
   // 完成一些必要动作,结束组件
-  componet.destroy();
+  componet.uninit();
 
   // 关闭线程等基础组件
-  DestroyGomros();
+  UninitGomros();
 }
 
 // 主入口
