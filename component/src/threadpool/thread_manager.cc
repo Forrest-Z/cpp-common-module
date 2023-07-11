@@ -37,13 +37,13 @@ ThreadPriority ThreadManager::GetPriority(const std::string& thread_name) {
   }
 }
 
-ThreadManager* ThreadManager::Instance() {
+ThreadManager& ThreadManager::Instance() {
   if (nullptr == instance) {
     instance = new ThreadManager();
     LOG_INFO("thread manager creat instance . \n");
   }
 
-  return instance;
+  return *instance;
 }
 
 void ThreadManager::Delete(const std::string& thread_name) {

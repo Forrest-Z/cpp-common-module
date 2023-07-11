@@ -34,9 +34,9 @@ class ThreadManager {
   /**
   * @brief 实例化threadmanager
   *
-  * @return ThreadManager* 返回 threadmanager 单例指针
+  * @return ThreadManager& 返回 threadmanager 单例引用
   */
-  static ThreadManager* Instance();
+  static ThreadManager& Instance();
   /**
    * @brief 初始化线程池配置
    *

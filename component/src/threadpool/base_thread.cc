@@ -23,7 +23,7 @@ void BaseThread::Run() {
            this->name.c_str());
 
 //
-  ThreadManager::Instance()->Delete(name);
+  ThreadManager::Instance().Delete(name);
 }
 
 BaseThread::~BaseThread() { this->thr.detach(); }
