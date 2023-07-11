@@ -12,6 +12,8 @@
 #include <fstream>
 #include <sstream>
 
+#define NAME(a) #a
+
 // 模板递归
 template <typename F>
 void DTEST(F f) {
@@ -67,9 +69,11 @@ class bus_stop {
 };
 
 TEST(temp, serialize) {
-  DTEST(5, 6,"abcdef");
+  DTEST(5, 6, "abcdef");
   // create and open a character archive for output
   std::stringstream ofs;
+
+  std::cout << NAME(ofc) << std::endl;
 
   // create class instance
   const gps_position g(35, 59, 24.567f);
