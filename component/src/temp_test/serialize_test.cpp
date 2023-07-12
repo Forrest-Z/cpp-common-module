@@ -70,6 +70,9 @@ class bus_stop {
 
 TEST(temp, serialize) {
   DTEST(5, 6, "abcdef");
+  std::string s_test;
+  std::cout << "string max : " << s_test.max_size() / 1024 / 1024 / 1024
+            << " GB" << std::endl;
   // create and open a character archive for output
   std::stringstream ofs;
 
@@ -100,4 +103,23 @@ TEST(temp, serialize) {
     ia >> newg;
     // archive and stream closed when destructors are called
   }
+}
+
+TEST(temp, str) {
+  std::string s =
+      "B@\x90\x03\x08 "
+      "\x1c\x83@&\x02q\x00\x00\x00\x00@\x00\x01\x00@"
+      "\x08D\x14\x820\x100\x04b\x10`!\x13d\x00C\x00@A\x05H\x14\x06\x1a$"
+      "\x05\x18\x14d\x81\xa0\x0e\x10\x01IH\x00\x80\x04\x00\x10\x02\x00\xb0!"
+      "HPP\x01*a\x80\x90!\x11sB\x060\x00\x00\x06\x14\x01\x00("
+      "\xc1\x06\x02\x00\xcc\x81CA\x00\x19P\x10\x14\x10S\x01\x04("
+      "\x04D\xc1B\x12\x11\x10\xb8`\x05\x05\x00)\xc4\x12 \n";
+
+      for (auto&c:s)
+      {
+        std::cout << std::hex << (uint8_t)c;
+      }
+      
+
+  
 }
