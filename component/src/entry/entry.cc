@@ -1,16 +1,13 @@
 
-#include "entry/entry.h"
 #include "component_interface.h"
 #include "gomros_interface.h"
 
 typedef struct ComponentFunc {
-  void (*init)(char*, int);
-  void (*uninit)();
+  void (*init)(Componet* );
+  void (*uninit)(Componet*);
 } ComponentFunc;
 
 int StartProcess() {
-  // 初始化线程等基础组件
-  InitGomros();
 
   // 加载组件so  component.xml
   // 可以检查组件间版本依赖关系是否正确
@@ -18,7 +15,11 @@ int StartProcess() {
   ComponentFunc componet = {ComponentInit, ComponentUninit};
 
   // 根据配置加载动态库，调用启动接口
-  componet.init(nullptr, 0);
+  componet.init(nullptr);
+
+
+  // 初始化线程等基础组件
+  InitGomros();
 
   // start 基础组件
   StartGomros();
@@ -26,7 +27,7 @@ int StartProcess() {
   // 等待结束信号
 
   // 完成一些必要动作,结束组件
-  componet.uninit();
+  componet.uninit(nullptr);
 
   // 关闭线程等基础组件
   UninitGomros();
@@ -36,11 +37,16 @@ int StartProcess() {
 int Entry(int argc, char** argv) {
   // 解析参数
 
-  // 读配置文件 product.xml
+  // 一堆  if else 分支判断
 
-  // 启动进程 , 根据配置文件可启动多个 , fork 子进程
-  StartProcess();
 
-  // 等待所有进程结束
-  // 在等待过程中可监控进程状态
+  // // 读配置文件 product.xml 一个
+  // // 
+  // // 
+
+  // // 启动单个进程
+  // StartProcess();
+
+  // // 等待所有进程结束
+  // // 在等待过程中可监控进程状态
 }
