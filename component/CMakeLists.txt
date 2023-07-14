@@ -53,7 +53,7 @@ find_package(GTest REQUIRED)
 message("GTEST_INCLUDE_DIR=${GTEST_INCLUDE_DIR}")
 message("GTEST_LIBRARIES=${GTEST_LIBRARIES}")
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -rdynamic -fprofile-arcs -ftest-coverage")
 add_compile_options(-rdynamic -ggdb)
 
 link_libraries(  ${GTEST_LIBRARIES}   ${Boost_LIBRARIES})
@@ -62,8 +62,13 @@ add_executable(${LIB_TEST_NAME}
 ${PACKAGE_SRC_component}
   ${ALL_TEST_component}
 )
+
+
+add_library(dynamic_load_test SHARED test_data/dynamic_load_test.cc)
+
+
 target_link_libraries(${LIB_TEST_NAME}
   ${GTEST_LIBRARIES}
-  -lpthread
+  -lpthread -ldl
   ${Boost_LIBRARIES}
 )
