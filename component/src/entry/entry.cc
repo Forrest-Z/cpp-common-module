@@ -1,7 +1,11 @@
 
 #include "component_interface.h"
-#include "dynamic_load.h"
+#include "dynamicload/dynamic_load.h"
 #include "gomros_interface.h"
+#include "log/log.h"
+
+#include <sstream>
+#include <vector>
 
 int StartProcess() {
   // 初始化线程等基础组件
@@ -30,16 +34,20 @@ int StartProcess() {
 // 主入口
 int Entry(int argc, char** argv) {
   // 解析参数
+  std::vector<std::string> params;
+
+  std::stringstream ss;
+  for (int i = 0; i < argc; i++) {
+    ss << "arg[" << i << "] = " << argv[i];
+    params.push_back(std::string(argv[i]));
+  }
+  LOG_INFO("%s\n", ss.str().c_str());
 
   // 一堆  if else 分支判断
+  if (params[1] == "-product") {
+    // start product
+  } else if (params[1] == "-process") {
+    // start process
+  }
 
-  // // 读配置文件 product.xml 一个
-  // //
-  // //
-
-  // // 启动单个进程
-  // StartProcess();
-
-  // // 等待所有进程结束
-  // // 在等待过程中可监控进程状态
 }
