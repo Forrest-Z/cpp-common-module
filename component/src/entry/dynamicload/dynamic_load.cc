@@ -10,8 +10,12 @@
 namespace gomros {
 namespace entry {
 
+static void ComponentVoid(Componet *) { LOG_WARN("component void . \n"); }
+
 bool DynamicLoad::LoadEntryFunc(std::string ld_path, ComponentFunc *func_list) {
   void *handle = dlopen(ld_path.c_str(), RTLD_LAZY);
+  func_list->init = ComponentVoid;
+  func_list->uninit = ComponentVoid;
 
   if (!handle) {
     LOG_ERROR("%s\n", dlerror());

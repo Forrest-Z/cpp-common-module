@@ -1,12 +1,12 @@
-
+#pragma once
 #include "entry/componet.h"
 
 namespace gomros {
 namespace entry {
 
 typedef struct ComponentFunc {
-  void (*init)(Componet*);
-  void (*uninit)(Componet*);
+  void (*init)(Componet *);
+  void (*uninit)(Componet *);
 } ComponentFunc;
 
 /**
@@ -15,7 +15,10 @@ typedef struct ComponentFunc {
  */
 class DynamicLoad {
  public:
-  static bool LoadEntryFunc(std::string ld_path, ComponentFunc* func_list);
+  static bool LoadEntryFunc(std::string ld_path, ComponentFunc *func_list);
+
+  // 添加环境
+  static bool AddEnv(const std::string &name, std::string &value);
 };
 
 }  // namespace entry
