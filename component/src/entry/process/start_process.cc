@@ -9,7 +9,11 @@
 namespace gomros {
 namespace entry {
 
-void StartProcess::StartProduct() { LOG_INFO("start product . \n"); };
+void StartProcess::StartProduct() { LOG_INFO("start product . \n"); 
+
+  // product.xml
+
+};
 
 void StartProcess::StartSingleProcess(const std::string& name) {
   // 初始化线程等基础组件

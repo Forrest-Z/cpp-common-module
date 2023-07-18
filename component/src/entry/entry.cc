@@ -25,5 +25,6 @@ int Entry(int argc, char** argv) {
 
   } else if (params[1] == "-process") {
     // start process
+    gomros::entry::StartProcess::StartSingleProcess(params[2]);
   }
 }
