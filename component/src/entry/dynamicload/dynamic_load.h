@@ -17,8 +17,8 @@ class DynamicLoad {
  public:
   static bool LoadEntryFunc(std::string ld_path, ComponentFunc *func_list);
 
-  // 添加环境
-  static bool AddEnv(const std::string &name, std::string &value);
+  // 添加环境变量 只对当前进程生效
+  static bool AddEnv(const std::string &name, const std::string &value);
 };
 
 }  // namespace entry

@@ -45,5 +45,23 @@ bool DynamicLoad::LoadEntryFunc(std::string ld_path, ComponentFunc *func_list) {
   return true;
 }
 
+bool DynamicLoad::AddEnv(const std::string &name, const std::string &value) {
+  if (setenv(name.c_str(), value.c_str(), 1) != 0) {
+    LOG_ERROR("Failed to set environment variable.\n");
+    return false;
+  }
+
+  // 获取并打印设置的环境变量
+  char *var_value = std::getenv(name.c_str());
+  if (var_value != nullptr) {
+    LOG_INFO("Environment variable %s  is set to: %s .\n", name.c_str(),
+             var_value);
+  } else {
+    LOG_ERROR("Environment variable %s is not set.\n", name.c_str());
+  }
+
+  return true;
+}
+
 }  // namespace entry
 }  // namespace gomros

@@ -1,2 +1,0 @@
-
-#include "entry/componet.h"

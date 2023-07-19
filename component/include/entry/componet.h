@@ -29,7 +29,8 @@ class ThreadPool {
    */
   virtual bool AddTimerMsg(const std::string& name, bool loop_flag,
                            bool execute_immediately, int interval_ms,
-                           const std::string& topic, const std::string& msg);
+                           const std::string& topic,
+                           const std::string& msg) = 0;
 
   /**
  * @brief
@@ -58,8 +59,8 @@ class ComponetConfig {
       const std::string& filename,
       gomros::common::StringUtils::ParamsType& params) = 0;
 
-  template <typename A>
-  bool ReadConfigFile(std::string filename, A& out);
+  // template <typename A>
+  // bool ReadConfigFile(std::string filename, A& out);
 
 };  //   virtual std::string
     //   GetConfig(std::string& key) = 0;
@@ -77,16 +78,15 @@ class ComponetConfig {
 }  // namespace gomros
 
 class Componet {
- private:
-  Componet() = delete;
-  ~Componet() = delete;
+ public:
+  virtual ~Componet(){}
 
  public:
   virtual std::string GetName() = 0;
   virtual std::string GetPath() = 0;
 
   void* instance = nullptr;
-  
+
   gomros::entry::ComponetConfig* cfg = nullptr;
   gomros::entry::ThreadPool* threadpool = nullptr;
 };

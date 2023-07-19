@@ -9,20 +9,21 @@ namespace gomros {
 namespace entry {
 
 typedef struct ComponentFixCfgTypedef {
+  std::string name;
   std::string running_name;
   std::string fixed_keyval_map;  // key1:val1;key2;val2;
 } ComponentFixCfgTypedef;
 
-GPACK(ComponentFixCfgTypedef,false,running_name,fixed_keyval_map);
+GPACK(ComponentFixCfgTypedef, false, running_name, fixed_keyval_map);
 
 typedef struct ProcessCfgTypedef {
   std::string name;
-  std::vector<std::string> component;
+  std::vector<ComponentFixCfgTypedef> component;
 } ProcessCfgTypedef;
 
 /**
  * @brief product.xml
- * 
+ *
  */
 typedef struct ProductCfgTypedef {
   std::string name;
@@ -32,7 +33,7 @@ typedef struct ProductCfgTypedef {
 
 /**
  * @brief component.xml
- * 
+ *
  */
 typedef struct ComponentCfgTypedef {
   std::string name;
