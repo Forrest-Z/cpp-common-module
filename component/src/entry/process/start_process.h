@@ -10,6 +10,9 @@ class StartProcess {
   static void StartProduct();
 
   static void StartSingleProcess(const std::string& name);
+
+ private:
+  static bool GetProgramRunningPath(std::string& program_running_path);
 };
 
 }  // namespace entry

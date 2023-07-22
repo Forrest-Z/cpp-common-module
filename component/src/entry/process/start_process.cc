@@ -15,21 +15,18 @@ namespace entry {
 void StartProcess::StartProduct() {
   LOG_INFO("start product . \n");
 
+  std::string running_path;
+  GetProgramRunningPath(running_path);
+
+
   ComponentManager::Instance().Init();
-
-  std::vector<std::string> file_paths;
-  SearchFile::GetFilePaths(GOMROS_APPLICATION, file_paths);
-
-  if (file_paths.size() == 0) {
-    return;
-  }
 
   //
   std::vector<std::string> process_name_list;
   ComponentManager::Instance().GetProcessNameList(process_name_list);
   for (auto& sub_process_name : process_name_list) {
     std::string cmd;
-    cmd += file_paths[0];
+    cmd += running_path;
     cmd += " -process ";
     cmd += sub_process_name;
 
@@ -46,7 +43,7 @@ void StartProcess::StartProduct() {
 
 void StartProcess::StartSingleProcess(const std::string& name) {
   // init comp manager
-  LOG_INFO("start process . \n");
+  LOG_INFO("start subprocess . \n");
   ComponentManager::Instance().Init(name);
 
   //
@@ -71,6 +68,32 @@ void StartProcess::StartSingleProcess(const std::string& name) {
 
   ComponentManager::Instance().Uninit();
 };
+
+#include <stdio.h>
+#include <unistd.h>
+
+bool StartProcess::GetProgramRunningPath(std::string& program_running_path) {
+  program_running_path.clear();
+
+  char szBuf[UINT16_MAX];
+  char szPath[UINT16_MAX];
+
+  memset(szBuf, 0x00, sizeof(szBuf));
+  memset(szPath, 0x00, sizeof(szPath));
+
+  getcwd(szBuf, sizeof(szBuf) - 1);
+  LOG_INFO("buf:%s\n", szBuf);
+
+  int ret = readlink("/proc/self/exe", szPath, sizeof(szPath) - 1);
+  LOG_INFO("ret:%d", ret);
+  LOG_INFO("path:%s", szPath);
+
+  if (ret == -1) {
+    return false;
+  }
+
+  return true;
+}
 
 }  // namespace entry
 }  // namespace gomros

@@ -6,8 +6,22 @@ static bool running_flag = true;
 
 TEST(entry, entry_product) {
   int argc = 2;
-  char** argv;
-  argv[0] = "gomros";
-  argv[1] = "-product";
+  char** argv = (char**)malloc(3 * sizeof(char*));
+  argv[0] = (char*)"gomros";
+  argv[1] = (char*)"-product";
   Entry(argc, argv);
+
+  free(argv);
+}
+
+TEST(entry, entry_process) {
+  int argc = 3;
+  char** argv = (char**)malloc(3 * sizeof(char*));
+
+  argv[0] = (char*)"gomros";
+  argv[1] = (char*)"-process";
+  argv[2] = (char*)"test_process";
+  Entry(argc, argv);
+
+    free(argv);
 }

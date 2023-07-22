@@ -22,7 +22,7 @@ class SearchFile {
    *
    * @param file_name 文件名， eg: "product.xml"
    * @param file_paths 返回文件路径列表,按优先级排列，eg:
-   * {"/opt/gomros/run/ProductA/product.xml","/usr/admin/run/data/product.xml"}
+   * {"/opt/gomros/run/ProductA/product.xml","/opt/gomros/run/ProductA/config/product.xml"}
    * @return true 成功
    * @return false 失败
    */

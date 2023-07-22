@@ -5,8 +5,8 @@
 
 #include "../config_struct.h"
 
-#include "entry/componet.h"
 #include "componet_impl.h"
+#include "entry/componet.h"
 
 namespace gomros {
 namespace entry {
@@ -17,6 +17,9 @@ class ComponentManager {
   ~ComponentManager() {}
 
   static ComponentManager* instance;
+
+  // name , cfg
+  std::map<std::string,ComponentCfgTypedef> component_cfg_map;
 
   std::vector<ComponetImpl*> component_list;
   ProductCfgTypedef product_cfg;

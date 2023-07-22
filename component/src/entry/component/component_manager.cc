@@ -6,6 +6,7 @@
 #include "componet_impl.h"
 #include "log/log.h"
 #include "search_file.h"
+#include "../params_define.h"
 
 namespace gomros {
 namespace entry {
@@ -32,7 +33,13 @@ void ComponentManager::Init() {
 
 void ComponentManager::Init(std::string process_name) {
   Init();
-  // auto * comp_list
+  // read all comp cfg
+    std::vector<std::string> file_paths;
+
+  SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
+  // decode
+  this->component_cfg_map;
+
   for (auto& process : product_cfg.processes) {
     if (process.name == process_name) {
       this->process_name = process_name;
@@ -55,6 +62,11 @@ void ComponentManager::Uninit() {
 
 void ComponentManager::LoadAllComponent() {
   // component.xml
+    std::vector<std::string> file_paths;
+
+  SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
+
+  // serialize::decoder();
 
   // setenv
 

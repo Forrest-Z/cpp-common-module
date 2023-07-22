@@ -12,13 +12,15 @@ class ComponetConfigImpl : public ComponetConfig {
 
   virtual bool SetConfig(gomros::common::StringUtils::ParamsType& params) {}
 
+
+// 找其他 配置文件
+// template <A>
   virtual bool ReadAndMergeConfigFile(
       const std::string& filename,
       gomros::common::StringUtils::ParamsType& params) {}
 
-
   // template <typename A>
-  // bool ReadConfigFile(std::string filename, A& out);
+  // bool ReadConfigFile(std::string filename, A& out); // 按优先级找到一个文件 序列化
 };
 
 }  // namespace entry

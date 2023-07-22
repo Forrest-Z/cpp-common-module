@@ -21,6 +21,8 @@ typedef struct ProcessCfgTypedef {
   std::vector<ComponentFixCfgTypedef> component;
 } ProcessCfgTypedef;
 
+GPACK(ProcessCfgTypedef, false, name, component);
+
 /**
  * @brief product.xml
  *
@@ -30,6 +32,8 @@ typedef struct ProductCfgTypedef {
   std::string version;
   std::vector<ProcessCfgTypedef> processes;
 } ProductCfgTypedef;
+
+GPACK(ProductCfgTypedef, false, name, version, processes);
 
 /**
  * @brief component.xml
@@ -48,6 +52,9 @@ typedef struct ComponentCfgTypedef {
   std::string keyval_map;  // key1:val1;key2;val2;
 
 } ComponentCfgTypedef;
+
+GPACK(ComponentCfgTypedef, false, name, system_arch, brief_info, version,
+      has_entry, dependence_component, keyval_map);
 
 }  // namespace entry
 }  // namespace gomros
