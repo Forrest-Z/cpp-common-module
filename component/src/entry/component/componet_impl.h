@@ -3,6 +3,7 @@
 
 #include "../dynamicload/dynamic_load.h"
 #include "entry/componet.h"
+#include "../config_struct.h"
 
 namespace gomros {
 namespace entry {
@@ -29,6 +30,8 @@ class ComponetImpl : public Componet {
  private:
   std::string name;
   std::string running_name;
+
+  gomros::entry::ComponentCfgTypedef cfg;
 
   ComponentFunc func_list;
 };

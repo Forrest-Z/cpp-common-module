@@ -23,7 +23,7 @@ ComponentManager& ComponentManager::Instance() {
 }
 void ComponentManager::Init() {
   std::vector<std::string> file_paths;
-  SearchFile::GetFilePaths(PRODUCT_CONFIG_FILENAME, file_paths);
+  // SearchFile::GetFilePaths(PRODUCT_CONFIG_FILENAME, file_paths);
 
   // 读取合并后的 product.xml
   // serialize::decoder();
@@ -37,7 +37,7 @@ void ComponentManager::Init(std::string process_name) {
   // read all comp cfg
   std::vector<std::string> file_paths;
 
-  SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
+  // SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
   // decode
   this->component_cfg_map;
 
@@ -71,7 +71,7 @@ void ComponentManager::LoadAllComponent() {
   // component.xml
   std::vector<std::string> file_paths;
 
-  SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
+  // SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
 
   // serialize::decoder();
 

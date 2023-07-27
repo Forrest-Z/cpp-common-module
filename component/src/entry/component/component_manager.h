@@ -12,23 +12,6 @@ namespace gomros {
 namespace entry {
 
 class ComponentManager {
- private:
-  ComponentManager() {}
-  ~ComponentManager() {}
-
-  static ComponentManager* instance;
-
-  // name , cfg
-  std::map<std::string, ComponentCfgTypedef> component_cfg_map;
-
-  std::vector<ComponetImpl*> component_list;
-  ProductCfgTypedef product_cfg;
-
-  std::string process_name;
-  std::vector<std::string> subprocess_name;
-
-  std::shared_ptr<gomros::threadpool::Semaphore> end_sem;
-
  public:
   static ComponentManager& Instance();
 
@@ -49,6 +32,23 @@ class ComponentManager {
     process_name_list.clear();
     process_name_list = subprocess_name;
   }
+
+ private:
+  ComponentManager() {}
+  ~ComponentManager() {}
+
+  static ComponentManager* instance;
+
+  // name , cfg
+  std::map<std::string, ComponentCfgTypedef> component_cfg_map;
+
+  std::vector<ComponetImpl*> component_list;
+  ProductCfgTypedef product_cfg;
+
+  std::string process_name;
+  std::vector<std::string> subprocess_name;
+
+  std::shared_ptr<gomros::threadpool::Semaphore> end_sem;
 };
 
 }  // namespace entry

@@ -14,7 +14,7 @@ typedef struct ComponentFixCfgTypedef {
   std::string fixed_keyval_map;  // key1:val1;key2;val2;
 } ComponentFixCfgTypedef;
 
-GPACK(ComponentFixCfgTypedef, false, running_name, fixed_keyval_map);
+GPACK(ComponentFixCfgTypedef, false, name, running_name, fixed_keyval_map);
 
 typedef struct ProcessCfgTypedef {
   std::string name;
