@@ -1,5 +1,6 @@
 #pragma once
 #include "serialize/streambase.hpp"
+#include "common/data_buf.h"
 #include "pugixml.hpp"
 #include <stack>
 namespace gomros {
@@ -24,7 +25,7 @@ class XmlEncode : public encoder
     XmlEncode();
     ~XmlEncode(){}
     int format();
-    void result(databuf& buf);
+    void result(gomros::common::DataBuf& buf);
   public:
     void beginobject(const char *key);
     void endobject();
@@ -67,7 +68,7 @@ class XmlDecode : public decoder
     XmlDecode();
     ~XmlDecode(){}
     int format();
-    void from(databuf& buf);
+    void from(gomros::common::DataBuf& buf);
               
   public:                
   

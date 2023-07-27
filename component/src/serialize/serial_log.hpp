@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <cstring>
 
-#define MY_LOG_DEBUG 0
+#define MY_LOG_DEBUG 1
 
 // printf("DEBUG %s  %d  %s",__FILENAME__,__LINE__,__FUNCTION__);  \
 #define __FILENAME__ \

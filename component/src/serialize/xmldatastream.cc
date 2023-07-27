@@ -3,7 +3,7 @@
 #include<sstream>
 #include <cmath>
 #include "serial_log.hpp"
-#define MAX_DEPTH_XML 5
+
 namespace gomros {
 namespace serialize {
 struct xml_string_writer : xml_writer {
@@ -24,6 +24,7 @@ XmlEncode::XmlEncode() {
     if (mXmlCurNode == nullptr) {
     error_code = 1;
     }
+    MY_LOGDBG(" 开始序列化——————————————————————\n");
 }
 int XmlEncode::format() {
     return GOMROS_SERIAL_XML;
@@ -31,10 +32,12 @@ int XmlEncode::format() {
 void XmlEncode::beginobject(const char *key) {
     if (error_code > 0) return;
     xml_node lnode;
-    if (strcmp(key, "") == 0) {
-      lnode = mXmlCurNode.append_child("obj");
-    } else
-    lnode = mXmlCurNode.append_child(key);
+    {
+        if (strcmp(key, "") == 0) {
+        lnode = mXmlCurNode.append_child("obj");
+        } else
+      lnode = mXmlCurNode.append_child(key);
+    }
     mXmlCurNode = lnode;
     mbIsArrayT = false;
     mbIsListT = false;
@@ -101,7 +104,7 @@ void XmlEncode::beginmap(const char *key,int count) {
     if (error_code > 0) return;
     xml_node lnode;
     if (strcmp(key, "") == 0) {
-      lnode = mXmlCurNode.append_child("var");
+      lnode = mXmlCurNode.append_child("item");
     } else
     lnode = mXmlCurNode.append_child(key);
     mXmlCurNode = lnode;
@@ -134,22 +137,23 @@ void XmlEncode::encode(const char *key, const bool & o) {
     if (error_code > 0) return;
     if (mbIsListT || mbIsArrayT) {
     if(o)
+     mXmlCurNode.append_child(key).append_child(pugi::node_pcdata).set_value("true");
+    else
+     mXmlCurNode.append_child(key).append_child(pugi::node_pcdata).set_value("false");
+     } else {
+    if(o)
     mXmlCurNode.append_attribute(key) =
      "true";
     else
     mXmlCurNode.append_attribute(key) =
      "false";
-     } else {
-    if(o)
-     mXmlCurNode.append_child(key).append_child(pugi::node_pcdata).set_value("true");
-    else
-     mXmlCurNode.append_child(key).append_child(pugi::node_pcdata).set_value("false");
      }
 }
 void XmlEncode::encode(const char *key, const int & o) {
     if (error_code > 0) return;
     char buf[10];
     snprintf(buf, sizeof(buf), "%d", o);
+    MY_LOGDBG(" xml 序列化 插入 int 类型数据 =%d\n",o);
     if (mbIsListT || mbIsArrayT)
     mXmlCurNode.append_child(key).append_child(pugi::node_pcdata).set_value(buf);
     else
@@ -233,7 +237,7 @@ void XmlEncode::encode(const char *key, const float & o) {
     if(!std::isnormal(out)) {out = 0.0;
      //printf(fei zheng chang shuju\n");
      }
-    snprintf(buf, sizeof(buf), "%.3f", out);
+    snprintf(buf, sizeof(buf), "%.5f", out);
     if (mbIsListT || mbIsArrayT)
     mXmlCurNode.append_child(key).append_child(pugi::node_pcdata).set_value(buf);
     else
@@ -242,7 +246,7 @@ void XmlEncode::encode(const char *key, const float & o) {
 void XmlEncode::encode(const char *key, const double & o) {
     if (error_code > 0) return;
     char buf[17];
-    snprintf(buf, sizeof(buf), "%.3f", o);
+    snprintf(buf, sizeof(buf), "%.5f", o);
     if (mbIsListT || mbIsArrayT)
     mXmlCurNode.append_child(key).append_child(pugi::node_pcdata).set_value(buf);
     else
@@ -256,11 +260,13 @@ void XmlEncode::encode(const char *key, const std::string & o) {
     else
     mXmlCurNode.append_attribute(key) = o.c_str();
 };
-void XmlEncode::result(databuf& buf) {
+void XmlEncode::result(gomros::common::DataBuf& buf) {
     xml_string_writer writer;
     XmlDoc.save( writer, "  ");
+    MY_LOGDBG(" 序列化————结果数据=%s\n",writer.result.data());
     buf.From(writer.result.data(),writer.result.size()+1,true);
     buf.buf[buf.buflen] = ('\0');
+    MY_LOGDBG(" 数据长度=%ld\n",buf.buflen);
 }
 
 /********************反序列化类************************/
@@ -271,7 +277,7 @@ int XmlDecode::format() {
     int ret = GOMROS_SERIAL_XML;
     return ret;
 }
-void XmlDecode::from(databuf& buf) {
+void XmlDecode::from(gomros::common::DataBuf& buf) {
     error_code = 0;
     m_pos = 0;
     std::string str = (buf.buf);
@@ -304,10 +310,13 @@ void XmlDecode::de_beginobject(const char *key) {
         lnode = mXmlCurNode.next_sibling();
         miCurid ++;
     } else {
-    if (strcmp(key, "") == 0) {
-      lnode = mXmlCurNode.child("obj");
-    } else
-    lnode = mXmlCurNode.child(key); }
+    {
+        if (strcmp(key, "") == 0) {
+        lnode = mXmlCurNode.child("obj");
+        } else
+        lnode = mXmlCurNode.child(key); 
+        }
+    }
     mXmlCurNode = lnode;
     if (mXmlCurNode == nullptr) {
     error_code = 3;
@@ -472,7 +481,7 @@ void XmlDecode::de_beginmap(const char *key,int& count) {
         miCurid ++;
     } else {
     if (strcmp(key, "") == 0) {
-      lnode = mXmlCurNode.child("var");
+      lnode = mXmlCurNode.child("item");
     } else
     lnode = mXmlCurNode.child(key); }
     mXmlCurNode = lnode;

@@ -2,11 +2,11 @@
 #include <vector>
 
 #include "../params_define.h"
+#include "../params_define.h"
 #include "component_manager.h"
 #include "componet_impl.h"
 #include "log/log.h"
 #include "search_file.h"
-#include "../params_define.h"
 
 namespace gomros {
 namespace entry {
@@ -23,18 +23,19 @@ ComponentManager& ComponentManager::Instance() {
 }
 void ComponentManager::Init() {
   std::vector<std::string> file_paths;
-
   SearchFile::GetFilePaths(PRODUCT_CONFIG_FILENAME, file_paths);
 
   // 读取合并后的 product.xml
   // serialize::decoder();
   product_cfg;
+
+  end_sem = std::make_shared<gomros::threadpool::Semaphore>(0);
 }
 
 void ComponentManager::Init(std::string process_name) {
   Init();
   // read all comp cfg
-    std::vector<std::string> file_paths;
+  std::vector<std::string> file_paths;
 
   SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
   // decode
@@ -60,9 +61,15 @@ void ComponentManager::Uninit() {
   LOG_INFO("delete instance . \n");
 }
 
+void ComponentManager::WaitEnd() {
+  LOG_INFO("wait end . \n");
+
+  this->end_sem->Wait();
+}
+
 void ComponentManager::LoadAllComponent() {
   // component.xml
-    std::vector<std::string> file_paths;
+  std::vector<std::string> file_paths;
 
   SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
 

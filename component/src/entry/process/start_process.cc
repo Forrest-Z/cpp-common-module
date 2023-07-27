@@ -18,7 +18,6 @@ void StartProcess::StartProduct() {
   std::string running_path;
   GetProgramRunningPath(running_path);
 
-
   ComponentManager::Instance().Init();
 
   //
@@ -37,7 +36,8 @@ void StartProcess::StartProduct() {
 
   // 主线程 监控 子线程或其他任务
 
-  // 等待结束信号
+  // 等待结束信号 退出消息 (收到退出消息时产生结束信号)
+  ComponentManager::Instance().WaitEnd();
   //
 }
 
@@ -57,8 +57,8 @@ void StartProcess::StartSingleProcess(const std::string& name) {
   // start 基础组件
   StartGomros();
 
-  // 等待结束信号
-  //
+  // 等待结束信号 退出消息
+  ComponentManager::Instance().WaitEnd();
 
   // uninit all component
   ComponentManager::Instance().UnInitAllComponent();

@@ -1,5 +1,6 @@
 #pragma once
 #include "serialize/streambase.hpp"
+#include "common/data_buf.h"
 #define SIZE_LIST_SECTOR 1000
 namespace gomros {
 namespace serialize {
@@ -9,7 +10,7 @@ class ByteEncode : public encoder
     ByteEncode();
     ~ByteEncode(){}
     int format();
-    void result(databuf& buf);
+    void result(gomros::common::DataBuf& buf);
   public:
     void beginobject(const char *key);
     void endobject();
@@ -51,7 +52,7 @@ class ByteDecode : public decoder
     ByteDecode();
     ~ByteDecode(){}
     int format();
-    void from(databuf& buf);
+    void from(gomros::common::DataBuf& buf);
               
   public:                
   

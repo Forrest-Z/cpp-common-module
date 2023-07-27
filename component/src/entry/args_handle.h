@@ -10,6 +10,10 @@
 namespace gomros {
 namespace entry {
 
+/**
+ * @brief 解析从Entry传过来的参数，如 -cmd1 parms1 parms2  -cmd2 parms3
+ * 
+ */
 class ArgsHandle {
  public:
   // -cmd1 parms1 parms2  -cmd2 parms3

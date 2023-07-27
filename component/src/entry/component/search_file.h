@@ -38,7 +38,7 @@ class SearchFile {
 
     dir = opendir(folderPath.c_str());
     if (dir == nullptr) {
-      printf("Failed to open directory: ");
+      printf("Failed to open directory: %s ", folderPath.c_str());
       return false;
     }
 

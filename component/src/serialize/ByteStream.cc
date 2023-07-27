@@ -133,7 +133,7 @@ void ByteEncode::encode(const char *key, const std::string & o) {
     addbuf(o.data(), len);
     // //MY_LOGDBG(" 写入STRING string= %s\n",o.c_str());
 };
-void ByteEncode::result(databuf& buf) {
+void ByteEncode::result(gomros::common::DataBuf& buf) {
     std::vector<st_mem> vec;
     vec.assign(m_buf.begin(),m_buf.end());
     // st_mem begiin = m_buf.front();
@@ -147,7 +147,7 @@ void ByteEncode::result(databuf& buf) {
     // while (WriteByte < m_SizeWrited) {
     //     buf_temp.buf
     // }
-    buf.From((char*)vec.data(), m_SizeWrited, true);
+    buf.From((const char*)vec.data(), m_SizeWrited, true);
     // //MY_LOGDBG("result m_buf[0]=%d,data_buf[0]=%d,buf.buf[0]=%d\n\n",begiin.memSeg[0],data_buf[0],buf.buf[0]);
     //MY_LOGDBG(" 写入m_SizeWrited= %d\n",m_SizeWrited);
     // std::cout << "result size = " << vec.size() << "" << std::endl;
@@ -162,7 +162,7 @@ int ByteDecode::format() {
     int ret = GOMROS_SERIAL_DEFAULT;
     return ret;
 }
-void ByteDecode::from(databuf& buf) {
+void ByteDecode::from(gomros::common::DataBuf& buf) {
     m_buf.resize(buf.datalen);
     // m_buf.assign(buf.buf[0],buf.buf[buf.len-1]);
     std::memcpy(m_buf.data(),buf.buf,buf.datalen);

@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "../config_struct.h"
-
 #include "componet_impl.h"
 #include "entry/componet.h"
+#include "threadpool/semaphore.h"
 
 namespace gomros {
 namespace entry {
@@ -19,13 +19,15 @@ class ComponentManager {
   static ComponentManager* instance;
 
   // name , cfg
-  std::map<std::string,ComponentCfgTypedef> component_cfg_map;
+  std::map<std::string, ComponentCfgTypedef> component_cfg_map;
 
   std::vector<ComponetImpl*> component_list;
   ProductCfgTypedef product_cfg;
 
   std::string process_name;
   std::vector<std::string> subprocess_name;
+
+  std::shared_ptr<gomros::threadpool::Semaphore> end_sem;
 
  public:
   static ComponentManager& Instance();
@@ -37,6 +39,8 @@ class ComponentManager {
   void Uninit();
 
   void LoadAllComponent();
+
+  void WaitEnd();
 
   void InitAllComponent();
   void UnInitAllComponent();

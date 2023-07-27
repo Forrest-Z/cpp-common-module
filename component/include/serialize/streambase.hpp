@@ -6,44 +6,28 @@
 #include <map>
 #include <cstring>
 #include "macrohelpers.h"
+#include "common/data_buf.h"
 #include <memory>
-#include <cxxabi.h>
 
 #define GOMROS_SERIAL_DEFAULT 0
 #define GOMROS_SERIAL_JSON    1
 #define GOMROS_SERIAL_XML     2
 #define GOMROS_SERIAL_ROS     3
-
+using namespace std;
 namespace gomros {
 namespace serialize {
   class encoder; class decoder;
 }}
 template <typename T>
-extern bool simple(const T& obj);
+extern bool s_simple(const T& obj);
 template <typename T>
 extern void s_encode(const T &obj, const char* key, gomros::serialize::encoder *coder) ;
 template <typename T>
- extern bool s_decode(T &obj, const char* key, gomros::serialize::decoder *decoder);
+extern bool s_decode(T &obj, const char* key, gomros::serialize::decoder *decoder);
 
 namespace gomros {
 namespace serialize {
 
-class databuf
-{
-    public:
-    databuf();
-    ~databuf();
-    void From(const char * buffer, size_t len, bool copydata);
-    void From(databuf &src, bool copydata);
-    void Checksize(size_t needlen, bool copydata);
-    
-    void Detach();
-    void Free();
-    size_t datalen;
-    size_t buflen;
-
-    char *buf;
-};
 
 /**
  * @brief 序列化操作类
@@ -65,8 +49,23 @@ public:
    * @brief 将序列化的数据输出
    * @param buf 结果存储变量
   */ 
-  virtual void result(databuf& buf){}
-  int GetType();   
+  virtual void result(gomros::common::DataBuf& buf){}
+
+  /**
+   * @brief 获取序列化格式 xml json格式 二进制格式
+   * @return 对应类型的标示
+  */   
+  int GetType();
+
+  /**
+   * @brief 判断数据类型是否是简单定长类型
+   * @return true 定长数据
+   * @return false 不定长数据
+  */
+  template <typename T>
+  bool simple(T &obj) {
+    return s_simple(obj);
+  }
 public:                
   /**
    * @brief 开始object数据 序列化
@@ -172,14 +171,12 @@ public:
    * @param o 写入的数据
   */ 
   virtual void encode(const char *key, const int8_t & o) {}
-  void encode(const char *key, int8_t & o);
   /**
    * @brief const int16_t 类型数据的序列化
    * @param key 对应的键值
    * @param o 写入的数据
   */ 
   virtual void encode(const char *key, const int16_t & o) {}
-  void encode(const char *key, int16_t & o);
 
   /**
    * @brief const int64_t 类型数据的序列化
@@ -187,7 +184,6 @@ public:
    * @param o 写入的数据
   */ 
   virtual void encode(const char *key, const int64_t & o) {}
-  void encode(const char *key, int64_t & o);
 
   /**
    * @brief const uint8_t 类型数据的序列化
@@ -195,14 +191,12 @@ public:
    * @param o 写入的数据
   */ 
   virtual void encode(const char *key, const uint8_t & o) {}
-  void encode(const char *key, uint8_t & o);
   /**
    * @brief const uint16_t 类型数据的序列化
    * @param key 对应的键值
    * @param o 写入的数据
   */ 
   virtual void encode(const char *key, const uint16_t & o) {}
-  void encode(const char *key, uint16_t & o);
 
   /**
    * @brief const uint32_t 类型数据的序列化
@@ -210,7 +204,6 @@ public:
    * @param o 写入的数据
   */ 
   virtual void encode(const char *key, const uint32_t & o) {}
-  void encode(const char *key, uint32_t & o);
 
   /**
    * @brief const uint64_t 类型数据的序列化
@@ -218,49 +211,13 @@ public:
    * @param o 写入的数据
   */ 
   virtual void encode(const char *key, const uint64_t & o) {}
-  void encode(const char *key, uint64_t & o);
 
-  /**
-   * @brief bool 类型数据的序列化
-   * @param key 对应的键值
-   * @param o 写入的数据
-  */   
-  void encode(const char *key, bool & o);
-
-  /**
-   * @brief char 类型数据的序列化
-   * @param key 对应的键值
-   * @param o 写入的数据
-  */  
-  void encode(const char *key, char & o);
-
-  /**
-   * @brief int 类型数据的序列化
-   * @param key 对应的键值
-   * @param o 写入的数据
-  */  
-  void encode(const char *key, int &o);
-
-  /**
-   * @brief float 类型数据的序列化
-   * @param key 对应的键值
-   * @param o 写入的数据
-  */  
-  void encode(const char *key, float & o);
-
-  /**
-   * @brief double 类型数据的序列化
-   * @param key 对应的键值
-   * @param o 写入的数据
-  */  
-  void encode(const char *key, double & o);
-
-  /**
-   * @brief string 类型数据的序列化
-   * @param key 对应的键值
-   * @param o 写入的数据
-  */  
-  void encode(const char *key, std::string & o);
+  // /**
+  //  * @brief string 类型数据的序列化
+  //  * @param key 对应的键值
+  //  * @param o 写入的数据
+  // */  
+  // void encode(const char *key, std::string & o);
 
 /**
  * @brief char 数组数据的序列化
@@ -278,7 +235,7 @@ void encode(const char *key, const char (&arr)[N])
 
   beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      encode("char",arr[i]);
+      encode("item",arr[i]);
   }   
   endarray();
 }
@@ -299,7 +256,7 @@ void encode(const char *key, const int (&arr)[N])
 
   beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      encode("int",arr[i]);
+      encode("item",arr[i]);
   }   
   endarray();
 }
@@ -320,7 +277,7 @@ void encode(const char *key, const int16_t (&arr)[N])
 
   beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      encode("int16_t",arr[i]);
+      encode("item",arr[i]);
   }   
   endarray();
 }
@@ -341,7 +298,7 @@ void encode(const char *key, const int64_t (&arr)[N])
 
   beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      encode("int64_t",arr[i]);
+      encode("item",arr[i]);
   }   
   endarray();
 }
@@ -362,7 +319,7 @@ void encode(const char *key, const uint8_t (&arr)[N])
 
   beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      encode("uint8_t",arr[i]);
+      encode("item",arr[i]);
   }   
   endarray();
 }
@@ -383,7 +340,7 @@ void encode(const char *key, const uint16_t (&arr)[N])
 
   beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      encode("uint16_t",arr[i]);
+      encode("item",arr[i]);
   }   
   endarray();
 }
@@ -404,7 +361,7 @@ void encode(const char *key, const uint32_t (&arr)[N])
 
   beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      encode("uint32_t",arr[i]);
+      encode("item",arr[i]);
   }   
   endarray();
 }
@@ -425,7 +382,7 @@ void encode(const char *key, const uint64_t (&arr)[N])
 
   beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      encode("uint64_t",arr[i]);
+      encode("item",arr[i]);
   }   
   endarray();
 }
@@ -446,7 +403,7 @@ void encode(const char *key, const float (&arr)[N])
 
   beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      encode("float",arr[i]);
+      encode("item",arr[i]);
   }   
   endarray();
 }
@@ -467,7 +424,7 @@ void encode(const char *key, const double (&arr)[N])
 
   beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      encode("double",arr[i]);
+      encode("item",arr[i]);
   }   
   endarray();
 }
@@ -489,7 +446,7 @@ void encode(const char *key, const std::string (&arr)[N])
 
   beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      encode("string",arr[i]);
+      encode("item",arr[i]);
   }   
   endarray();
 }
@@ -506,14 +463,14 @@ void encode(const char* key, const T & o)
 {              
   if(format() == 0) {
     int len = sizeof(T);
-    if (simple(o) == 1) {
+    if (s_simple(o) == true) {
       addbuf((char*)&o, len);
     } else {
       s_encode(o, key, this);
     }
     return;
   }
-  const char *tKey = "var";
+  const char *tKey = "item";
   if (strcmp(key, "") == 0) {
       s_encode(o,tKey,this);
     } else
@@ -532,7 +489,7 @@ void encode(const char *key, const T (&arr)[N])
   if(format() == 0) {
     int len = N;
     if (len < 0) return;
-    if (simple(arr[0])==1) {
+    if (s_simple(arr[0]) == true) {
       addbuf((char*)arr, sizeof(arr));
     } else {
     for (int i=0; i<len; i++) {
@@ -545,7 +502,7 @@ void encode(const char *key, const T (&arr)[N])
 
   beginarray(key); 
   for (size_t i = 0; i < N; i++) 
-    encode("var",arr[i]); 
+    encode("item",arr[i]); 
   endarray();
 }
 
@@ -555,88 +512,75 @@ void encode(const char *key, const T (&arr)[N])
 * \param val 待序列化数据
 */
 void encode(const char *key, const std::vector<char> &val);
-void encode(const char *key, std::vector<char> &val);
 
 /**
 * \brief vector<int> 类型数据的序列化
 * \param val 待序列化数据
 */
 void encode(const char *key, const std::vector<int> &val);
-void encode(const char *key, std::vector<int> &val);
 
 /**
 * \brief vector<int8_t> 类型数据的序列化
 * \param val 待序列化数据
 */
 void encode(const char *key, const std::vector<int8_t> &val);
-void encode(const char *key, std::vector<int8_t> &val);
 
 /**
 * \brief vector<int16_t> 类型数据的序列化
 * \param val 待序列化数据
 */
 void encode(const char *key, const std::vector<int16_t> &val);
-void encode(const char *key, std::vector<int16_t> &val);
 
 /**
 * \brief vector<int64_t> 类型数据的序列化
 * \param val 待序列化数据
 */
 void encode(const char *key, const std::vector<int64_t> &val);
-void encode(const char *key, std::vector<int64_t> &val);
 
 /**
 * \brief vector<uint8_t> 类型数据的序列化
 * \param val 待序列化数据
 */
 void encode(const char *key, const std::vector<uint8_t> &val);
-void encode(const char *key, std::vector<uint8_t> &val);
 
 /**
 * \brief vector<uint16_t> 类型数据的序列化
 * \param val 待序列化数据
 */
 void encode(const char *key, const std::vector<uint16_t> &val);
-void encode(const char *key, std::vector<uint16_t> &val);
 
 /**
 * \brief vector<uint32_t> 类型数据的序列化
 * \param val 待序列化数据
 */
 void encode(const char *key, const std::vector<uint32_t> &val);
-void encode(const char *key, std::vector<uint32_t> &val);
 
 /**
 * \brief vector<uint64_t> 类型数据的序列化
 * \param val 待序列化数据
 */
 void encode(const char *key, const std::vector<uint64_t> &val);
-void encode(const char *key, std::vector<uint64_t> &val);
 
 /**
 * \brief vector<float> 类型数据序列化
 * \param val 待序列化数据
 */
 void encode(const char *key, const std::vector<float> &val);
-void encode(const char *key, std::vector<float> &val);
 
 /**
 * \brief vector<double> 类型数据序列化
 * \param val 待序列化数据
 */
 void encode(const char *key, const std::vector<double> &val);
-void encode(const char *key, std::vector<double> &val);
 
 /**
 * \brief vector<string> 类型数据序列化
 * \param val 待序列化数据
 */
 void encode(const char *key, const std::vector<std::string> &val);
-void encode(const char *key, std::vector<std::string> &val);
-
 
 /**
-* \brief vector<string> 自定义类型数据序列化
+* \brief vector<T> 自定义类型数据序列化
 * \param val 待序列化数据
 */
 template <typename T>
@@ -648,7 +592,7 @@ void encode(const char *key, const std::vector<T> &val)
     if(format() == 0) {
         int len = count;
         const T& first=val[0];
-        if (simple(first)) {
+        if (s_simple(first) == true) {
         addbuf((char*)&first, sizeof(T)*len);
         } else {
         for (size_t i = 0; i < count; i++)
@@ -656,7 +600,7 @@ void encode(const char *key, const std::vector<T> &val)
         }
     } else {
         for (size_t i = 0; i < count; i++)
-            encode("var",val[i]);
+            encode("item",val[i]);
     }
   }
   endlist(); 
@@ -669,12 +613,13 @@ void encode(const char *key, const std::vector<T> &val)
  * @param val list数据
 */
 template <typename T>
-void encode(const char *key, std::list<T> &val) 
+void encode(const char *key, const std::list<T> &val) 
 {
+    
     beginlist(key,val.size());
     for (auto it=val.begin();it!=val.end();it++)
     {
-        encode("var",*it);
+        encode("item",*it);
     }   
     endlist();
 }
@@ -685,7 +630,7 @@ void encode(const char *key, std::list<T> &val)
  * @param val map数据
 */
 template <typename K, typename T>
-void encode(const char *key, std::map<K,T> &val)
+void encode(const char *key, const std::map<K,T> &val)
 {
     beginlist(key,val.size());
     for (auto it=val.begin();it!=val.end();it++)
@@ -720,8 +665,18 @@ public:
      * @brief 从buf中加载要反序列化的数据
      * @return 对应类型的标识
     */ 
-    virtual void from(databuf& buf){}
+    virtual void from(gomros::common::DataBuf& buf){}
     int GetType();
+
+    /**
+     * @brief 判断数据类型是否是简单定长类型
+     * @return true 定长数据
+     * @return false 不定长数据
+    */
+    template <typename T>
+    bool simple(T &obj) {
+      return s_simple(obj);
+    }
 public:
 
   /**
@@ -882,14 +837,14 @@ bool decode(const char* key, T & o)
       if (len < 0) {
       return false;
       }
-      if (simple(o)) {
+      if (s_simple(o) == true) {
         readbuf((char*)&o, len);
       } else {
         s_decode(o,key,this);
       }
       return true;
     }
-    const char *tKey = "var";
+    const char *tKey = "item";
     if (strcmp(key, "") == 0) {
       s_decode(o,tKey,this);
     } else
@@ -915,7 +870,7 @@ bool decode(const char *key, char (&arr)[N])
   }
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      decode("char",arr[i]);
+      decode("item",arr[i]);
   }   
   de_endarray();
 }
@@ -941,7 +896,7 @@ bool decode(const char *key, int (&arr)[N])
 
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      decode("int",arr[i]);
+      decode("item",arr[i]);
   } 
   de_endarray();
 }
@@ -966,7 +921,7 @@ bool decode(const char *key, int8_t (&arr)[N])
 
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      decode("int8_t",arr[i]);
+      decode("item",arr[i]);
   } 
   de_endarray();
 }
@@ -991,7 +946,7 @@ bool decode(const char *key, int16_t (&arr)[N])
 
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      decode("int16_t",arr[i]);
+      decode("item",arr[i]);
   } 
   de_endarray();
 }
@@ -1017,7 +972,7 @@ bool decode(const char *key, int64_t (&arr)[N])
 
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      decode("int64_t",arr[i]);
+      decode("item",arr[i]);
   } 
   de_endarray();
 }
@@ -1042,7 +997,7 @@ bool decode(const char *key, uint8_t (&arr)[N])
 
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      decode("uint8_t",arr[i]);
+      decode("item",arr[i]);
   } 
   de_endarray();
 }
@@ -1067,7 +1022,7 @@ bool decode(const char *key, uint16_t (&arr)[N])
 
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      decode("uint16_t",arr[i]);
+      decode("item",arr[i]);
   } 
   de_endarray();
 }
@@ -1093,7 +1048,7 @@ bool decode(const char *key, uint32_t (&arr)[N])
 
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      decode("uint32_t",arr[i]);
+      decode("item",arr[i]);
   } 
   de_endarray();
 }
@@ -1118,7 +1073,7 @@ bool decode(const char *key, uint64_t (&arr)[N])
 
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      decode("uint64_t",arr[i]);
+      decode("item",arr[i]);
   } 
   de_endarray();
 }
@@ -1143,7 +1098,7 @@ bool decode(const char *key, float (&arr)[N])
 
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      decode("float",arr[i]);
+      decode("item",arr[i]);
   } 
   de_endarray();
 }
@@ -1168,7 +1123,7 @@ bool decode(const char *key, double (&arr)[N])
 
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      decode("double",arr[i]);
+      decode("item",arr[i]);
   } 
   de_endarray();
 }
@@ -1194,7 +1149,7 @@ bool decode(const char *key, std::string (&arr)[N])
 
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) {
-      decode("string",arr[i]);
+      decode("item",arr[i]);
   } 
   de_endarray();
 }
@@ -1213,20 +1168,20 @@ bool decode(const char *key, T (&arr)[N])
     if (len < 0) {
     return false;
     }
-    if (simple(arr[0])) {
+    if (s_simple(arr[0]) == true) {
       readbuf((char *)arr,len*sizeof(T));
     } else {
     for (int i=0; i<len; i++) {
       s_decode(arr[i],"",this);
-      // decode("var",arr[i]);
+      // decode("item",arr[i]);
     }
     }
     return true; 
   }
   de_beginarray(key); 
   for (size_t i = 0; i < N; i++) 
-      //decode("var",arr[i]);
-       s_decode(arr[i],"var",this);
+      //decode("item",arr[i]);
+       s_decode(arr[i],"item",this);
   de_endarray(); 
 }
 
@@ -1347,7 +1302,7 @@ bool decode(const char *key, std::vector<T> &val)
     return false;
     }
     val.resize(len);
-    if (simple(val[0])) {
+    if (s_simple(val[0]) == true) {
       readbuf((char *)val.data(),len*sizeof(T));
     } else {
     for (size_t i = 0; i < len; i++)
@@ -1356,8 +1311,8 @@ bool decode(const char *key, std::vector<T> &val)
   } else {
     val.resize(count);
     for (size_t i = 0; i < count; i++)
-        // decode("var",val[i]);
-        s_decode(val[i],"var",this);
+        // decode("item",val[i]);
+        s_decode(val[i],"item",this);
     de_endlist();
   }
 }
@@ -1376,7 +1331,7 @@ void decode(const char *key, std::list<T> &val)
     de_beginlist(key,count);
     val.resize(count);
     for (auto it=val.begin();it!=val.end();it++) {
-      decode("var",*it);
+      decode("item",*it);
     }
     de_endlist();
 }
@@ -1405,61 +1360,12 @@ void decode(const char *key, std::map<K,T> &val)
 
 };
 
-/**
- * @brief 序列化及反序列化实施
- * 将不同类型的数据进行序列化，支持XML,JSON,二进制格式
-*/
-class utils
-{
-  public:
-    /**
-    * @brief 序列化操作api接口
-    * @param o 要序列化的具体数据
-    * @param ntype 序列化格式 0-二进制  1-json  2-xml
-    * @param buf 序列化成功后输出结果
-    * @return false 序列化失败
-    * @return true 序列化失败
-    */
-    template<typename T>
-    static bool encode(T& o,int ntype,databuf &buf)
-    {
-        encoder* coder=getencoder(ntype);
-        coder->encode("",o);
-        coder->result(buf);
-        if (coder->error_code > 0)
-        return false;
-        else
-        return true;
-    }
-
-    /**
-    * @brief 反序列化操作api接口
-    * @param o 反序列化的具体数据
-    * @param ntype 反序列化格式 0-二进制  1-json  2-xml
-    * @param buf 反序列化成功后输出结果
-    * @return false 反序列化失败
-    * @return true 反序列化失败
-    */
-    template<typename T>
-    static bool decode(int ntype,databuf &buf,T& o)
-    {
-        decoder* decoder = getdecoder(ntype);
-        decoder->from(buf);
-        decoder->decode("",o);
-        if (decoder->error_code > 0)
-        return false;
-        else
-        return true;
-    }
-    static encoder * getencoder(int ntype);
-    static decoder * getdecoder(int ntype);
-};
 
 #define GPACK(GTYP,GDS,...)                         \
-    static bool simple(const GTYP &obj)             \
+    static bool s_simple(const GTYP &obj)           \
     {                                               \
     return GDS;                                     \
-    }                                           \
+    }                                               \
     static void s_encode(const GTYP& obj,const char* key,gomros::serialize::encoder *coder)  \
     {                                               \
         coder->beginobject(key);                    \
@@ -1489,7 +1395,277 @@ class utils
                _7, _6, _5, _4, _3, _2, _1, N) (__VA_ARGS__);   \
         decoder->de_endobject();                    \
         return true;                                \
-    }    
+    }
+
+
+  #define DT_BASE(CUS_TYPE,GDS)                    \
+  struct ST_BASE_##CUS_TYPE                        \
+  {                                                \
+  CUS_TYPE oval;                                   \
+  };                                               \
+  GPACK(ST_BASE_##CUS_TYPE,GDS,oval)
+
+  /*
+  * @brief 基本数据类型int的序列化接口扩充
+  */
+  DT_BASE(int,true)
+  DT_BASE(int8_t,true)
+  DT_BASE(int16_t,true)
+  DT_BASE(int32_t,true)
+  DT_BASE(int64_t,true)
+
+  DT_BASE(uint8_t,true)
+  DT_BASE(uint16_t,true)
+  DT_BASE(uint32_t,true)
+  DT_BASE(uint64_t,true)
+
+  /*
+  * @brief 基本数据类型 char 的序列化接口扩充
+  */
+  DT_BASE(char,true)
+
+  /*
+  * @brief 基本数据类型 float 的序列化接口扩充
+  */
+  DT_BASE(float,true)
+
+  /*
+  * @brief 基本数据类型 double 的序列化接口扩充
+  */
+  DT_BASE(double,true)
+
+  /*
+  * @brief 基本数据类型 string 的序列化接口扩充
+  */
+  struct ST_BASE_string {
+  std::string oval;
+  };
+  GPACK(ST_BASE_string,false,oval)
+
+  /*
+  * @brief 基本数据类型 加外壳后 的序列化相关接口扩充
+  */
+  #define DT_BASE_ENC(CUS_TYPE)                                       \
+  static bool encode(const CUS_TYPE &o,int ntype,gomros::common::DataBuf& buf) {      \
+  ST_BASE_##CUS_TYPE &objT = (ST_BASE_##CUS_TYPE&)o;                  \
+  bool ret = encode(objT,ntype,buf);                                  \
+  return ret;                                               \
+  }                                                         \
+  static bool decode(int ntype,gomros::common::DataBuf &buf,CUS_TYPE& o) {      \
+  ST_BASE_##CUS_TYPE objT;                                      \
+  bool ret = decode(ntype, buf, objT);                          \
+  o = objT.oval;                                               \
+  return ret;                                               \
+  }                                                         \
+  static bool getsample(const CUS_TYPE &obj) {              \
+    return  true;                                           \
+  }
+/**
+ * @brief 序列化及反序列化实施
+ * 将不同类型的数据进行序列化，支持XML,JSON,二进制格式
+*/
+class utils
+{
+public:
+  /**
+  * @brief 基本数据类型 序列化 操作api接口
+  * @param o 要序列化的int类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  DT_BASE_ENC(int);
+
+  /**
+  * @brief 基本数据类型 序列化操作api接口
+  * @param o 要序列化的 int8_t 类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  DT_BASE_ENC(int8_t);
+
+  /**
+  * @brief 基本数据类型 序列化操作api接口
+  * @param o 要序列化的 int16_t 类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  DT_BASE_ENC(int16_t);
+
+
+  /**
+  * @brief 基本数据类型 序列化操作api接口
+  * @param o 要序列化的 int64_t 类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  DT_BASE_ENC(int64_t);
+
+  /**
+  * @brief 基本数据类型 序列化操作api接口
+  * @param o 要序列化的 uint8_t 类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  DT_BASE_ENC(uint8_t);
+
+  /**
+  * @brief 基本数据类型 序列化操作api接口
+  * @param o 要序列化的 uint16_t 类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  DT_BASE_ENC(uint16_t);
+
+  /**
+  * @brief 基本数据类型 序列化操作api接口
+  * @param o 要序列化的 uint32_t 类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  DT_BASE_ENC(uint32_t);
+
+  /**
+  * @brief 基本数据类型 序列化操作api接口
+  * @param o 要序列化的 uint64_t 类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  DT_BASE_ENC(uint64_t);
+
+  /**
+  * @brief 基本数据类型 序列化操作api接口
+  * @param o 要序列化的 char 类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  DT_BASE_ENC(char);
+
+  /**
+  * @brief 基本数据类型 序列化操作api接口
+  * @param o 要序列化的 float 类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  DT_BASE_ENC(float);
+
+  /**
+  * @brief 基本数据类型 序列化操作api接口
+  * @param o 要序列化的 double 类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  DT_BASE_ENC(double);
+
+  /**
+  * @brief 基本数据类型 序列化操作api接口
+  * @param o 要序列化的 string 类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  static bool encode(const string &o,int ntype,gomros::common::DataBuf& buf) {
+    ST_BASE_string objT = {o};
+    bool ret = encode(objT,ntype,buf);
+    return ret;
+  }
+  /**
+  * @brief 基本数据类型 反序列化操作api接口
+  * @param o 要反序列化的 string 类型数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 反序列化成功后输出结果
+  * @return false 反序列化失败
+  * @return true 反序列化成功
+  */
+  static bool decode(int ntype,gomros::common::DataBuf &buf,std::string& o) {
+    ST_BASE_string objT;
+    bool ret = decode(ntype, buf, objT);
+    o = objT.oval;
+    return ret;
+  }
+
+  /**
+   * @brief 判断数据 string 类型是否是简单定长类型
+  */
+  static bool getsample(const std::string &obj) {
+    return  false;
+  }
+
+  /**
+  * @brief 序列化操作api接口
+  * @param o 要序列化的具体数据类型 T 数据
+  * @param ntype 序列化格式 0-二进制  1-json  2-xml
+  * @param buf 序列化成功后输出结果
+  * @return false 序列化失败
+  * @return true 序列化成功
+  */
+  template<typename T>
+  static bool encode(const T& o,int ntype,gomros::common::DataBuf &buf)
+  {
+      encoder* coder=getencoder(ntype);
+      coder->encode("root",o);
+      coder->result(buf);
+      if (coder->error_code > 0)
+      return false;
+      else
+      return true;
+  }
+
+  /**
+  * @brief 反序列化操作api接口
+  * @param o 反序列化的具体数据
+  * @param ntype 反序列化格式 0-二进制  1-json  2-xml
+  * @param buf 反序列化成功后输出结果
+  * @return false 反序列化失败
+  * @return true 反序列化成功
+  */
+  template<typename T>
+  static bool decode(int ntype,gomros::common::DataBuf &buf,T& o)
+  {
+      decoder* decoder = getdecoder(ntype);
+      decoder->from(buf);
+      decoder->decode("root",o);
+      if (decoder->error_code > 0)
+      return false;
+      else
+      return true;
+  }
+  static encoder * getencoder(int ntype);
+  static decoder * getdecoder(int ntype);
+  /**
+   * @brief 判断数据类型是否是简单定长类型
+   * @return true 定长数据
+   * @return false 不定长数据
+  */
+  template <typename T>
+  static bool getsample(T &obj) {
+    return  s_simple(obj);
+  }
+
+};
+
 
 }  // namespace serialize
 }  // namespace gomros
