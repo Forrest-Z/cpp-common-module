@@ -3,6 +3,7 @@
 
 #include "../params_define.h"
 #include "../params_define.h"
+#include "common/file_utils.h"
 #include "component_manager.h"
 #include "componet_impl.h"
 #include "log/log.h"
@@ -35,12 +36,43 @@ void ComponentManager::Init(
 
   SearchFile::Instance().GetFilePaths(PRODUCT_CONFIG_FILENAME, file_paths);
 
-  // 逐个读取合并 product.xml
-  // serialize::decoder();
-  // gomros::entry::ProductCfgTypedef  temp;
-  //     gomros::serialize::utils::decode(GOMROS_SERIAL_XML,temp);
+  for (auto& f : file_paths) {
+    std::string str_buf;
+    gomros::entry::ProductCfgTypedef temp;
+    std::string file_name = f + "/" + PRODUCT_CONFIG_FILENAME;
+    if (!gomros::common::FileUtils::ReadSmallFile(file_name, str_buf)) {
+      LOG_ERROR("read failed !!! file = %s ", file_name.c_str());
+    }
+    gomros::common::DataBuf buf;
+    buf.From(str_buf.data(), str_buf.size(), 1);
 
-  product_cfg;
+    if (!gomros::serialize::utils::decode(GOMROS_SERIAL_XML, buf, temp)) {
+      LOG_ERROR("decode failed !!! file = %s ", file_name.c_str());
+    }
+
+    buf.Free();
+
+    // 合并写入   product_cfg;
+    if (product_cfg == nullptr) {  // 第一个直接写入，后面的替换key val
+      product_cfg = new ProductCfgTypedef(temp);
+    } else {
+      for (auto& i : temp.processes) {
+        for (auto& j : product_cfg->processes) {  // 遍历process
+          if (i.name == j.name) {
+            for (auto& k : i.component) {
+              for (auto& l : j.component) {  // 遍历 component
+                if (k.running_name == l.running_name) {
+                  for (auto& fix : k.fixed_keyval_map) {
+                    l.fixed_keyval_map.insert({fix.first, fix.second});
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
   end_sem = std::make_shared<gomros::threadpool::Semaphore>(0);
 }
@@ -50,6 +82,31 @@ void ComponentManager::Init(
     std::map<std::string, std::vector<std::string>>& cmd_map) {
   Init(cmd_map);
   this->process_name = process_name;
+
+  //
+  std::vector<std::string> file_paths;
+  SearchFile::Instance().GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
+
+  for (auto& f : file_paths) {
+    std::string str_buf;
+    gomros::entry::ComponentCfgTypedef temp;
+    std::string file_name = f + "/" + COMPONENT_CONFIG_FILENAME;
+    if (!gomros::common::FileUtils::ReadSmallFile(file_name, str_buf)) {
+      LOG_ERROR("read failed !!! file = %s ", file_name.c_str());
+      break;
+    }
+    gomros::common::DataBuf buf;
+    buf.From(str_buf.data(), str_buf.size(), 1);
+
+    if (!gomros::serialize::utils::decode(GOMROS_SERIAL_XML, buf, temp)) {
+      LOG_ERROR("decode failed !!! file = %s ", file_name.c_str());
+      break;
+    }
+
+    buf.Free();
+
+    this->comp_name_path_map.insert({temp.name, f});
+  }
 }
 
 void ComponentManager::Uninit() {
@@ -66,20 +123,8 @@ void ComponentManager::WaitEnd() {
 }
 
 void ComponentManager::LoadAllComponent() {
-  // component.xml
-  std::vector<std::string> file_paths;
-
-  // SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
-  // read all comp cfg
-
-  // SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
-  // decode
-  this->component_cfg_map;
-
-  for (auto& process : product_cfg.processes) {
+  for (auto& process : product_cfg->processes) {
     if (process.name == process_name) {
-      this->process_name = process_name;
-
       for (auto& comp : process.component) {
         this->component_list.push_back(new ComponetImpl(comp));
       }
@@ -87,8 +132,6 @@ void ComponentManager::LoadAllComponent() {
       break;
     }
   }
-
-  // serialize::decoder();
 
   // setenv
 

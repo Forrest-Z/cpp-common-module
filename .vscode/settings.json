@@ -77,7 +77,8 @@
     "slist": "cpp",
     "shared_mutex": "cpp",
     "regex": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "component": "cpp"
   },
   "testMate.cpp.test.advancedExecutables": [
     {

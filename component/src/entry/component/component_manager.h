@@ -34,17 +34,26 @@ class ComponentManager {
     process_name_list = subprocess_name;
   }
 
+  bool GetComponentPath(const std::string& name, std::string& path) {
+    if (comp_name_path_map.find(name) != comp_name_path_map.end()) {
+      path = comp_name_path_map[name];
+      return true;
+    }
+
+    return false;
+  }
+
  private:
   ComponentManager() {}
   ~ComponentManager() {}
 
   static ComponentManager* instance;
 
-  // name , cfg
-  std::map<std::string, ComponentCfgTypedef> component_cfg_map;
+  // name , component_path
+  std::map<std::string, std::string> comp_name_path_map;
 
   std::vector<ComponetImpl*> component_list;
-  ProductCfgTypedef product_cfg;
+  ProductCfgTypedef* product_cfg = nullptr;
 
   std::string process_name;
   std::vector<std::string> subprocess_name;

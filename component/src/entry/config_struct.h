@@ -51,7 +51,7 @@ typedef struct ComponentCfgTypedef {
 
   std::string dependence_component;  // compA;compB;
 
-  std::string keyval_map;  // key1:val1;key2;val2;
+  std::map<std::string, std::string> keyval_map;  // key1:val1;key2;val2;
 
 } ComponentCfgTypedef;
 

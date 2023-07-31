@@ -23,6 +23,6 @@ test_file_component="valgrind -v --leak-check=full --show-leak-kinds=definite,in
 # ${test_file_component} --gtest_filter=threadpool.sema_interval
 
 # ${test_file_component} --gtest_filter=entry.entry_process
-${test_file_component} --gtest_filter=entry.config_struct
+# ${test_file_component} --gtest_filter=entry.config_struct
 
-# ${test_file_component} --gtest_filter=serialize.xml
+${test_file_component} --gtest_filter=serialize.xml
