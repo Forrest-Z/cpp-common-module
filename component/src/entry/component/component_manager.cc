@@ -21,37 +21,35 @@ ComponentManager& ComponentManager::Instance() {
 
   return *instance;
 }
-void ComponentManager::Init() {
-  std::vector<std::string> file_paths;
-  // SearchFile::GetFilePaths(PRODUCT_CONFIG_FILENAME, file_paths);
+void ComponentManager::Init(
+    std::map<std::string, std::vector<std::string>>& cmd_map) {
+  SearchFile::Instance().AddFolder(GOMROS_INSTALL_PATH);
 
-  // 读取合并后的 product.xml
+  if (cmd_map.find(CMD_ADD_COMPONENT_PATH) != cmd_map.end()) {
+    for (auto i : cmd_map[CMD_ADD_COMPONENT_PATH]) {
+      SearchFile::Instance().AddFolder(i);
+    }
+  }
+
+  std::vector<std::string> file_paths;
+
+  SearchFile::Instance().GetFilePaths(PRODUCT_CONFIG_FILENAME, file_paths);
+
+  // 逐个读取合并 product.xml
   // serialize::decoder();
+  // gomros::entry::ProductCfgTypedef  temp;
+  //     gomros::serialize::utils::decode(GOMROS_SERIAL_XML,temp);
+
   product_cfg;
 
   end_sem = std::make_shared<gomros::threadpool::Semaphore>(0);
 }
 
-void ComponentManager::Init(std::string process_name) {
-  Init();
-  // read all comp cfg
-  std::vector<std::string> file_paths;
-
-  // SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
-  // decode
-  this->component_cfg_map;
-
-  for (auto& process : product_cfg.processes) {
-    if (process.name == process_name) {
-      this->process_name = process_name;
-
-      for (auto& comp : process.component) {
-        this->component_list.push_back(new ComponetImpl(comp));
-      }
-
-      break;
-    }
-  }
+void ComponentManager::Init(
+    const std::string& process_name,
+    std::map<std::string, std::vector<std::string>>& cmd_map) {
+  Init(cmd_map);
+  this->process_name = process_name;
 }
 
 void ComponentManager::Uninit() {
@@ -72,6 +70,23 @@ void ComponentManager::LoadAllComponent() {
   std::vector<std::string> file_paths;
 
   // SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
+  // read all comp cfg
+
+  // SearchFile::GetFilePaths(COMPONENT_CONFIG_FILENAME, file_paths);
+  // decode
+  this->component_cfg_map;
+
+  for (auto& process : product_cfg.processes) {
+    if (process.name == process_name) {
+      this->process_name = process_name;
+
+      for (auto& comp : process.component) {
+        this->component_list.push_back(new ComponetImpl(comp));
+      }
+
+      break;
+    }
+  }
 
   // serialize::decoder();
 

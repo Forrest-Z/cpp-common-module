@@ -2,6 +2,7 @@
 #include "entry.h"
 #include "args_handle.h"
 #include "log/log.h"
+#include "params_define.h"
 #include "process/start_process.h"
 
 #include <sstream>
@@ -25,19 +26,15 @@ int Entry(int argc, char** argv) {
 
   // 一堆  if else 分支判断
 
-  if (cmd_map.find("-add_component_path") != cmd_map.end()) {
-    // add component path
-  }
-
-  if (cmd_map.find("-product") != cmd_map.end()) {
+  if (cmd_map.find(CMD_PRODUCT) != cmd_map.end()) {
     // start product
-    gomros::entry::StartProcess::StartProduct();
+    gomros::entry::StartProcess::StartProduct(cmd_map);
 
-  } else if (cmd_map.find("-process") != cmd_map.end()) {
+  } else if (cmd_map.find(CMD_PROCESS) != cmd_map.end()) {
     // start process
-    auto params = cmd_map["-process"];
+    auto params = cmd_map[CMD_PROCESS];
     if (params.size() >= 1) {
-      gomros::entry::StartProcess::StartSingleProcess(params[0]);
+      gomros::entry::StartProcess::StartSingleProcess(params[0], cmd_map);
     } else {
       LOG_ERROR("params wrong .");
     }

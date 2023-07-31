@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -11,7 +12,8 @@ namespace entry {
 typedef struct ComponentFixCfgTypedef {
   std::string name;
   std::string running_name;
-  std::string fixed_keyval_map;  // key1:val1;key2;val2;
+  // std::string fixed_keyval_map;
+  std::map<std::string, std::string> fixed_keyval_map;  // key1:val1;key2;val2;
 } ComponentFixCfgTypedef;
 
 GPACK(ComponentFixCfgTypedef, false, name, running_name, fixed_keyval_map);

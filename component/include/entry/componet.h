@@ -59,20 +59,11 @@ class ComponetConfig {
       const std::string& filename,
       gomros::common::StringUtils::ParamsType& params) = 0;
 
-  // template <typename A>
-  // bool ReadConfigFile(std::string filename, A& out);
+  // virtual  template ？？？
+  template <typename A>
+   bool ReadConfigFile(std::string filename, A& out);
 
-};  //   virtual std::string
-    //   GetConfig(std::string& key) = 0;
-    //   virtual std::string
-    //   GetConfig(map& key_value) = 0;
-    // 合并xml配置文件，同名参数 ，
-//   SetConfig(std::string& key) = 0; -> 数据目录 发通知消息
-// 合并xml配置文件，同名参数 ，
-
-// template a bool ReadConfigFile(filename , a &oo);
-// bool ReadAndMergeConfigFile(filename , &key_value_map);
-// 根据优先级合并配置文件，如product.xml   规定几个目录查找
+}; 
 
 }  // namespace entry
 }  // namespace gomros

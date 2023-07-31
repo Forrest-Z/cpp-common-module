@@ -9,7 +9,7 @@ namespace gomros {
 namespace entry {
 
 /**
- * @brief 从 gomros安装路径 ， project路径 ， 数据目录 中搜索指定文件
+ * @brief 从指定目录搜索文件
  *
  */
 class SearchFile {
@@ -19,6 +19,14 @@ class SearchFile {
   void Init();
 
   void Uninit();
+
+  /**
+   * @brief 添加搜索目录，先添加的目录优先搜索 （gomros安装路径 ， project路径
+   * ， 数据目录 中搜索指定文件）
+   *
+   * @param folder
+   */
+  void AddFolder(const std::string& folder);
   /**
    * @brief Get the File Paths object
    *
@@ -38,6 +46,7 @@ class SearchFile {
                    std::vector<std::string>& filePaths);
 
   static SearchFile* instance;
+  std::vector<std::string> search_folder;
 };
 
 }  // namespace entry

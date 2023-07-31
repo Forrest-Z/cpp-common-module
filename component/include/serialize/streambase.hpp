@@ -612,8 +612,8 @@ class encoder {
     beginlist(key, val.size());
     for (auto it = val.begin(); it != val.end(); it++) {
       beginobject("");
-      encode("key", it.key);
-      encode("value", it.value);
+      encode("key", it->first);
+      encode("value", it->second);
       endobject();
     }
     endlist();
@@ -1301,11 +1301,15 @@ class decoder {
   void decode(const char *key, std::map<K, T> &val) {
     int count;
     de_beginlist(key, count);
-    val.resize(count);
-    for (auto it = val.begin(); it != val.end(); it++) {
+    //val.resize(count);
+    K fval;
+    T sval;
+    //for (auto it = val.begin(); it != val.end(); it++) {
+    for (int i = 0; i < count; i++) {
       de_beginobject("");
-      decode("key", it.key);
-      decode("value", it.value);
+        decode("key",fval);
+        decode("value",sval);
+        val.insert(make_pair(fval,sval));
       de_endobject();
     }
     de_endlist();

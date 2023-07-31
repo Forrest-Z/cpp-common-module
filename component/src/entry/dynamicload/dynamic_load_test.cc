@@ -2,6 +2,8 @@
 #include "dynamic_load.h"
 #include <gtest/gtest.h>
 
+extern "C" void func(int a, int* b, int& c) {}
+
 TEST(entry, dynamic_load) {
   std::string ld_path =
       "/root/tong/git_repo/cpp-common-module/component/test_data/"

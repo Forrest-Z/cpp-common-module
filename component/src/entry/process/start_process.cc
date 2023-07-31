@@ -12,13 +12,25 @@
 namespace gomros {
 namespace entry {
 
-void StartProcess::StartProduct() {
+void StartProcess::StartProduct(
+    std::map<std::string, std::vector<std::string>>& cmd_map) {
   LOG_INFO("start product . \n");
 
   std::string running_path;
   GetProgramRunningPath(running_path);
 
-  ComponentManager::Instance().Init();
+  ComponentManager::Instance().Init(cmd_map);
+
+  std::string add_path_cmd;
+  if (cmd_map.find(CMD_ADD_COMPONENT_PATH) != cmd_map.end()) {
+    add_path_cmd += " ";
+    add_path_cmd += CMD_ADD_COMPONENT_PATH;
+    for (auto i : cmd_map[CMD_ADD_COMPONENT_PATH]) {
+      add_path_cmd += " ";
+      add_path_cmd += i;
+    }
+    add_path_cmd += " ";
+  }
 
   //
   std::vector<std::string> process_name_list;
@@ -28,6 +40,7 @@ void StartProcess::StartProduct() {
     cmd += running_path;
     cmd += " -process ";
     cmd += sub_process_name;
+    cmd += add_path_cmd;
 
     // 开启 子线程
     LOG_INFO("cmd : %s \n", cmd.c_str());
@@ -41,10 +54,12 @@ void StartProcess::StartProduct() {
   //
 }
 
-void StartProcess::StartSingleProcess(const std::string& name) {
+void StartProcess::StartSingleProcess(
+    const std::string& name,
+    std::map<std::string, std::vector<std::string>>& cmd_map) {
   // init comp manager
   LOG_INFO("start subprocess . \n");
-  ComponentManager::Instance().Init(name);
+  ComponentManager::Instance().Init(name, cmd_map);
 
   //
   ComponentManager::Instance().LoadAllComponent();

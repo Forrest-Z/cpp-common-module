@@ -13,14 +13,14 @@ QueueThread::~QueueThread() {}
 void QueueThread::NotifyStop() {
   is_alive = false;
   this->exec_sema.Signal();
-  LOG_INFO("%s notify stop signal . \n",this->GetName().c_str());
+  LOG_INFO("%s notify stop signal . \n", this->GetName().c_str());
 }
 
 void QueueThread::NotifyRun() {
   if (this->is_alive) {
     this->exec_sema.Signal(1);
   }
-  LOG_INFO("%s notify run signal . \n",this->GetName().c_str());
+  LOG_DEBUG("%s notify run signal . \n", this->GetName().c_str());
 }
 
 void QueueThread::Exec() {

@@ -73,6 +73,8 @@ class Logger {
 #define __FILENAME__ \
   (strrchr(__FILE__, '/') ? (strrchr(__FILE__, '/') + 1) : __FILE__)
 
+// todo : 日志等级判断提前，优化程序性能
+
 #define ERROR_LOG(logger_pointer, format, ...)                             \
   logger_pointer->WriteLog(common::LOG_LEVEL::ERROR, __FILENAME__, \
                            __LINE__, __FUNCTION__, format, ##__VA_ARGS__)

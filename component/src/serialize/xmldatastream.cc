@@ -402,6 +402,7 @@ void XmlDecode::de_endarray() {
     if (mXmlCurNode == nullptr) {
     error_code = 6;
     }
+    miCurid = 1;
     return;
 }
     
@@ -460,7 +461,7 @@ void XmlDecode::de_endlist() {
     }
     if (m_Items.size() > 0)
     m_Items.pop();
-
+    miCurid = 1;
     return;
 }
 
@@ -510,6 +511,7 @@ void XmlDecode::de_endmap() {
     }
     if (m_Items.size() > 0)
     m_Items.pop();
+    miCurid = 1;
     return;
 }
 

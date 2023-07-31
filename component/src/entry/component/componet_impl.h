@@ -1,9 +1,9 @@
 
 #pragma once
 
+#include "../config_struct.h"
 #include "../dynamicload/dynamic_load.h"
 #include "entry/componet.h"
-#include "../config_struct.h"
 
 namespace gomros {
 namespace entry {
@@ -18,10 +18,10 @@ class ComponetImpl : public Componet {
     // func list
   }
 
-   ~ComponetImpl() {}
+  ~ComponetImpl() {}
 
-  virtual std::string GetName() { return ""; }
-  virtual std::string GetPath() { return ""; }
+  virtual std::string GetName() { return name; }
+  virtual std::string GetPath() { return data_path; }
 
   void Init() { func_list.init(this); }
 
@@ -30,8 +30,9 @@ class ComponetImpl : public Componet {
  private:
   std::string name;
   std::string running_name;
+  std::string data_path; // 数据目录
 
-  gomros::entry::ComponentCfgTypedef cfg;
+  std::string component_path;
 
   ComponentFunc func_list;
 };

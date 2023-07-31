@@ -24,6 +24,10 @@ SearchFile& SearchFile::Instance() {
 
 void SearchFile::Init() {}
 
+void SearchFile::AddFolder(const std::string& folder) {
+  this->search_folder.push_back(folder);
+}
+
 void SearchFile::Uninit() {
   delete instance;
   instance = nullptr;
@@ -32,7 +36,15 @@ void SearchFile::Uninit() {
 }
 
 bool SearchFile::GetFilePaths(const std::string& file_name,
-                              std::vector<std::string>& file_paths) {}
+                              std::vector<std::string>& file_paths) {
+  file_paths.clear();
+  bool ret = true;
+  for (auto& i : this->search_folder) {
+    ret &= SearchFiles(i, file_name, file_paths);
+  }
+
+  return ret;
+}
 
 // 搜索指定文件夹中与指定文件名匹配的文件，并返回文件的所在目录
 bool SearchFile::SearchFiles(const std::string& folderPath,

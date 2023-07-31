@@ -16,9 +16,10 @@ class ComponentManager {
   static ComponentManager& Instance();
 
   // 主进程 中 初始化
-  void Init();
+  void Init(std::map<std::string, std::vector<std::string>>& cmd_map);
   // 子进程 中 初始化
-  void Init(std::string process_name);
+  void Init(const std::string& process_name,
+            std::map<std::string, std::vector<std::string>>& cmd_map);
   void Uninit();
 
   void LoadAllComponent();
