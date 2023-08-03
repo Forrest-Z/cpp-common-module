@@ -39,7 +39,6 @@ bool FileUtils::ReadSmallFile(const std::string& filename, std::string& buf) {
 
 bool FileUtils::WriteSmallFile(const std::string& filename, std::string& buf) {
   auto f = std::ofstream(filename.c_str(), std::ios_base::out);
-  buf.clear();
 
   // 文件打开失败
   if (!f) {
@@ -55,7 +54,6 @@ bool FileUtils::WriteSmallFile(const std::string& filename, std::string& buf) {
 bool FileUtils::AppendFile(const std::string& filename, std::string& buf) {
   auto f =
       std::ofstream(filename.c_str(), std::ios_base::out | std::ios_base::app);
-  buf.clear();
 
   // 文件打开失败
   if (!f) {
