@@ -9,11 +9,27 @@ namespace entry {
 
 class ComponetConfigImpl : public ComponetConfig {
  public:
-  virtual bool GetConfig(const std::string& key, std::string& val) {}
+  virtual bool GetConfig(const std::string& key, std::string& val) {
+    if (cfg.keyval_map.find(key) != cfg.keyval_map.end()) {
+      /* code */
+      val = cfg.keyval_map[key];
+      return true;
+    } else {
+      val.clear();
+      return false;
+    }
 
-  virtual bool GetConfig(gomros::common::StringUtils::ParamsType& params) {}
+  }
 
-  virtual bool SetConfig(gomros::common::StringUtils::ParamsType& params) {}
+  virtual bool GetConfig(gomros::common::StringUtils::ParamsType& params) {
+    params = cfg.keyval_map;
+    return true;
+  }
+
+  virtual bool SetConfig(gomros::common::StringUtils::ParamsType& params) {
+
+    // 写入 product.xml fix_cfg ,并更新配置文件
+  }
 
   // 找其他 配置文件
   virtual bool ReadAndMergeConfigFile(

@@ -85,3 +85,4 @@ bool SearchFile::SearchFiles(const std::string& folderPath,
 
 }  // namespace entry
 }  // namespace gomros
+
