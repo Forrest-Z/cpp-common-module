@@ -163,6 +163,11 @@ int ByteDecode::format() {
     return ret;
 }
 void ByteDecode::from(gomros::common::DataBuf& buf) {
+    if (buf.datalen <= 0) {
+        error_code = 1;
+        MY_LOGDBG("待读取数据大小异常\n");
+        return;
+    }
     m_buf.resize(buf.datalen);
     // m_buf.assign(buf.buf[0],buf.buf[buf.len-1]);
     std::memcpy(m_buf.data(),buf.buf,buf.datalen);
@@ -207,76 +212,104 @@ void ByteDecode::de_endmap() {
 
 
 void ByteDecode::readbuf(char* buf,int len) {
+    if (error_code > 0) return;
+    if (m_pos > total_size) return;
     std::memcpy(buf, (char *)&m_buf[m_pos], len);
     m_pos += len;
     return;
 }
 
 bool ByteDecode::decode(const char *key, bool & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     o = m_buf[m_pos];
     ++m_pos;
     return true;
 }
 
 bool ByteDecode::decode(const char *key, char & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     o = m_buf[m_pos];
     ++m_pos;
     return true;
 }
 
 bool ByteDecode::decode(const char *key, int & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     o = *((int32_t *)(&m_buf[m_pos]));
     m_pos += 4;
     return true;
 }
 bool ByteDecode::decode(const char *key, int8_t & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     o = *((int8_t *)(&m_buf[m_pos]));
     m_pos += 1;
     return true;
 }
 bool ByteDecode::decode(const char *key, int16_t & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     o = *((int16_t *)(&m_buf[m_pos]));
     m_pos += 2;
     return true;
 }
 bool ByteDecode::decode(const char *key, int64_t & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     o = *((int64_t *)(&m_buf[m_pos]));
     m_pos += 8;
     return true;
 }
 bool ByteDecode::decode(const char *key, uint8_t & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     o = *((uint8_t *)(&m_buf[m_pos]));
     m_pos += 1;
     return true;
 }
 bool ByteDecode::decode(const char *key, uint16_t & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     o = *((uint16_t *)(&m_buf[m_pos]));
     m_pos += 2;
     return true;
 }
 bool ByteDecode::decode(const char *key, uint32_t & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     o = *((uint32_t *)(&m_buf[m_pos]));
     m_pos += 4;
     return true;
 }
 bool ByteDecode::decode(const char *key, uint64_t & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     o = *((uint64_t *)(&m_buf[m_pos]));
     m_pos += 8;
     return true;
 }
 bool ByteDecode::decode(const char *key, float & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     o = *((float *)(&m_buf[m_pos]));
     m_pos += 4;
     return true;
 }
 
 bool ByteDecode::decode(const char *key, double & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     o = *((double *)(&m_buf[m_pos]));
     m_pos += 8;
     return true;
 }
 
 bool ByteDecode::decode(const char *key, std::string & o) {
+    if (error_code > 0) return false;
+    if (m_pos > total_size) return false;
     int len;
     decode("",len);
     if (len < 0) {

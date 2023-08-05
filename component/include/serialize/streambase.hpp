@@ -1250,7 +1250,7 @@ class decoder {
   */
   template <typename T>
   bool decode(const char *key, std::vector<T> &val) {
-    int count;
+    int count = 0;
     de_beginlist(key, count);
     if (format() == 0) {
       int len = count;
@@ -1281,7 +1281,7 @@ class decoder {
   */
   template <typename T>
   void decode(const char *key, std::list<T> &val) {
-    int count;
+    int count = 0;
     de_beginlist(key, count);
     val.resize(count);
     for (auto it = val.begin(); it != val.end(); it++) {
@@ -1299,7 +1299,7 @@ class decoder {
   */
   template <typename K, typename T>
   void decode(const char *key, std::map<K, T> &val) {
-    int count;
+    int count = 0;
     de_beginlist(key, count);
     //val.resize(count);
     K fval;

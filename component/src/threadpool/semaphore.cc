@@ -49,9 +49,14 @@ class SemaphoreImpl {
     // 1970-01-01 00:00:00 +0000 (UTC)
     clock_gettime(CLOCK_REALTIME, &t);
 
-    t.tv_sec += timeout_ms / 1000;
-    t.tv_nsec += (timeout_ms % 1000) * 1000000;
-    
+    const long pow_10_3 = 1000;
+    const long pow_10_6 = pow_10_3 * pow_10_3;
+    const long pow_10_9 = pow_10_3 * pow_10_6;
+
+    t.tv_sec += timeout_ms / pow_10_3;
+    t.tv_nsec += (timeout_ms % pow_10_3) * pow_10_6 + t.tv_nsec / pow_10_9;
+    t.tv_nsec %= pow_10_9;
+
     int ret = sem_timedwait(cur_sema, &t);
 
     // int err = errno;

@@ -34,7 +34,7 @@ void XmlEncode::beginobject(const char *key) {
     xml_node lnode;
     {
         if (strcmp(key, "") == 0) {
-        lnode = mXmlCurNode.append_child("obj");
+        lnode = mXmlCurNode.append_child("item");
         } else
       lnode = mXmlCurNode.append_child(key);
     }
@@ -58,7 +58,7 @@ void XmlEncode::beginarray(const char *key) {
     if (error_code > 0) return;
     xml_node lnode;
     if (strcmp(key, "") == 0) {
-      lnode = mXmlCurNode.append_child("arr");
+      lnode = mXmlCurNode.append_child("item");
     } else
     lnode = mXmlCurNode.append_child(key);
     mXmlCurNode = lnode;
@@ -81,9 +81,10 @@ void XmlEncode::beginlist(const char *key,int count) {
     if (error_code > 0) return;
     xml_node lnode;
     if (strcmp(key, "") == 0) {
-      lnode = mXmlCurNode.append_child("list");
+      lnode = mXmlCurNode.append_child("item");
     } else
     lnode = mXmlCurNode.append_child(key);
+    MY_LOGDBG(" beginlist----------- =%s\n",key);
     mXmlCurNode = lnode;
     mbIsListT = true;
     if (mXmlCurNode == nullptr) {
@@ -94,6 +95,7 @@ void XmlEncode::beginlist(const char *key,int count) {
 void XmlEncode::endlist() {
     if (error_code > 0) return;
     mXmlCurNode = mXmlCurNode.parent();
+    MY_LOGDBG(" endlist-----------\n");
     mbIsListT = false;
     if (mXmlCurNode == nullptr) {
     error_code = 8;
@@ -265,7 +267,7 @@ void XmlEncode::result(gomros::common::DataBuf& buf) {
     XmlDoc.save( writer, "  ");
     MY_LOGDBG(" 序列化————结果数据=%s\n",writer.result.data());
     buf.From(writer.result.data(),writer.result.size()+1,true);
-    buf.buf[buf.buflen] = ('\0');
+    buf.buf[buf.buflen-1] = ('\0');
     MY_LOGDBG(" 数据长度=%ld\n",buf.buflen);
 }
 
@@ -280,6 +282,11 @@ int XmlDecode::format() {
 void XmlDecode::from(gomros::common::DataBuf& buf) {
     error_code = 0;
     m_pos = 0;
+    if (buf.datalen <= 0) {
+    error_code = 1;
+    MY_LOGDBG(" 待序列化的数据长度异常\n");
+    return;
+    }
     std::string str = (buf.buf);
     MY_LOGDBG(" 待序列化的数据 = %s\n",str.c_str());
     xml_parse_result res = XmlDoc.load_string(str.c_str());
@@ -291,6 +298,7 @@ void XmlDecode::from(gomros::common::DataBuf& buf) {
     }
     mXmlBaseNode = XmlDoc;
     mXmlCurNode = mXmlBaseNode;
+
     ItemSts item;
     m_Items.push(item);
 }
@@ -300,26 +308,43 @@ void XmlDecode::de_beginobject(const char *key) {
     CurItem.cCurItem = ITEM_OBJECT;
     CurItem.cParentItem = m_Items.top().cCurItem;
     m_Items.push(CurItem);
+    char ret = 0;
     xml_node lnode;
     if ((CurItem.cParentItem == ITEM_LIST) ||
      (CurItem.cParentItem == ITEM_ARRAY) ||
      (CurItem.cParentItem == ITEM_MAP)) {
-        if (miCurid <= 0)
-        lnode = mXmlCurNode.first_child();
-        else
-        lnode = mXmlCurNode.next_sibling();
-        miCurid ++;
-    } else {
-    {
-        if (strcmp(key, "") == 0) {
-        lnode = mXmlCurNode.child("obj");
-        } else
-        lnode = mXmlCurNode.child(key); 
+        if (miCurid <= 0) {
+            if (mXmlCurNode.first_child() != nullptr)
+            lnode = mXmlCurNode.first_child();
+            else
+            ret = 1;
+        } else {
+            if (mXmlCurNode.next_sibling() != nullptr)
+            lnode = mXmlCurNode.next_sibling();
+            else
+            ret = 2;
         }
+        miCurid ++;
+        MY_LOGDBG("de_beginobject -----micuid=%d", miCurid);
+    } else {
+        if (strcmp(key, "") == 0) {
+            if (mXmlCurNode.child("item") != nullptr)
+            lnode = mXmlCurNode.child("item");
+            else
+            ret = 3;
+        } else {
+            if (mXmlCurNode.child(key) != nullptr)
+            lnode = mXmlCurNode.child(key); 
+            else
+            ret = 4;
+        }
+        // MY_LOGDBG("de_beginobject 777 ++++++micuid=%d", miCurid);
     }
+    MY_LOGDBG("-----key=%s\n", key);
     mXmlCurNode = lnode;
-    if (mXmlCurNode == nullptr) {
+    if ((mXmlCurNode == nullptr) || (ret > 0)) {
     error_code = 3;
+    MY_LOGDBG("de_beginobject ++++++micuid=%d err=%d", miCurid, ret);
     }
     return;
 }
@@ -354,21 +379,36 @@ void XmlDecode::de_beginarray(const char *key) {
     CurItem.cCurItem = ITEM_ARRAY;
     CurItem.cParentItem = m_Items.top().cCurItem;
     m_Items.push(CurItem);
-    MY_LOGDBG("de_beginarray key=%s,\n", key);
     xml_node lnode;
+    char ret = 0;
     if ((CurItem.cParentItem == ITEM_LIST) ||
      (CurItem.cParentItem == ITEM_ARRAY) ||
      (CurItem.cParentItem == ITEM_MAP)) {
-        if (miCurid <= 0)
-        lnode = mXmlCurNode.first_child();
-        else
-        lnode = mXmlCurNode.next_sibling();
+        if (miCurid <= 0) {
+            if (mXmlCurNode.first_child() != nullptr)
+            lnode = mXmlCurNode.first_child();
+            else
+            ret = 1;
+        } else {
+            if (mXmlCurNode.next_sibling() != nullptr)
+            lnode = mXmlCurNode.next_sibling();
+            else
+            ret = 2;
+        }
         miCurid ++;
     } else {
-    if (strcmp(key, "") == 0) {
-      lnode = mXmlCurNode.child("arr");
-    } else
-    lnode = mXmlCurNode.child(key); }
+        if (strcmp(key, "") == 0) {
+            if (mXmlCurNode.child("item") != nullptr)
+            lnode = mXmlCurNode.child("item");
+            else
+            ret = 3;
+        } else {
+            if (mXmlCurNode.child(key) != nullptr)
+            lnode = mXmlCurNode.child(key); 
+            else
+            ret = 4;
+        }
+    }
     mXmlCurNode = lnode;
     // int size = 0;
     // for (auto it = mXmlCurNode.children().begin();
@@ -376,7 +416,8 @@ void XmlDecode::de_beginarray(const char *key) {
     //     size++;
     // miSize = size;
     miCurid = 0;
-    if (mXmlCurNode == nullptr) {
+    if ((mXmlCurNode == nullptr)||(ret > 0)) {
+        MY_LOGDBG("de_beginarray key=%s, err=%d\n", key, ret);
     error_code = 5;
     }
     return;
@@ -412,20 +453,41 @@ void XmlDecode::de_beginlist(const char *key,int& count) {
     CurItem.cCurItem = ITEM_LIST;
     CurItem.cParentItem = m_Items.top().cCurItem;
     m_Items.push(CurItem);
+    char ret = 0;
     xml_node lnode;
     if ((CurItem.cParentItem == ITEM_LIST) ||
      (CurItem.cParentItem == ITEM_ARRAY) ||
      (CurItem.cParentItem == ITEM_MAP)) {
-        if (miCurid <= 0)
-        lnode = mXmlCurNode.first_child();
-        else
-        lnode = mXmlCurNode.next_sibling();
+         if (miCurid <= 0) {
+            if (mXmlCurNode.first_child() != nullptr)
+            lnode = mXmlCurNode.first_child();
+            else
+            ret = 1;
+        } else {
+            if (mXmlCurNode.next_sibling() != nullptr)
+            lnode = mXmlCurNode.next_sibling();
+            else
+            ret = 2;
+        }
         miCurid ++;
+        MY_LOGDBG("de_beginlist $$$$$$$$$$$$miCurid=%d  ",miCurid);
     } else {
-    if (strcmp(key, "") == 0) {
-      lnode = mXmlCurNode.child("list");
-    } else
-    lnode = mXmlCurNode.child(key); 
+        if (strcmp(key, "") == 0) {
+            if (mXmlCurNode.child("item") != nullptr)
+            lnode = mXmlCurNode.child("item");
+            else
+            ret = 3;
+        } else {
+            if (mXmlCurNode.child(key) != nullptr)
+            lnode = mXmlCurNode.child(key); 
+            else
+            ret = 4;
+        }
+    // std::stringstream ss;
+    // lnode.print(ss);
+    // std::string nodestr = ss.str();
+    // printf("\n%s\n",nodestr.c_str());
+    MY_LOGDBG("de_beginlist @@@@@@@@@miCurid=%d ",miCurid);
     }
     mXmlCurNode = lnode;
     int size = 0;
@@ -434,9 +496,10 @@ void XmlDecode::de_beginlist(const char *key,int& count) {
         size++;
     count = size;
     miSize = size;
-    MY_LOGDBG("de_beginlist key =%s size=%d\n",key ,count);
     
-    if (mXmlCurNode == nullptr) {
+    
+    if (mXmlCurNode == nullptr || (ret > 0)) {
+        MY_LOGDBG(" de_beginlist key =%s size=%d ret = %d\n",key ,count, ret);
     error_code = 7;
     }
     miCurid = 0;
@@ -472,21 +535,37 @@ void XmlDecode::de_beginmap(const char *key,int& count) {
     CurItem.cParentItem = m_Items.top().cCurItem;
     m_Items.push(CurItem);
     xml_node lnode;
+    char ret = 0;
     if ((CurItem.cParentItem == ITEM_LIST) ||
      (CurItem.cParentItem == ITEM_ARRAY) ||
      (CurItem.cParentItem == ITEM_MAP)) {
-        if (miCurid <= 0)
-        lnode = mXmlCurNode.first_child();
-        else
-        lnode = mXmlCurNode.next_sibling();
+        if (miCurid <= 0) {
+            if (mXmlCurNode.first_child() != nullptr)
+            lnode = mXmlCurNode.first_child();
+            else
+            ret = 1;
+        } else {
+            if (mXmlCurNode.next_sibling() != nullptr)
+            lnode = mXmlCurNode.next_sibling();
+            else
+            ret = 2;
+        }
         miCurid ++;
-    } else {
-    if (strcmp(key, "") == 0) {
-      lnode = mXmlCurNode.child("item");
-    } else
-    lnode = mXmlCurNode.child(key); }
+    } else {    
+        if (strcmp(key, "") == 0) {
+            if (mXmlCurNode.child("item") != nullptr)
+            lnode = mXmlCurNode.child("item");
+            else
+            ret = 3;
+        } else {
+            if (mXmlCurNode.child(key) != nullptr)
+            lnode = mXmlCurNode.child(key); 
+            else
+            ret = 4;
+        }
+    }
     mXmlCurNode = lnode;
-    if (mXmlCurNode == nullptr) {
+    if ((mXmlCurNode == nullptr) || (ret > 0)) {
     error_code = 9;
     }
     miCurid = 0;

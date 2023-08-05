@@ -83,6 +83,7 @@ public:
   bool decode(const char *key, std::string & o);
 private:
   std::vector<char> m_buf;
+    int total_size;
   int m_pos = 0;
 };
 }  // namespace serialize
