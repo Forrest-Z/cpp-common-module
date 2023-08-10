@@ -25,8 +25,7 @@ bool FileUtils::ReadSmallFile(const std::string& filename, std::string& buf) {
     char context[length];
     f.read(context, length);
 
-    buf.resize(length);
-    buf.append(context, length);
+    buf = std::string(context,length);
 
     f.close();
     return true;

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root name="dynamic_load_test" system_arch="" brief_info="" version="" has_entry="true" dependence_component="">
+  <keyval_map>
+    <item key="key1" value="val1" />
+    <item key="key2" value="val2" />
+    <item key="key3" value="val3" />
+  </keyval_map>
+</root>

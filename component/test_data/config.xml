@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root name="gomros_test" version="1.0">
+  <processes>
+    <item name="process1">
+      <component>
+        <item name="dynamic_load_test" running_name="dynamic_load_test__">
+          <fixed_keyval_map>
+            <item key="key1" value="val1--" />
+            <item key="key2" value="val2--" />
+            <item key="key5" value="val5--datapathchange" />
+          </fixed_keyval_map>
+        </item>
+      </component>
+    </item>
+  </processes>
+</root>

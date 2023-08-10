@@ -20,7 +20,7 @@ TEST(entry, entry_process) {
 
   argv[0] = (char*)"gomros";
   argv[1] = (char*)"-process";
-  argv[2] = (char*)"test_process";
+  argv[2] = (char*)"process1";
   Entry(argc, argv);
 
     free(argv);

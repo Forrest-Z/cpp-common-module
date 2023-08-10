@@ -33,7 +33,6 @@ ComponentManager &ComponentManager::Instance() {
 }
 
 void ComponentManager::ProductCfgInit() {
-
   std::vector<std::string> target_paths = {GOMROS_INSTALL_PATH};
   std::vector<std::string> file_paths;
 
@@ -62,13 +61,13 @@ void ComponentManager::ProductCfgInit() {
     }
 
     for (auto &i : fix_product.processes) {
-      for (auto &j : product_cfg.processes) { // 遍历process
+      for (auto &j : product_cfg.processes) {  // 遍历process
         if (i.name == j.name) {
           for (auto &k : i.component) {
-            for (auto &l : j.component) { // 遍历 component
+            for (auto &l : j.component) {  // 遍历 component
               if (k.running_name == l.running_name) {
-                map_utils::InsertAndMerge(l.fixed_keyval_map,k.fixed_keyval_map);
-                
+                map_utils::InsertAndMerge(l.fixed_keyval_map,
+                                          k.fixed_keyval_map);
               }
             }
           }
@@ -80,7 +79,6 @@ void ComponentManager::ProductCfgInit() {
 
 void ComponentManager::Init(
     std::map<std::string, std::vector<std::string>> &cmd_map) {
-
   ProductCfgInit();
 
   for (auto &i : this->product_cfg.processes) {
@@ -101,8 +99,7 @@ void ComponentManager::Init(
   std::vector<std::string> target_paths = {GOMROS_INSTALL_PATH};
   // add search path
   if (cmd_map.find(CMD_ADD_COMPONENT_PATH) != cmd_map.end()) {
-    for (auto &i : cmd_map[CMD_ADD_COMPONENT_PATH])
-      target_paths.push_back(i);
+    for (auto &i : cmd_map[CMD_ADD_COMPONENT_PATH]) target_paths.push_back(i);
   }
 
   std::vector<std::string> file_paths;
@@ -172,7 +169,6 @@ bool ComponentManager::GetComponentPath(const std::string &name,
 }
 
 void ComponentManager::ChangeProductCfg(ComponentFixCfgTypedef &fix_cfg) {
-
   // todo: read and write
 
   // read
@@ -180,6 +176,7 @@ void ComponentManager::ChangeProductCfg(ComponentFixCfgTypedef &fix_cfg) {
   std::string fullname = std::string(GOMROS_DATA_PATH) + "/" +
                          product_cfg.name + "/" + PRODUCT_CONFIG_FIX_FILENAME;
   ComponetConfigImpl::ReadConfigFile(fullname, this->fix_product);
+  LOG_INFO(" read %s ", fullname.c_str());
 
   // change
   for (auto &i : this->fix_product.processes) {
@@ -189,11 +186,12 @@ void ComponentManager::ChangeProductCfg(ComponentFixCfgTypedef &fix_cfg) {
 
         // write
         ComponetConfigImpl::WriteConfigFile(fullname, this->fix_product);
+        LOG_INFO(" write %s ", fullname.c_str());
         return;
       }
     }
   }
 }
 
-} // namespace entry
-} // namespace gomros
+}  // namespace entry
+}  // namespace gomros
