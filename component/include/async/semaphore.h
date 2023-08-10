@@ -4,7 +4,7 @@
 #include <string>
 
 namespace gomros {
-namespace threadpool {
+namespace async {
 /**
  * @brief 信号量具体实现类，目前使用linux系统信号量实现
  *
@@ -60,5 +60,5 @@ class Semaphore {
   SemaphoreImpl* impl;
 };
 
-}  // namespace threadpool
+}  // namespace async
 }  // namespace gomros

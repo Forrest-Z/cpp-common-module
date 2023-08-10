@@ -1,9 +1,9 @@
 
 #include <string>
 
-#include "../component/component_manager.h"
-#include "../component/search_file.h"
-#include "../dynamicload/dynamic_load.h"
+#include "../../component/component_manager.h"
+#include "../../component/dynamicload/dynamic_load.h"
+#include "../../component/search_file.h"
 #include "../framework/gomros_interface.h"
 #include "../params_define.h"
 #include "log/log.h"
@@ -13,7 +13,7 @@ namespace gomros {
 namespace entry {
 
 void StartProcess::StartProduct(
-    std::map<std::string, std::vector<std::string>>& cmd_map) {
+    std::map<std::string, std::vector<std::string>> &cmd_map) {
   LOG_INFO("start product . \n");
 
   std::string running_path;
@@ -35,28 +35,30 @@ void StartProcess::StartProduct(
   //
   std::vector<std::string> process_name_list;
   ComponentManager::Instance().GetProcessNameList(process_name_list);
-  for (auto& sub_process_name : process_name_list) {
+  for (auto &sub_process_name : process_name_list) {
     std::string cmd;
     cmd += running_path;
-    cmd += " -process ";
+    cmd += " ";
+    cmd += CMD_PROCESS;
+    cmd += " ";
     cmd += sub_process_name;
     cmd += add_path_cmd;
 
     // 开启 子线程
     LOG_INFO("cmd : %s \n", cmd.c_str());
-    system(cmd.c_str());
+    { auto ret = system(cmd.c_str()); }
   }
 
   // 主线程 监控 子线程或其他任务
 
-  // 等待结束信号 退出消息 (收到退出消息时产生结束信号)
-  ComponentManager::Instance().WaitEnd();
+  // todo: 等待结束信号 退出消息 (收到退出消息时产生结束信号)
+  // ComponentManager::Instance().WaitEnd();
   //
 }
 
 void StartProcess::StartSingleProcess(
-    const std::string& name,
-    std::map<std::string, std::vector<std::string>>& cmd_map) {
+    const std::string &name,
+    std::map<std::string, std::vector<std::string>> &cmd_map) {
   // init comp manager
   LOG_INFO("start subprocess . \n");
   ComponentManager::Instance().Init(name, cmd_map);
@@ -73,7 +75,7 @@ void StartProcess::StartSingleProcess(
   StartGomros();
 
   // 等待结束信号 退出消息
-  ComponentManager::Instance().WaitEnd();
+  // ComponentManager::Instance().WaitEnd();
 
   // uninit all component
   ComponentManager::Instance().UnInitAllComponent();
@@ -87,7 +89,7 @@ void StartProcess::StartSingleProcess(
 #include <stdio.h>
 #include <unistd.h>
 
-bool StartProcess::GetProgramRunningPath(std::string& program_running_path) {
+bool StartProcess::GetProgramRunningPath(std::string &program_running_path) {
   program_running_path.clear();
 
   char szBuf[UINT16_MAX];
@@ -96,7 +98,7 @@ bool StartProcess::GetProgramRunningPath(std::string& program_running_path) {
   memset(szBuf, 0x00, sizeof(szBuf));
   memset(szPath, 0x00, sizeof(szPath));
 
-  getcwd(szBuf, sizeof(szBuf) - 1);
+  { auto i = getcwd(szBuf, sizeof(szBuf) - 1); }
   LOG_INFO("buf:%s\n", szBuf);
 
   int ret = readlink("/proc/self/exe", szPath, sizeof(szPath) - 1);
@@ -107,8 +109,9 @@ bool StartProcess::GetProgramRunningPath(std::string& program_running_path) {
     return false;
   }
 
+  program_running_path = std::string(szPath, ret);
   return true;
 }
 
-}  // namespace entry
-}  // namespace gomros
+} // namespace entry
+} // namespace gomros

@@ -1,24 +1,40 @@
-
-#include "entry/componet.h"
-#include "../config_struct.h"
-#include "../params_define.h"
+/**
+ * @file componet_impl.cc
+ * @author 童汉森 (ths)
+ * @brief
+ * @version 1.0
+ * @date 2023-07-15
+ *
+ * 山东亚历山大智能科技有限公司 Copyright (c) 2023
+ *
+ */
+#include "componet_impl.h"
+#include "../entry/config_struct.h"
+#include "../entry/params_define.h"
 #include "common/file_utils.h"
 #include "component_config.h"
 #include "component_manager.h"
-#include "componet_impl.h"
+#include "entry/componet.h"
 #include "log/log.h"
 #include "threadpool.h"
 
 namespace gomros {
 namespace entry {
 
-ComponetImpl::ComponetImpl(
-    gomros::entry::ComponentFixCfgTypedef& comp_fix_cfg) {
+ComponetImpl::ComponetImpl(const ComponentFixCfgTypedef &comp_fix_cfg) {
   name = comp_fix_cfg.name;
   running_name = comp_fix_cfg.running_name;
 
   ComponentManager::Instance().GetComponentPath(comp_fix_cfg.name,
                                                 component_path);
+  ComponentManager::Instance().GetDataPath(this->data_path);
+
+  if (component_path == "") {
+    LOG_ERROR("cant find comp %s ", comp_fix_cfg.name.c_str());
+    exit(0);
+  }
+
+  LOG_DEBUG("component_path %s ", component_path.c_str());
 
   std::string str_buf;
   gomros::entry::ComponentCfgTypedef temp;
@@ -37,7 +53,7 @@ ComponetImpl::ComponetImpl(
 
   cfg = new ComponetConfigImpl();
 
-  ((ComponetConfigImpl*)cfg)->Init(temp, comp_fix_cfg);
+  ((ComponetConfigImpl *)cfg)->Init(temp, comp_fix_cfg);
 
   threadpool = new ThreadPoolImpl();
 
@@ -49,5 +65,5 @@ ComponetImpl::ComponetImpl(
   DynamicLoad::AddEnv("LD_LIBRARY_PATH", component_path + "/lib");
 }
 
-}  // namespace entry
-}  // namespace gomros
+} // namespace entry
+} // namespace gomros

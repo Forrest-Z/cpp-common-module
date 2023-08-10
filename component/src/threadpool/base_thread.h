@@ -7,14 +7,15 @@
 #include <string>
 #include <thread>
 
+#include "async/semaphore.h"
 #include "log/log.h"
 #include "thread_priority.h"
-#include "threadpool/semaphore.h"
 
 namespace gomros {
 namespace threadpool {
 
 typedef std::function<void()> VoidFunc;
+typedef async::Semaphore Semaphore;
 
 /**
  * @brief

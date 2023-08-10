@@ -59,9 +59,9 @@ class ComponetConfig {
       const std::string& filename,
       gomros::common::StringUtils::ParamsType& params) = 0;
 
-  // virtual  template ？？？
-  template <typename A>
-   bool ReadConfigFile(std::string filename, A& out);
+  // // virtual  template ？？？
+  // template <typename A>
+  //  bool ReadConfigFile(std::string filename, A& out);
 
 }; 
 
@@ -73,7 +73,7 @@ class Componet {
   virtual ~Componet(){}
 
  public:
-  virtual std::string GetName() = 0;
+  virtual std::string GetRunningName() = 0;
   virtual std::string GetPath() = 0;
 
   void* instance = nullptr;

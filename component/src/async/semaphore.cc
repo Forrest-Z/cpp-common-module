@@ -1,5 +1,5 @@
 
-#include "threadpool/semaphore.h"
+#include "async/semaphore.h"
 #include "common/time_utils.h"
 
 #include <chrono>
@@ -11,7 +11,7 @@
 #include <sys/stat.h> /* For mode constants */
 
 namespace gomros {
-namespace threadpool {
+namespace async {
 
 class SemaphoreImpl {
  public:
@@ -109,5 +109,5 @@ void Semaphore::Signal(uint16_t limit) { impl->Signal(limit); }
 
 bool Semaphore::TimeWait(int timeout_ms) { return impl->TimeWait(timeout_ms); }
 
-}  // namespace threadpool
+}  // namespace async
 }  // namespace gomros

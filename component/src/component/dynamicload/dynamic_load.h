@@ -1,3 +1,13 @@
+/**
+ * @file dynamic_load.h
+ * @author 童汉森 (ths)
+ * @brief 
+ * @version 1.0
+ * @date 2023-07-15
+ * 
+ * 山东亚历山大智能科技有限公司 Copyright (c) 2023
+ * 
+ */
 #pragma once
 #include "entry/componet.h"
 
