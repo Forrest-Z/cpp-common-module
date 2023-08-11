@@ -1,7 +1,7 @@
 #include "serialize/streambase.hpp"
 #include "xmldatastream.hpp"
 #include "bytestream.hpp"
-// #include "jsondatastream.h"
+#include "jsondatastream.h"
 #include "serial_log.hpp"
 using namespace gomros::serialize;
 namespace gomros {
@@ -420,14 +420,17 @@ encoder * utils::getencoder(int ntype) {
     return new ByteEncode;
     if (ntype == GOMROS_SERIAL_XML)
     return new XmlEncode;
-    // if (ntype == GOMROS_SERIAL_JSON)
-    // return new XmlEncode;
+    if (ntype == GOMROS_SERIAL_JSON)
+    return new JsonEncode;
 }
 decoder * utils::getdecoder(int ntype) {
     if (ntype == GOMROS_SERIAL_DEFAULT)
     return new ByteDecode;
     if (ntype == GOMROS_SERIAL_XML)
     return new XmlDecode;
+        if (ntype == GOMROS_SERIAL_JSON)
+       return new JsonDecode;
+
 }
 
 }  // namespace serialize
