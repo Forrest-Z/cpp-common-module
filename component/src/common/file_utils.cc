@@ -4,8 +4,20 @@
 #include <fstream>
 #include <iostream>
 
+#include <sys/stat.h>
+
 namespace gomros {
 namespace common {
+
+static bool CreateDirectories(const std::string& path) {
+  int status = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+
+  if (status == 0) {
+    return true;  // 创建成功
+  } else {
+    return false;  // 创建失败
+  }
+}
 
 bool FileUtils::ReadSmallFile(const std::string& filename, std::string& buf) {
   auto f = std::ifstream(filename.c_str(), std::ios_base::in);
@@ -25,7 +37,7 @@ bool FileUtils::ReadSmallFile(const std::string& filename, std::string& buf) {
     char context[length];
     f.read(context, length);
 
-    buf = std::string(context,length);
+    buf = std::string(context, length);
 
     f.close();
     return true;
@@ -66,4 +78,3 @@ bool FileUtils::AppendFile(const std::string& filename, std::string& buf) {
 
 }  // namespace common
 }  // namespace gomros
-
