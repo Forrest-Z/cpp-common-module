@@ -9,12 +9,13 @@
 namespace gomros {
 namespace common {
 
-static bool CreateDirectories(const std::string& path) {
+bool FileUtils::CreateDirectories(const std::string& path) {
   int status = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
   if (status == 0) {
     return true;  // 创建成功
   } else {
+    printf("%d \n", errno);
     return false;  // 创建失败
   }
 }

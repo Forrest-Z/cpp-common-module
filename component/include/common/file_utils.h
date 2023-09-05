@@ -50,6 +50,8 @@ class FileUtils {
  * @return false 写失败
  */
   static bool AppendFile(const std::string& filename, std::string& buf);
+
+  static bool CreateDirectories(const std::string& path);
 };
 
 }  // namespace common

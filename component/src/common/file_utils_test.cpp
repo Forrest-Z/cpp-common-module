@@ -22,6 +22,8 @@ TEST(common, component_file) {
     ASSERT_EQ(data[i], read_buf[i]);
   }
 
+  gomros::common::FileUtils::CreateDirectories("./test/test/log");
+
   // app
   std::cout << "append file : " << std::endl;
 
