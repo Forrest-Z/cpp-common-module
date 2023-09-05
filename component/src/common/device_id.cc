@@ -18,10 +18,15 @@ namespace gomros {
 namespace common {
 
 bool DeviceID::Get(std::string& device_id, const std::string& type) {
-  if (type == "storage_serial") {
+  if (type == "HardDriveSerial") {
+    device_id = GetHardDriveSerialNumber();
+    if (device_id == "") return false;
+
   } else {
     return GetMac(device_id);
   }
+
+  LOG_INFO("device_id: %s", device_id.c_str());
 
   return true;
 }
@@ -37,6 +42,8 @@ bool DeviceID::GetMac(std::string& mac) {
   }
 
   mac = macAddresses[0];
+
+  LOG_INFO("mac: %s", mac.c_str());
   return true;
 }
 
@@ -110,6 +117,55 @@ std::string DeviceID::GetMACAddress(int sock,
   }
 
   return stream.str();
+}
+
+std::string DeviceID::GetHardDriveSerialNumber() {
+  std::string serialNumber;
+
+  std::string device_name = GetHardDriveName();
+  if (device_name == "") {
+    return serialNumber;
+  }
+
+  // /sys/class/block/<device>/serial文件以获取序列号信息
+  std::string sysPath = "/sys/class/block/" + device_name + "/serial";
+  std::ifstream sysfsFile(sysPath);
+  if (sysfsFile) {
+    std::getline(sysfsFile, serialNumber);
+    sysfsFile.close();
+    if (!serialNumber.empty()) {
+      return serialNumber;
+    }
+  }
+  return serialNumber;
+}
+
+std::string DeviceID::GetHardDriveName() {
+  std::string mountPoint = "/";
+  std::string deviceName;
+  std::ifstream mountsFile("/proc/mounts");
+
+  if (mountsFile) {
+    std::string line;
+    while (std::getline(mountsFile, line)) {
+      std::istringstream iss(line);
+      std::string device, mountPath, fsType, options;
+      iss >> device >> mountPath >> fsType >> options;
+
+      if (mountPath == mountPoint) {
+        // 解析设备路径，通常在/dev目录下
+        size_t lastSlash = device.find_last_of('/');
+        if (lastSlash != std::string::npos) {
+          deviceName = device.substr(lastSlash + 1);
+        }
+        break;
+      }
+    }
+    mountsFile.close();
+  }
+
+    LOG_INFO("deviceName=%s",deviceName.c_str());
+  return deviceName;
 }
 
 }  // namespace common

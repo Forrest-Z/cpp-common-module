@@ -10,5 +10,9 @@ TEST(common, device_id) {
   std::string device_id;
   id.Get(device_id);
 
-  std::cout << "device_id : " << device_id << std::endl;
+  std::cout << "device_id(MAC) : " << device_id << std::endl;
+
+  id.Get(device_id, "HardDriveSerial");
+
+  std::cout << "device_id(HardDriveSerial) : " << device_id << std::endl;
 }
