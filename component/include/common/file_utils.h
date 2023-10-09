@@ -51,6 +51,13 @@ class FileUtils {
  */
   static bool AppendFile(const std::string& filename, std::string& buf);
 
+/**
+ * @brief 递归创建多级目录，如果目录不存在会创建，目录存在不影响原先的目录下内容
+ * 
+ * @param path 递归创建目录
+ * @return true 成功
+ * @return false 失败
+ */
   static bool CreateDirectories(const std::string& path);
 };
 
