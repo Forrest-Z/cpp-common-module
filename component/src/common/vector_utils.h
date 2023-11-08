@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -18,6 +19,16 @@ std::string ToString(std::vector<V>& vec) {
 
   return ss.str();
 }
+
+std::string ToString(std::map<std::string, std::string>& m) {
+  std::stringstream ss;
+
+  for (auto& i : m) {
+    ss << i.first << " , " << i.second << std::endl;
+  }
+
+  return ss.str();
 }
-}
-}
+}  // namespace vector_utils
+}  // namespace common
+}  // namespace gomros
