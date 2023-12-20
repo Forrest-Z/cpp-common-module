@@ -6,7 +6,7 @@
 namespace gomros {
 namespace common {
 template <class T>
-void LittleEndianWrite(uint8_t *pos, T &data) {
+void LittleEndianWrite(uint8_t *pos, const T &data) {
   size_t size = sizeof(data);
   for (size_t i = 0; i < size; i++) {
     pos[i] = (uint8_t)(data >> 8 * i);
