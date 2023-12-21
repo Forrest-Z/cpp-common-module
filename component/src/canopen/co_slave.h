@@ -1,5 +1,7 @@
 
 
+#pragma once
+
 #include <condition_variable>
 #include <memory>
 #include <mutex>
@@ -48,7 +50,7 @@ class CoSlave {
  protected:
   template <class T>
   bool SdoRead(int16_t index, int8_t sub_index, T& data, int timeout_ms = 5) {
-    std::lock_guard<std::mutex> lck(this->mtx);
+    std::unique_lock<std::mutex> lck(this->mtx);
 
     uint8_t buff[8];
 
@@ -79,7 +81,7 @@ class CoSlave {
   template <class T>
   bool SdoWrite(uint32_t index, uint32_t sub_index, T data,
                 int timeout_ms = 5) {
-    std::lock_guard<std::mutex> lck(this->mtx);
+    std::unique_lock<std::mutex> lck(this->mtx);
 
     uint8_t buff[8];
 
