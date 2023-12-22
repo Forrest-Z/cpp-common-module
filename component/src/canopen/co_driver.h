@@ -30,9 +30,10 @@ static T LittleEndianRead(const uint8_t* pos) {
 
 class CoDriver {
  public:
-  int Recv(uint32_t& id, uint8_t& len, uint8_t* data) {}
+  virtual int Recv(uint32_t& id, uint8_t& len, uint8_t* data) {}
 
-  int Send(const uint32_t& id, const uint8_t& len, const uint8_t* data) {}
+  virtual int Send(const uint32_t& id, const uint8_t& len,
+                   const uint8_t* data) {}
 };
 
 }  // namespace canopen

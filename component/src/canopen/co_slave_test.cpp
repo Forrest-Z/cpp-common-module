@@ -12,7 +12,8 @@ class CoDriverDemo : public CoDriver {
 
   int Recv(uint32_t& id, uint8_t& len, uint8_t* data) {
     if (index < buff.size()) {
-      auto& [d1, d2] = buff[++index];
+      auto d1 = std::get<0>(buff[index]);
+      auto d2 = std::get<1>(buff[index]);
 
       id = d1;
       len = std::min((std::size_t)len, d2.size());
@@ -56,4 +57,6 @@ class Motor : public canopen::CoSlave {
       : CoSlave(driver, node_id) {}
 };
 
-TEST(canopen, coslave) { printf("-----------test start------------\n"); }
+TEST(canopen, coslave_recv) { printf("-----------test start------------\n"); }
+
+TEST(canopen, coslave_send) { printf("-----------test start------------\n"); }
