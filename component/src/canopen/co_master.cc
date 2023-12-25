@@ -18,7 +18,9 @@ void CoMaster::Run() {
 
   while (is_alive) {
     len = 8;
-    this->driver->Recv(frame_id, len, data);
+    if (this->driver->Recv(frame_id, len, data) != 0) {
+      continue;
+    }
 
     uint32_t node_id_temp = frame_id & 0x7f;
     std::shared_ptr<CoSlave> slave;

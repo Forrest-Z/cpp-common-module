@@ -11,8 +11,8 @@ TEST(linuxcan, can) {
   can.Send(0x111, 6, data);
   can1.Send(0x111, 6, data);
   {
-    uint32_t id;
-    uint8_t len;
+    uint32_t id = 0;
+    uint8_t len = 0;
     can.Recv(id, len, data);
 
     printf("recv : id = %u , len = %u \n", id, len);
