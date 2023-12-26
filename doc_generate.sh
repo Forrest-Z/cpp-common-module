@@ -7,6 +7,6 @@
 # 文档生成源路径 ./prebuilt/include/
 # 文档存放目标路径 ./__build/doc/
 
-mkdir -p ./__build/doc/
+mkdir -p ./Build/doc/
 
 doxygen doc_generate_cfg.doxy
