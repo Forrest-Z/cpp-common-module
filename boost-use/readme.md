@@ -20,6 +20,4 @@
 
 # regex
 
-# stacktrace
-
 # glog
