@@ -1,6 +1,6 @@
 
 
-#pragma once 
+#pragma once
 
 #include <map>
 #include <memory>
@@ -18,7 +18,7 @@ class CoMaster {
  public:
   CoMaster(std::shared_ptr<CoDriver> driver) : driver(driver) {}
 
-  bool AddSlave(std::shared_ptr<CoSlave> slave);
+  bool AddSlave(std::shared_ptr<CoSlave> slave, bool enable_node_guard = false);
 
   void Run();
 

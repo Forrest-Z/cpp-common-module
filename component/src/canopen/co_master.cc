@@ -2,7 +2,8 @@
 
 namespace canopen {
 
-bool CoMaster::AddSlave(std::shared_ptr<CoSlave> slave) {
+bool CoMaster::AddSlave(std::shared_ptr<CoSlave> slave,
+                        bool enable_node_guard) {
   std::lock_guard<std::mutex> lck(this->mtx);
   if (this->slaves.count(slave->GetNodeId())) {
     return false;
