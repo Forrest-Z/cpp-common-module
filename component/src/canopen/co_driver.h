@@ -34,6 +34,11 @@ class CoDriver {
 
   virtual int Send(const uint32_t& id, const uint8_t& len,
                    const uint8_t* data) {}
+
+  virtual uint32_t AddFlag(uint32_t id, bool RTR = false, bool EFF = false,
+                           bool ERR = false) {}
+
+  virtual uint32_t Mask(uint32_t id, bool SFF = true, bool EFF = true) {}
 };
 
 }  // namespace canopen
