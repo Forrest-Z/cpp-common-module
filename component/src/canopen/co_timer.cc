@@ -8,6 +8,7 @@ CoTimer::CoTimer() { this->thr = std::thread(&CoTimer::Run, this); }
 
 CoTimer::~CoTimer() {
   is_alive = false;
+  this->cv.notify_one();
   this->thr.join();
 }
 
