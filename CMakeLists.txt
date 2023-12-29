@@ -106,5 +106,5 @@ foreach(v ${LINT_SRC})
   # -build/include_subdir,-runtime/references --quiet ${v} )
 endforeach(v)
 
-# add_subdirectory(component)
+add_subdirectory(component)
 add_subdirectory(boost-use)

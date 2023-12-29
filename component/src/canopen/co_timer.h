@@ -11,8 +11,6 @@
 #include <string>
 #include <thread>
 
-auto ret = std::chrono::steady_clock::now();
-
 namespace canopen {
 
 class CoTimer {
@@ -55,8 +53,14 @@ class CoTimer {
   bool AddTask(const std::string& name, std::function<void(void)> func,
                uint32_t interval_ms = 500, int32_t cnt = -1);
 
+  std::string Debug();
+
  private:
   void Run();
+
+  static bool Compare(std::shared_ptr<Task>& a, std::shared_ptr<Task>& b) {
+    return a->time_point < b->time_point;
+  }
 
  private:
   bool is_alive = true;

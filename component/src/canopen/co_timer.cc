@@ -1,6 +1,7 @@
 #include "co_timer.h"
 
 #include <algorithm>
+#include <sstream>
 
 namespace canopen {
 CoTimer::CoTimer() { this->thr = std::thread(&CoTimer::Run, this); }
@@ -21,9 +22,26 @@ bool CoTimer::AddTask(const std::string& name, std::function<void(void)> func,
   }
 
   this->tasks.push_back(std::make_shared<Task>(name, func, interval_ms, cnt));
-  this->tasks.sort();
+  this->tasks.sort(Compare);
   this->cv.notify_one();
   return true;
+}
+std::string CoTimer::Debug() {
+  std::lock_guard<std::mutex> lck(mtx);
+
+  std::stringstream ss;
+
+  ss << "[ \n";
+
+  for (auto& i : tasks) {
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+        i->time_point.time_since_epoch());
+    ss << "name: " << i->name << " time_point(ms) :" << ms.count() << std::endl;
+  }
+
+  ss << "]\n";
+
+  return ss.str();
 }
 void CoTimer::Run() {
   while (is_alive) {
@@ -47,7 +65,7 @@ void CoTimer::Run() {
       t->Inc();
       if (!t->Finished()) {
         tasks.push_back(t);
-        tasks.sort();
+        tasks.sort(Compare);
       }
 
     } else {
