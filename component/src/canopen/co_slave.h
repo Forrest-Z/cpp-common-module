@@ -21,28 +21,28 @@ class CoSlave {
   friend class CoMaster;
 
  private:
-  void HandleFrame(uint32_t& id, uint8_t& len, uint8_t* data);
+  void HandleFrame(const uint32_t& id, const uint8_t& len, const uint8_t* data);
 
  protected:
-  virtual void RecvTpdo1(const uint8_t len, uint8_t* data) {}
-  virtual void RecvTpdo2(const uint8_t len, uint8_t* data) {}
-  virtual void RecvTpdo3(const uint8_t len, uint8_t* data) {}
-  virtual void RecvTpdo4(const uint8_t len, uint8_t* data) {}
+  virtual void RecvTpdo1(const uint8_t len, const uint8_t* data) {}
+  virtual void RecvTpdo2(const uint8_t len, const uint8_t* data) {}
+  virtual void RecvTpdo3(const uint8_t len, const uint8_t* data) {}
+  virtual void RecvTpdo4(const uint8_t len, const uint8_t* data) {}
 
  protected:
-  inline void SendRpdo1(const uint8_t len, uint8_t* data) {
+  inline void SendRpdo1(const uint8_t len, const uint8_t* data) {
     uint32_t frame_id = node_id + 200;
     driver->Send(frame_id, len, data);
   }
-  inline void SendRpdo2(const uint8_t len, uint8_t* data) {
+  inline void SendRpdo2(const uint8_t len, const uint8_t* data) {
     uint32_t frame_id = node_id + 300;
     driver->Send(frame_id, len, data);
   }
-  inline void SendRpdo3(const uint8_t len, uint8_t* data) {
+  inline void SendRpdo3(const uint8_t len, const uint8_t* data) {
     uint32_t frame_id = node_id + 400;
     driver->Send(frame_id, len, data);
   }
-  inline void SendRpdo4(const uint8_t len, uint8_t* data) {
+  inline void SendRpdo4(const uint8_t len, const uint8_t* data) {
     uint32_t frame_id = node_id + 500;
     driver->Send(frame_id, len, data);
   }
@@ -123,7 +123,7 @@ class CoSlave {
   }
 
  private:
-  void RecvTsdo(const uint8_t len, uint8_t* data);
+  void RecvTsdo(const uint8_t len, const uint8_t* data);
 
  protected:
   std::mutex mtx;

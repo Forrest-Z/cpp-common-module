@@ -2,7 +2,8 @@
 
 namespace canopen {
 
-void CoSlave::HandleFrame(uint32_t& id, uint8_t& len, uint8_t* data) {
+void CoSlave::HandleFrame(const uint32_t& id, const uint8_t& len,
+                          const uint8_t* data) {
   if (id - 0x180 == this->node_id) {
     RecvTpdo1(len, data);
   } else if (id - 0x280 == this->node_id) {
@@ -16,7 +17,7 @@ void CoSlave::HandleFrame(uint32_t& id, uint8_t& len, uint8_t* data) {
   }
 }
 
-void CoSlave::RecvTsdo(const uint8_t len, uint8_t* data) {
+void CoSlave::RecvTsdo(const uint8_t len,const  uint8_t* data) {
   std::lock_guard<std::mutex> lck(this->mtx);
 
   this->tsdo.clear();
