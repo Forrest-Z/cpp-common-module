@@ -12,7 +12,9 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost REQUIRED COMPONENTS serialization timer mpi)
 # find_package(Boost)
 find_package(MPI REQUIRED)  # Search MPI after Boost.MPI
+
 include_directories(${Boost_INCLUDE_DIRS})
+
 
 #####################################
 # ${PROJECT_NAME}_INC
@@ -74,4 +76,5 @@ target_link_libraries(${PROJECT_NAME}
   ${GTEST_LIBRARIES}
   -lpthread -ldl
   ${Boost_LIBRARIES}  MPI::MPI_CXX
+  -lzmqpp
 )
