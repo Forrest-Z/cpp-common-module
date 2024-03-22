@@ -108,3 +108,4 @@ endforeach(v)
 
 add_subdirectory(component)
 add_subdirectory(boost-use)
+add_subdirectory(pybind)
