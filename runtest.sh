@@ -25,4 +25,7 @@ test_file_component="valgrind -v --leak-check=full --show-leak-kinds=definite,in
 # ${test_file_component} --gtest_filter=entry.entry_process
 # ${test_file_component} --gtest_filter=entry.config_struct
 
-${test_file_component} --gtest_filter=serialize.xml
+# ${test_file_component} --gtest_filter=serialize.xml
+
+test_file_component="valgrind -v --leak-check=full --show-leak-kinds=all ./Build/boost-use/boost-use/bin/boost-use"
+${test_file_component} --gtest_filter=memleck.a
