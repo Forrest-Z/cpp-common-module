@@ -1,6 +1,8 @@
 
 #include "async/semaphore.h"
+
 #include <gtest/gtest.h>
+
 #include <thread>
 
 #include "common/time_utils.h"
@@ -65,15 +67,42 @@ TEST(async, sema_interval) {
       sema.Wait();
       printf("wait success . \n");
     }
-
   };
 
   auto t = std::thread(func);
 
-  sleep(30);
+  sleep(5);
   sema.Signal();
   sleep(5);
   sema.Signal();
 
   t.join();
+}
+
+TEST(async, sema_proc) {
+  int p = fork();
+  if (p != 0) {
+    printf("child \n");
+    auto sema = gomros::async::Semaphore("test", 0);
+
+    for (size_t i = 0; i < 2; i++) {
+      sema.Wait();
+      printf("wait success . \n");
+      printf("w: %s \n",
+             gomros::common::TimeUtils::GetFormatDateTime(true).c_str());
+    }
+    return;
+  } else {
+    printf("father \n");
+    auto sema = gomros::async::Semaphore("test", 0);
+
+    sleep(5);
+    printf("signal . \n");
+    printf("%s \n", gomros::common::TimeUtils::GetFormatDateTime(true).c_str());
+    sema.Signal();
+    
+    sleep(5);
+    printf("%s \n", gomros::common::TimeUtils::GetFormatDateTime(true).c_str());
+    sema.Signal();
+  }
 }

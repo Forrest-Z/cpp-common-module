@@ -74,7 +74,7 @@ ${${PROJECT_NAME}_SRC}
 
 target_link_libraries(${PROJECT_NAME}
   ${GTEST_LIBRARIES}
-  -lpthread -ldl
+  -lpthread -ldl -lrt
   ${Boost_LIBRARIES}  MPI::MPI_CXX
   -lzmqpp
 )
