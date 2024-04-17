@@ -99,8 +99,8 @@ u8 CloudControlAddTask(u8 *arr, u8 len) {
 
   addtask_flag = 1;
   new_command.task = task;
-  new_command.data = len;
-  for (u8 i = 0; i < datalen; i++) new_command.data[i] = arr[i + 2];
+  new_command.len = len;
+  for (u8 i = 0; i < len; i++) new_command.data[i] = arr[i + 2];
   return 1;
 }
 
@@ -221,7 +221,7 @@ static void TaskMove(void) {
   }
 
   /* 获取下一个点运行方向 */
-  u16 next_cmd = command[(queue.head + 1) % QUEUEMAXNUM];
+  CommandTypedef next_cmd = command[(queue.head + 1) % QUEUEMAXNUM];
   if ((queue.num > 1) && (next_cmd.task != 0)) {
     CloudControl.next_dir = next_cmd.data[4];
   } else
