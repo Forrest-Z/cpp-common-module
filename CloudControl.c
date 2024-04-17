@@ -35,6 +35,7 @@ typedef struct {
   float last_v; /*取上一次速度的正负（读地标用）*/
   float v;      /* m/s */
   u8 park_rank; /* 停车等级  */
+  int timeout_cnt;
 
 } CloudControlType;
 
@@ -172,9 +173,15 @@ static void TaskSteerTurn(void) {  // 只在TaskMove中调用
 }
 
 static void TaskMove(void) {
+  /* led */
+  LogicOutput.led = LED_BLUE;
+  /* voice */
+  LogicOutput.voice = VOICE_MUSIC;
+
   /* 当行走子任务开始执行时，发送一次当前RFID信息,与调度系统交互 */
   if (TaskState == START) {
     TaskState = RUNNING;
+    CloudControl.timeout_cnt = 0;
 
     // pre
     CloudControl.pre_dir = CloudControl.dir;
@@ -191,6 +198,7 @@ static void TaskMove(void) {
       Dir_flag = 1;
 
     // if (CloudControl.v == 0) CloudControl.dir = CARSTOP;
+    // 速度为0（停车），使用上一指令的方向
     if (CloudControl.v == 0) {
       CloudControl.dir = CloudControl.pre_dir;
     }
@@ -213,8 +221,9 @@ static void TaskMove(void) {
   }
 
   /* 获取下一个点运行方向 */
-  if ((queue.num > 1) && command[queue.head + 1].task != CARSTOP) {
-    CloudControl.next_dir = command[queue.head + 1].data[4];
+  u16 next_cmd = command[(queue.head + 1) % QUEUEMAXNUM];
+  if ((queue.num > 1) && (next_cmd.task != 0)) {
+    CloudControl.next_dir = next_cmd.data[4];
   } else
     CloudControl.next_dir = CARSTOP;
 
@@ -228,6 +237,9 @@ static void TaskMove(void) {
     //==============================================================================================
     return;
   }
+
+  // running
+  CloudControl.timeout_cnt++;
 
   /* 调轮子角度 */
   {
@@ -297,7 +309,7 @@ static void TaskMove(void) {
   /* 根据方向行走 */
   u8 dir = CloudControl.dir;
 
-  if (CloudControl.v == 0) {
+  if (CloudControl.v == 0) {         // stop
     if (CloudControl.park_rank == 1) /* 读地标停 */
     {
       if (CloudControl.last_v > 0)
@@ -306,6 +318,13 @@ static void TaskMove(void) {
         CarDrive.exp_v = -0.05;
       else
         CarDrive.exp_v = 0;
+
+      // timeout stop
+      if (CloudControl.timeout_cnt++ >= 200) {
+        CloudControl.timeout_cnt = 200;
+        CarDrive.exp_v = 0;
+        LogicOutput.led = LED_YELLOW;
+      }
 
       //			if(Dir_flag == 1)
       //			{
@@ -373,11 +392,6 @@ static void TaskMove(void) {
   }
 
   /*漏点（由上位机判断）*/
-
-  /* led */
-  LogicOutput.led = LED_BLUE;
-  /* voice */
-  LogicOutput.voice = VOICE_MUSIC;
 }
 /**
  * @brief 云控制小车顶板顶升
