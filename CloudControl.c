@@ -77,7 +77,7 @@ static void ClearTask(void) {
   queue.rear = 0;  // 队列尾
 
   for (int i = 0; i < QUEUEMAXNUM; i++) {
-    command[queue.head].task = 0;
+    command[i].task = 0;
   }
 
   TaskState = END;
@@ -93,7 +93,7 @@ u8 CloudControlAddTask(u8 *arr, u8 len) {
   /* 清任务指令 */
   u16 task = (arr[0] << 8 | arr[1]);  // CXXX
   if (task == TASK_CANCEL) {
-    cleartask_flag = 0;
+    cleartask_flag = 1;
     return 1;
   }
 
@@ -114,7 +114,7 @@ static void TaskMovetoNext(void) {
   if (queue.num > 0) {
     queue.num--;
     command[queue.head].task = 0;
-    queue.head = (queue.head++) % QUEUEMAXNUM;
+    queue.head = (queue.head+1) % QUEUEMAXNUM;
   }
 }
 
@@ -318,10 +318,15 @@ static void TaskMove(void) {
         CarDrive.exp_v = -0.05;
       else
         CarDrive.exp_v = 0;
+			
+			// 避障清除计数
+			if(CarInfo.warningCode  == WARNING_OBAVINSIDE) {
+				CloudControl.timeout_cnt = 0;
+			}
 
       // timeout stop
-      if (CloudControl.timeout_cnt++ >= 200) {
-        CloudControl.timeout_cnt = 200;
+      if (CloudControl.timeout_cnt++ >= 1000) {
+        CloudControl.timeout_cnt = 1000;
         CarDrive.exp_v = 0;
         LogicOutput.led = LED_YELLOW;
       }
@@ -513,7 +518,7 @@ void CloudControlProcess(void) {
   if (addtask_flag) {
     addtask_flag = 0;
     command[queue.rear] = new_command;
-    queue.rear = (queue.rear++) % QUEUEMAXNUM;
+    queue.rear = (queue.rear+1) % QUEUEMAXNUM;
     queue.num++;
   }
 
