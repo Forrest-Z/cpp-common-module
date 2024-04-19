@@ -100,5 +100,9 @@
     {
       "pattern": "${workspaceFolder}/**"
     }
-  ]
+  ],
+  "files.exclude": {
+    "build": true,
+    "Build": true
+  }
 }
