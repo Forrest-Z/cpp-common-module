@@ -36,6 +36,10 @@ typedef struct {
   float v;      /* m/s */
   u8 park_rank; /* 停车等级  */
   int timeout_cnt;
+	
+	float drivelen_start;
+	float drivelen_cur_mm;
+	float drivelen_limit;
 
 } CloudControlType;
 
@@ -64,6 +68,10 @@ CloudControlType CloudControl;
 #define TASK_WRITE_PARA 0xC10D     // 写入参数
 #define TASK_READ_PARA 0xC10F      // 读取参数
 #define TASK_Debug 0xD100          // 调试
+
+static int GetDriveLen_mm(){
+	return Motor_F.ActualSpeed / 668.45;
+}
 
 /**
  * @brief 清除任务队列
@@ -120,6 +128,8 @@ static void TaskMovetoNext(void) {
 
 static void TaskNull(void) {
   if (queue.num > 0) TaskMovetoNext();
+	
+		CloudControl.drivelen_cur_mm = GetDriveLen_mm();
 
   /******************LogicOutput************************/
   /* move */
@@ -185,7 +195,8 @@ static void TaskMove(void) {
 
     // pre
     CloudControl.pre_dir = CloudControl.dir;
-
+		CloudControl.drivelen_start = GetDriveLen_mm();
+		
     u8 *p;
 
     CloudControl.task = command[queue.head].task;
@@ -194,6 +205,20 @@ static void TaskMove(void) {
     CloudControl.rfid = p[0] << 24 | p[1] << 16 | p[2] << 8 | p[3];
     CloudControl.dir = p[4];
     CloudControl.v = (p[5] << 8 | p[6]) / 1000.0;
+		// todo :
+		//CloudControl.drivelen_limit= (p[9] << 8 | p[8]);
+		if(command[queue.head].len >= 12){
+		  CloudControl.drivelen_limit= (p[9] << 8 | p[8]);
+			if(CloudControl.drivelen_limit == 0){
+				CloudControl.drivelen_limit= 100*1000;
+			}else{
+			CloudControl.drivelen_limit *= 11;  // 1.1   cm -> mm
+			}
+		}
+		else
+			CloudControl.drivelen_limit= 100*1000;
+			
+		
     if (CloudControl.dir == TRAVERSE_R || CloudControl.dir == TRAVERSE_L)
       Dir_flag = 1;
 
@@ -240,6 +265,7 @@ static void TaskMove(void) {
 
   // running
   CloudControl.timeout_cnt++;
+	CloudControl.drivelen_cur_mm = GetDriveLen_mm();
 
   /* 调轮子角度 */
   {
@@ -325,8 +351,8 @@ static void TaskMove(void) {
 			}
 
       // timeout stop
-      if (CloudControl.timeout_cnt++ >= 1000) {
-        CloudControl.timeout_cnt = 1000;
+      if (CloudControl.timeout_cnt++ >= 1500) {
+        CloudControl.timeout_cnt = 1500;
         CarDrive.exp_v = 0;
         LogicOutput.led = LED_YELLOW;
       }
@@ -354,7 +380,8 @@ static void TaskMove(void) {
 
     LogicOutput.move.E_F = 0;
     LogicOutput.move.E_B = 0;
-  } else if (dir == FORWARD || dir == FORWARD_R || dir == FORWARD_L /* */
+  } 
+	else if (dir == FORWARD || dir == FORWARD_R || dir == FORWARD_L /* */
              || dir == BACKWARD || dir == BACKWARD_L || dir == BACKWARD_R) {
     /* 到达目标点，任务完成 */
     if (CarInfo.rfid != CloudControl.rfid)
@@ -368,7 +395,8 @@ static void TaskMove(void) {
     LogicOutput.move.E_F = CarNavi.delta_F;
     LogicOutput.move.E_B = CarNavi.delta_B;
 
-  } else if (dir == TRAVERSE_L || dir == TRAVERSE_R) {
+  } 
+	else if (dir == TRAVERSE_L || dir == TRAVERSE_R) {
     /* 到达目标点，任务完成 */
     if (CarInfo.rfid != CloudControl.rfid) TaskState = END;
 
@@ -384,7 +412,15 @@ static void TaskMove(void) {
     //		LogicOutput.move.E_F = (CarNavi.delta_F) / 2;
     //		LogicOutput.move.E_B = (CarNavi.delta_B) / 2;
   }
-  /* 配置加减速控制实际下发速度 */
+ 
+  /*漏点（由上位机判断）*/
+	if(fabs(CloudControl.drivelen_cur_mm-CloudControl.drivelen_start)> CloudControl.drivelen_limit){
+		CarDrive.exp_v = 0;
+		LogicOutput.voice = VOICE_LACKPOINT;
+		LogicOutput.led = LED_YELLOW;
+	}
+
+	/* 配置加减速控制实际下发速度 */
   {
     if (fabs(CarDrive.v - CarDrive.exp_v) < CarParameter.vThreshold)
       CarDrive.v = CarDrive.exp_v;
@@ -396,7 +432,7 @@ static void TaskMove(void) {
     LogicOutput.move.v = CarDrive.v;
   }
 
-  /*漏点（由上位机判断）*/
+
 }
 /**
  * @brief 云控制小车顶板顶升
